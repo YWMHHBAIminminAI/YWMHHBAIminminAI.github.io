@@ -1,245 +1,160 @@
-<!DOCTYPE html>
-<html data-theme="light">
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>2023 | Welcome,</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="2023">
+<meta property="og:url" content="http://example.com/archives/2023/index.html">
+<meta property="og:site_name" content="Welcome,">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/archives/2023/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '2023',
+  isPost: false,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-08-06 15:25:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-<head>
-  <title>Hexo</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="
-      width=device-width, 
-      initial-scale=1.0, 
-      minimum-scale=1.0, 
-      maximum-scale=1.0,
-      user-scalable=no
-    " />
-  <link rel="icon" href="logo 路径">
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
 
-  
-<link rel="stylesheet" href="/css/main.css">
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
 
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
 
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
   
-<script src="/js/lib/jquery-3.6.3.min.js" defer></script>
-
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
   
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
   
-<script src="/js/lib/highlight.min.js" defer></script>
-
-  
-<script src="/js/main.js" type="module" defer></script>
-
-  
-<script src="/js/theme.js" type="module" defer></script>
-
-  
-<script src="/js/page/header.js" type="module" defer></script>
-
-  
-<script src="/js/page/side-menu.js" type="module" defer></script>
-
-  
-<script src="/js/page/search/index.js" defer></script>
-
-
-  
-  
-<script src="/js/lib/valine.min.js"></script>
-
-  
-  
-  
-
-  
-  
-<script src="/js/lib/busuanzi.pure.min.js" defer></script>
-
-  
-
-  
-  
-<script src="/js/page/search/local-search.js" type="module" defer></script>
-
-  
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body style="position: relative;">
-  
-<div id="loading-box">
-  <div class="wave">
-    <div class="wave-child wave1"></div>
-    <div class="wave-child wave2"></div>
-    <div class="wave-child wave3"></div>
-    <div class="wave-child wave4"></div>
-    <div class="wave-child wave5"></div>
-  </div>
-</div>
-
-<script>
-  window.addEventListener("load", function() {
-    document.body.style.overflow = "auto";
-    document.getElementById("loading-box").classList.add("loaded")
-  }, false)
-</script>
-
-  <div class="bg-wrapper">
-  <canvas id="bg-canvas" />
-</div>
-  <div class="side-menu-container animate__animated animate__faster">
-  <ul class="menu animate__animated animate__faster">
-    <li class="menu-item"}><a href="/" title="Home">Home</a></li><li class="menu-item"}><a href="/projects" title="Projects">Projects</a></li><li class="menu-item"}><a href="/message" title="Message">Message</a></li><li class="menu-item"}><a href="/links" title="Links">Links</a></li><li class="menu-item"}><a href="/about" title="About">About</a></li>
-    <li class="category-menu-wrapper">
-      <div class="menu-item-name">
-        <span>Categories</span>
-        <span class="iconfont icon-chevron-bottom"></span>
-      </div>
-      
-    </li>
-    <li class="iconfont icon-close-circle"></li>
-  </ul>
-</div>
-  
-<div class="search-pop-overlay">
-  <div class="popup search-popup">
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
     
-    <div class="search-header">
-  <h2 class="search-title">
-    Local search
-    <i class="popup-btn-close iconfont icon-close"></i>
-  </h2>
-  <div class="search-input-container">
-    <input class="search-input" autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Please input keyword" spellcheck="false" type="search">
-  </div>
-  <span class="popup-btn-close" role="button">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="search-result-container no-result flex flex-column">
-  <div class="search-result-icon">
-    <i class="fa fa-spinner fa-pulse fa-5x"></i>
-  </div>
-</div>    
-  </div>
-</div>
-
-  <header class="main-header animate__animated animate__fadeInDown">
-  <a class="blogger-info flex flex-align-center" href="/">
-    <img src="logo 路径" alt="avatar">
-    <span>Hexo </span>
-  </a>
-  <nav>
-    <ul class="menu flex flex-align-center">
-      <li class="menu-item"}><a href="/" title="Home">Home</a></li><li class="menu-item"}><a href="/projects" title="Projects">Projects</a></li><li class="menu-item"}><a href="/message" title="Message">Message</a></li><li class="menu-item"}><a href="/links" title="Links">Links</a></li><li class="menu-item"}><a href="/about" title="About">About</a></li>
-      <li class="menu-category">
-        <div class="flex flex-align-center">
-          <span>Categories</span>
-          <span class="iconfont icon-chevron-bottom"></span>
-        </div>
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
         
-      </li>
-    </ul>
-  </nav>
-  <div class="right-icon flex flex-align-center">
-    <span class="search-popup-trigger iconfont icon-search"></span>
-    <span class="iconfont icon-view-list"></span>
-  </div>
-</header>
-<div class="header-slot"></div>
-  <main class="page-container">
-    <div class="page-home-container">
-  
-  
-<div class="page-header animate__animated animate__fadeInDown">
-  <div class="page-name">
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
     
-  </div>
-</div>
-  
-  
-  <div class="post-list-wrapper animate__animated animate__fadeInUp">
-    <ul class="post-list">
-      
-      <li class="post-card ">
-        <div class="post-cover-wrapper">
-          <a class="post-cover" style="background-image: url(/images/no-cover.png);" href="/2023/08/06/MyHexoArticle/">
-            <div class="overlay"></div>
-          </a>
-        </div>
-        <div class="post-info">
-          <div class="top-box">
-            
-            <div class="uncategoried">Uncategorized</div>
-            
-            <a class="post-title" href="/2023/08/06/MyHexoArticle/">
-              MyHexoArticle
-            </a>
-            <!-- <p class="post-desc">
-              
-            </p> -->
-          </div>
-          <div class="bottom-box">
-            <div class="post-publish-time">
-              <span>08/06, 2023 </span>
-              <!-- <span class="iconfont icon-eye"> 1230</span> -->
-            </div>
-          </div>
-      </li>
-      
-      <li class="post-card ">
-        <div class="post-cover-wrapper">
-          <a class="post-cover" style="background-image: url(/images/no-cover.png);" href="/2023/08/06/hello-world/">
-            <div class="overlay"></div>
-          </a>
-        </div>
-        <div class="post-info">
-          <div class="top-box">
-            
-            <div class="uncategoried">Uncategorized</div>
-            
-            <a class="post-title" href="/2023/08/06/hello-world/">
-              Hello World
-            </a>
-            <!-- <p class="post-desc">
-              Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you ...
-            </p> -->
-          </div>
-          <div class="bottom-box">
-            <div class="post-publish-time">
-              <span>08/06, 2023 </span>
-              <!-- <span class="iconfont icon-eye"> 1230</span> -->
-            </div>
-          </div>
-      </li>
-      
-    </ul>
-      
-  </div>
-</div>
-
-
-<script src="/js/plugin/velocity.js" defer></script>
-
-
-<script src="/js/plugin/shutter.js" defer></script>
-
-
-<script src="/js/page/home.js" defer></script>
-
-    <div id="theme-btn" class="iconfont"></div>
-  </main>
-  <footer class="page-footer animate__animated animate__fadeIn">
-  
-  <p class="footer__desc">
-    
-  </p>
-  <p class="copyright">Copyright © 2023-2023 John Doe </span>
-  <p>Powered by <a href="https://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> & <a href="https://github.com/FE-Alog/hexo-theme-alog" title="Hexo-theme-alog" target="_blank" rel="noopener">Hexo-theme-alog</a> </p>
-  
-</footer>
-</body>
-
-
-    <script>
-      window.CONFIG = {"search":{},"i18n":{"search":{"title":"Local search","result_title":"${resultNum} results found","placeholder":"Please input keyword","no_result":"No result","tips":"Start your search"}}};
-    </script>
-  
-
-</html>
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Welcome,"><span class="site-name">Welcome,</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="page-site-info"><h1 id="site-title">2023</h1></div></header><main class="layout" id="content-inner"><div id="archive"><div class="article-sort-title">Articles - 2</div><div class="article-sort"><div class="article-sort-item year">2023</div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2023-08-06T05:46:37.000Z" title="Created 2023-08-06 13:46:37">2023-08-06</time></div><a class="article-sort-item-title" href="/2023/08/06/MyHexoArticle/" title="MyHexoArticle">MyHexoArticle</a></div></div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2023-08-06T05:44:22.623Z" title="Created 2023-08-06 13:44:22">2023-08-06</time></div><a class="article-sort-item-title" href="/2023/08/06/hello-world/" title="Hello World">Hello World</a></div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">John Doe</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/06/MyHexoArticle/" title="MyHexoArticle">MyHexoArticle</a><time datetime="2023-08-06T05:46:37.000Z" title="Created 2023-08-06 13:46:37">2023-08-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/06/hello-world/" title="Hello World">Hello World</a><time datetime="2023-08-06T05:44:22.623Z" title="Created 2023-08-06 13:44:22">2023-08-06</time></div></div></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/08/"><span class="card-archive-list-date">August 2023</span><span class="card-archive-list-count">2</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article :</div><div class="item-count">2</div></div><div class="webinfo-item"><div class="item-name">UV :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">PV :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Push :</div><div class="item-count" id="last-push-date" data-lastPushDate="2023-08-06T07:25:38.128Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By John Doe</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
