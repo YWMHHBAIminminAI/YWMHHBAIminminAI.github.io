@@ -1,0 +1,288 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>颜色算法之3DLUT | Welcome,Guys,Join Me for the AIminminAI Episode!</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="@TOC  前言进公司，做项目过程中肯定会碰到很多技术点，总结一下，以供后面参考学习，查看。肯定大家都有一定差异啦，大家作为参考哦，与诸君共勉。 一、3D LUT:颜色校准的利器颜色校准：彩色显示器是传达颜色信息的重要工具，但由于不同品牌、型号以及性能等方面的差异，导致同一颜色在不同的设备上呈现出不一致的色彩效果。为了保证颜色信息在跨媒介传递过程中的一致性，有必要对不同设备进行色彩校准。 通过应用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="颜色算法之3DLUT">
+<meta property="og:url" content="https://ywmhhbaiminminai.gitee.io/2024/11/09/%E9%A2%9C%E8%89%B2%E7%AE%97%E6%B3%95%E4%B9%8B3DLUT/index.html">
+<meta property="og:site_name" content="Welcome,Guys,Join Me for the AIminminAI Episode!">
+<meta property="og:description" content="@TOC  前言进公司，做项目过程中肯定会碰到很多技术点，总结一下，以供后面参考学习，查看。肯定大家都有一定差异啦，大家作为参考哦，与诸君共勉。 一、3D LUT:颜色校准的利器颜色校准：彩色显示器是传达颜色信息的重要工具，但由于不同品牌、型号以及性能等方面的差异，导致同一颜色在不同的设备上呈现出不一致的色彩效果。为了保证颜色信息在跨媒介传递过程中的一致性，有必要对不同设备进行色彩校准。 通过应用">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ywmhhbaiminminai.gitee.io/img/avatar.jpg">
+<meta property="article:published_time" content="2024-11-09T08:20:20.000Z">
+<meta property="article:modified_time" content="2024-11-09T12:46:04.009Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="颜色算法 - 3DLUT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.gitee.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.gitee.io/2024/11/09/%E9%A2%9C%E8%89%B2%E7%AE%97%E6%B3%95%E4%B9%8B3DLUT/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"Author: Hu hb","link":"Link: ","source":"Source: Welcome,Guys,Join Me for the AIminminAI Episode!","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source."}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '颜色算法之3DLUT',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2024-11-09 20:46:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">72</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">59</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Welcome,Guys,Join Me for the AIminminAI Episode!"><span class="site-name">Welcome,Guys,Join Me for the AIminminAI Episode!</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">颜色算法之3DLUT</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-11-09T08:20:20.000Z" title="Created 2024-11-09 16:20:20">2024-11-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-11-09T12:46:04.009Z" title="Updated 2024-11-09 20:46:04">2024-11-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/%E6%B7%B1%E6%8C%96%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84/">深挖项目开发中的</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/%E6%B7%B1%E6%8C%96%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84/3DLUT/">3DLUT</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="颜色算法之3DLUT"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>@<a href="%E6%96%87%E7%AB%A0%E7%9B%AE%E5%BD%95">TOC</a></p>
+<hr>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>进公司，做项目过程中肯定会碰到很多技术点，总结一下，以供后面参考学习，查看。肯定大家都有一定差异啦，大家作为参考哦，与诸君共勉。</p>
+<h1 id="一、3D-LUT-颜色校准的利器"><a href="#一、3D-LUT-颜色校准的利器" class="headerlink" title="一、3D LUT:颜色校准的利器"></a>一、3D LUT:颜色校准的利器</h1><p>颜色校准：彩色显示器是传达颜色信息的重要工具，但由于不同品牌、型号以及性能等方面的差异，导致同一颜色在不同的设备上呈现出不一致的色彩效果。为了保证颜色信息在跨媒介传递过程中的一致性，有必要对不同设备进行色彩校准。<font color="red"> 通过应用 3D LUT 技术，可以对不同显示设备进行颜色校准，确保图像颜色的准确复现。 </font></p>
+<h2 id="1-LUT-Look-Up-Table-查找表"><a href="#1-LUT-Look-Up-Table-查找表" class="headerlink" title="1.LUT:Look Up Table\查找表"></a>1.LUT:Look Up Table\查找表</h2><ul>
+<li>查找表，大家刚看到，可能又想起被算法4那本红书支配的恐惧了。但是，这个查找表，其实也算是一种映射关系，本质上是一种数学转换模型。<ul>
+<li>它是一种颜色空间转换模型，它将一种颜色空间映射到另一种颜色空间，比如将sRGB空间映射到XYZ空间，或者将XYZ空间映射到sRGB空间。</li>
+<li>通过对颜色的采样与插值运算，将输入值映射为相应的输出值，从而有效地改变图像的颜色外观。</li>
+</ul>
+</li>
+<li>主要的 LUT 类型：<ul>
+<li>1D LUT<ul>
+<li>1D LUT 中每个颜色通道的输入值与输出值之间都存在一个唯一的对应关系。这意味着每个通道彼此独立，互不影响。</li>
+<li>因此，1D LUT 通常只能控制亮度，可更改图像的 Gamma 值、RGB 灰阶平衡和白场，但在改变饱和度等参数上存在一些局限性。</li>
+</ul>
+</li>
+<li>3D LUT<ul>
+<li>3D LUT 通过全立体色彩空间的控制方式，同时调整 RGB 三个颜色通道，以改变图像的色调、饱和度和亮度等参数，实现精确的颜色校准和细腻的颜色映射。</li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/3D_lookup_table">https://en.wikipedia.org/wiki/3D_lookup_table</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-3D-LUT-的工作原理：分割、抽取和插值"><a href="#2-3D-LUT-的工作原理：分割、抽取和插值" class="headerlink" title="2.3D LUT 的工作原理：分割、抽取和插值"></a>2.3D LUT 的工作原理：分割、抽取和插值</h2><ul>
+<li>是一个通过已知点来确定未知点的过程。<ul>
+<li><ol>
+<li>首先：</li>
+</ol>
+<ul>
+<li>将源颜色空间按照特定的采样间隔分割成多个立方体栅格。每个栅格对应的目标颜色空间数值都被预先记录在一个参照表格中，以产生多组已知的样本对数据。当输入一个未知颜色时，查找与搜索其所在的栅格，并选出有助于计算的栅格点。</li>
+<li>3D LUT 的采样点通常被称为“节点”，其数目是衡量 3D LUT 精度的重要标志。<ul>
+<li>常用的 3D LUT 节点大小一般在 17 到 65 之间，如在图像信号处理（ISP）算法和显示算法中，通常采用 17 个节点的 3D LUT。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ol start="2">
+<li>然后：</li>
+</ol>
+<ul>
+<li>对于每个栅格，根据其邻域内的样本对数据，计算出目标颜色空间的颜色值。</li>
+<li>基于未知颜色点与已知栅格点之间的相对位置关系，采用合适的插值方法来推导出其在目标颜色空间的输出值。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>3D LUT插值方法影响着转换精度和运算效率。根据切割立方体方式的不同，常见的插值方法主要包括：<ul>
+<li>三线性插值</li>
+<li>三棱柱插值</li>
+<li>立方体插值</li>
+<li>四面体插值</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-3D-LUT的诸多优势"><a href="#3-3D-LUT的诸多优势" class="headerlink" title="3.3D LUT的诸多优势"></a>3.3D LUT的诸多优势</h2><ul>
+<li>作为一种优越的“空间换时间”技术，具有响应快速和灵活性高的特点。<ul>
+<li>3D LUT 的快速响应，是因为它采用了分割、抽取和插值等方法，将源颜色空间的采样点映射到目标颜色空间的输出值，因此不需要进行复杂的计算，只需简单地查找即可。</li>
+<li>3D LUT 的灵活性高，是因为它可以根据不同需求进行调整，比如节点数目、插值方法、节点位置等，从而实现精确的颜色映射。</li>
+</ul>
+</li>
+<li>与传统滤镜的全局映射方式不同，3D LUT 能够对不同的像素实施局部非线性映射<ul>
+<li>3D LUT 的色彩映射能力强，可以实现各种各样的色彩校准。<ul>
+<li>3D LUT 的色彩映射能力强，是因为它可以将源颜色空间的颜色映射到目标颜色空间，因此可以实现各种各样的色彩校准，包括饱和度、亮度、色调、色相等。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>除此之外，在视频处理方面，许多摄影设备以 Log 模式直接输出影像，若显示设备缺少 Log 模式的配置，那么在观看影像时就很可能会面临色偏的问题。针对这一问题，3D LUT 为我们提供了解决方案，它能够将 Log 格式的图像有效转换至如 Rec 709 等目标色域，进而使彩色图像具有正常的灰阶范围、对比度以及饱和度。</li>
+<li>3D LUT 的另一用途为调色，可以对图像和视频进行创造性的后期处理，这就与我们平时所说的“电影感”和“风格化”相关联了。在此应用场景中，可以将 3D LUT 理解为一个调色盘，而这个调色盘中的颜色选择和搭配是由用户根据创作需求自定义的。因此，众多创意类的 LUT 应运而生，帮助创作者实现不同的视觉风格和艺术效果。无论是复古的胶片质感，还是科技感的赛博朋克风格，3D LUT 均能迅速并精准地将这些色彩概念融入到影像中。例如，达芬奇软件内置的多款“Film Looks”（胶片风格）系列 LUT，可以使符合 Log 色彩空间的图像具有富士或柯达胶片的效果。</li>
+</ul>
+<hr>
+<h1 id="巨人的肩膀"><a href="#巨人的肩膀" class="headerlink" title="巨人的肩膀"></a>巨人的肩膀</h1><ul>
+<li>周志明老师的凤凰架构</li>
+<li>徐海松. 颜色信息工程（第二版）</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/575531873">https://zhuanlan.zhihu.com/p/575531873</a></li>
+<li>【VMP集成了颜色替换、14路颜色校准等专业调色工具，支持曲线调节和3D LUT文件加载，帮助实现显示效果的梅花润色，呈现丰富创意；而为了将渲染的素材颜色完美呈现在LED显示屏上，诺瓦星云在解决方案中添加了3D LUT文件的一键加载，通过对亮度、色度、饱和度的对应调节，完美还原素材颜色。】<a target="_blank" rel="noopener" href="https://www.novastar-led.cn/index/products/index.html?id=75">https://www.novastar-led.cn/index/products/index.html?id=75</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://YWMHHBAIminminAI.gitee.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.gitee.io/2024/11/09/%E9%A2%9C%E8%89%B2%E7%AE%97%E6%B3%95%E4%B9%8B3DLUT/">https://ywmhhbaiminminai.gitee.io/2024/11/09/%E9%A2%9C%E8%89%B2%E7%AE%97%E6%B3%95%E4%B9%8B3DLUT/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%A2%9C%E8%89%B2%E7%AE%97%E6%B3%95-3DLUT/">颜色算法 - 3DLUT</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> Donate</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/11/09/Android%E4%B8%AD%E7%9A%84SurfaceHolder-Callback%E4%B8%8ESurfaceView/" title="Android中的SurfaceHolder.Callback与SurfaceView"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">Android中的SurfaceHolder.Callback与SurfaceView</div></div></a></div><div class="next-post pull-right"><a href="/2024/09/17/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E9%A2%86%E5%9F%9F%E4%B8%AD%E7%9A%84%E7%AC%AC%E4%B8%80%E8%A1%8C%E5%85%A5%E9%97%A8%E4%BB%A3%E7%A0%81%EF%BC%9A%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%9A%84Hello-World/" title="人工智能领域中的第一行入门代码：人工智能的Hello World"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">人工智能领域中的第一行入门代码：人工智能的Hello World</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">72</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">59</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%813D-LUT-%E9%A2%9C%E8%89%B2%E6%A0%A1%E5%87%86%E7%9A%84%E5%88%A9%E5%99%A8"><span class="toc-number">2.</span> <span class="toc-text">一、3D LUT:颜色校准的利器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-LUT-Look-Up-Table-%E6%9F%A5%E6%89%BE%E8%A1%A8"><span class="toc-number">2.1.</span> <span class="toc-text">1.LUT:Look Up Table\查找表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3D-LUT-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%9A%E5%88%86%E5%89%B2%E3%80%81%E6%8A%BD%E5%8F%96%E5%92%8C%E6%8F%92%E5%80%BC"><span class="toc-number">2.2.</span> <span class="toc-text">2.3D LUT 的工作原理：分割、抽取和插值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3D-LUT%E7%9A%84%E8%AF%B8%E5%A4%9A%E4%BC%98%E5%8A%BF"><span class="toc-number">2.3.</span> <span class="toc-text">3.3D LUT的诸多优势</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A8%E4%BA%BA%E7%9A%84%E8%82%A9%E8%86%80"><span class="toc-number">3.</span> <span class="toc-text">巨人的肩膀</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/09/ISP-pipeline%E6%88%90%E5%83%8F%E9%93%BE%E8%B7%AF/" title="ISP pipeline成像链路">ISP pipeline成像链路</a><time datetime="2024-11-09T12:46:36.000Z" title="Created 2024-11-09 20:46:36">2024-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/09/%E9%A2%9C%E8%89%B2%E7%AE%97%E6%B3%95%E4%B9%8BHLR/" title="颜色算法之HLR">颜色算法之HLR</a><time datetime="2024-11-09T11:03:07.000Z" title="Created 2024-11-09 19:03:07">2024-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/09/%E9%A2%9C%E8%89%B2%E7%AE%97%E6%B3%95%E4%B9%8BCCM/" title="颜色算法之CCM">颜色算法之CCM</a><time datetime="2024-11-09T11:02:40.000Z" title="Created 2024-11-09 19:02:40">2024-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/09/%E9%A2%9C%E8%89%B2%E7%AE%97%E6%B3%95%E4%B9%8BAWB/" title="颜色算法之AWB">颜色算法之AWB</a><time datetime="2024-11-09T10:56:21.000Z" title="Created 2024-11-09 18:56:21">2024-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/09/Android%E4%B8%AD%E7%9A%84SurfaceHolder-Callback%E4%B8%8ESurfaceView/" title="Android中的SurfaceHolder.Callback与SurfaceView">Android中的SurfaceHolder.Callback与SurfaceView</a><time datetime="2024-11-09T08:25:48.000Z" title="Created 2024-11-09 16:25:48">2024-11-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Hu hb</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="Chat"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
