@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>我要开一个超市，超市里面卖的是“数据库和中间件(2)” | Welcome,Guys,Join Me for the AIminminAI Episode!</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1. 筹备阶段：基础数据管理（MySQL基础）你开了一家社区超市，刚开始只有一台收银机（单机数据库），商品信息、库存、销售记录都存在一张大表里。 1.1 商品表设计：字段类型选择商品表需要存名称、价格、库存、描述。你发现描述用TEXT，但查询时很少用到，就单独拆成一张附表。这里涉及到行溢出：InnoDB每行最多只能存8KB左右，TEXT字段会存储在溢出页，只保留20字节指针。如果频繁查询商品列表时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我要开一个超市，超市里面卖的是“数据库和中间件(2)”">
+<meta property="og:url" content="https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-2-%E2%80%9D/index.html">
+<meta property="og:site_name" content="Welcome,Guys,Join Me for the AIminminAI Episode!">
+<meta property="og:description" content="1. 筹备阶段：基础数据管理（MySQL基础）你开了一家社区超市，刚开始只有一台收银机（单机数据库），商品信息、库存、销售记录都存在一张大表里。 1.1 商品表设计：字段类型选择商品表需要存名称、价格、库存、描述。你发现描述用TEXT，但查询时很少用到，就单独拆成一张附表。这里涉及到行溢出：InnoDB每行最多只能存8KB左右，TEXT字段会存储在溢出页，只保留20字节指针。如果频繁查询商品列表时">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ywmhhbaiminminai.gitee.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-16T15:01:41.000Z">
+<meta property="article:modified_time" content="2026-05-16T15:02:29.973Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="中间件">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.gitee.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-2-%E2%80%9D/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"Author: Hu hb","link":"Link: ","source":"Source: Welcome,Guys,Join Me for the AIminminAI Episode!","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source."}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '我要开一个超市，超市里面卖的是“数据库和中间件(2)”',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2026-05-16 23:02:29'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">72</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">88</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">83</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Welcome,Guys,Join Me for the AIminminAI Episode!"><span class="site-name">Welcome,Guys,Join Me for the AIminminAI Episode!</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">我要开一个超市，超市里面卖的是“数据库和中间件(2)”</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-05-16T15:01:41.000Z" title="Created 2026-05-16 23:01:41">2026-05-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-05-16T15:02:29.973Z" title="Updated 2026-05-16 23:02:29">2026-05-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/%E6%B7%B1%E6%8C%96%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84/">深挖项目开发中的</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/%E6%B7%B1%E6%8C%96%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-2-%E2%80%9D/">我要开一个超市，超市里面卖的是“数据库和中间件(2)”</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="我要开一个超市，超市里面卖的是“数据库和中间件(2)”"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1-筹备阶段：基础数据管理（MySQL基础）"><a href="#1-筹备阶段：基础数据管理（MySQL基础）" class="headerlink" title="1. 筹备阶段：基础数据管理（MySQL基础）"></a>1. 筹备阶段：基础数据管理（MySQL基础）</h2><p>你开了一家社区超市，刚开始只有一台收银机（单机数据库），商品信息、库存、销售记录都存在一张大表里。</p>
+<h3 id="1-1-商品表设计：字段类型选择"><a href="#1-1-商品表设计：字段类型选择" class="headerlink" title="1.1 商品表设计：字段类型选择"></a>1.1 商品表设计：字段类型选择</h3><p>商品表需要存名称、价格、库存、描述。你发现描述用<code>TEXT</code>，但查询时很少用到，就单独拆成一张附表。这里涉及到<strong>行溢出</strong>：InnoDB每行最多只能存8KB左右，<code>TEXT</code>字段会存储在溢出页，只保留20字节指针。如果频繁查询商品列表时不查描述，就能避免读取溢出页的IO。</p>
+<h3 id="1-2-索引的底层原理"><a href="#1-2-索引的底层原理" class="headerlink" title="1.2 索引的底层原理"></a>1.2 索引的底层原理</h3><p>顾客开始搜索商品，比如“找所有保质期大于30天的牛奶”。你给<code>expire_days</code>加了索引。InnoDB的索引是B+树，叶子节点存主键和<code>expire_days</code>。范围查询时，B+树通过双向链表顺序读取，非常快。<br><strong>深入细节</strong>：B+树的阶数（页面大小16KB，每个索引项约16字节，则一个页面可存约1000个键，三层B+树就能存10亿条数据，IO次数极少）。<br><strong>自适应哈希索引</strong>：InnoDB监控到某些索引值被频繁等值查询，会自动在内存中建哈希索引加速，但只适用于等值查询且无法持久化。</p>
+<h3 id="1-3-SQL优化与执行计划"><a href="#1-3-SQL优化与执行计划" class="headerlink" title="1.3 SQL优化与执行计划"></a>1.3 SQL优化与执行计划</h3><p>某天查询“销量前十的商品”变慢，用<code>EXPLAIN</code>发现<code>filesort</code>。原来<code>ORDER BY sale_count DESC</code>没有索引，MySQL只能先查全表，再排序。你加了联合索引<code>(sale_count, id)</code>，让排序直接在索引上完成（索引有序）。<br><strong>索引下推</strong>：MySQL5.6后，如果有<code>WHERE sale_count &gt; 100 AND expire_days &gt; 30</code>，存储引擎会先根据索引过滤<code>sale_count &gt; 100</code>，对通过的每条记录判断<code>expire_days &gt; 30</code>，减少回表次数。</p>
+<h3 id="1-4-事务与锁"><a href="#1-4-事务与锁" class="headerlink" title="1.4 事务与锁"></a>1.4 事务与锁</h3><p>两人同时结账，同时扣同一商品库存，可能超卖。你用了事务，在扣库存时加行锁。<br><strong>行锁的实现</strong>：InnoDB在聚簇索引的每条记录上加锁，锁信息存在记录头中的<code>heap_no</code>。如果没走索引，会锁全表（其实锁所有聚簇索引记录）。<br><strong>间隙锁</strong>：当用范围条件更新时，比如<code>UPDATE stock SET count = count - 1 WHERE id &gt; 100</code>，InnoDB会给(100, 最大值)这个区间加间隙锁，防止幻读。<br><strong>死锁</strong>：两个事务互相持有对方需要的锁，InnoDB会立即检测死锁（等待图算法），回滚其中一个事务。我们调整了业务逻辑，让所有更新都按相同顺序访问资源，避免死锁。</p>
+<h3 id="1-5-事务隔离级别与MVCC"><a href="#1-5-事务隔离级别与MVCC" class="headerlink" title="1.5 事务隔离级别与MVCC"></a>1.5 事务隔离级别与MVCC</h3><p>你希望结账时看到的库存是实时的，但不想被未提交的事务影响。默认隔离级别是<strong>可重复读</strong>，通过<strong>MVCC</strong>实现：每行记录有两个隐藏列——<code>trx_id</code>（最后修改的事务ID）、<code>roll_pointer</code>（指向undo log）。ReadView判断可见性：如果当前事务ID小于活跃事务列表最小值，则可见；如果大于最大值，不可见；如果在列表中，不可见。<br><strong>可重复读解决了什么？</strong> 同一事务内两次查询结果一致，但可能产生幻读。InnoDB通过next-key lock（行锁+间隙锁）防止幻读。</p>
+<hr>
+<h2 id="2-超市火了：高并发下引入Redis缓存"><a href="#2-超市火了：高并发下引入Redis缓存" class="headerlink" title="2. 超市火了：高并发下引入Redis缓存"></a>2. 超市火了：高并发下引入Redis缓存</h2><p>超市生意火爆，收银台前排长队，数据库CPU飙升。你需要把热点数据放到缓存里。</p>
+<h3 id="2-1-商品详情缓存"><a href="#2-1-商品详情缓存" class="headerlink" title="2.1 商品详情缓存"></a>2.1 商品详情缓存</h3><p>你把商品信息存到Redis，用<code>SET</code>命令，过期时间随机。<br><strong>Redis的String底层是SDS</strong>，比C字符串安全，有len字段，二进制安全，预分配空间减少内存分配次数。<br><strong>过期删除策略</strong>：Redis每秒10次随机抽取20个带过期时间的key，删除过期key；同时惰性删除：每次访问key时检查是否过期。两种结合，既避免定时扫描阻塞，又避免内存堆积。</p>
+<h3 id="2-2-热点商品击穿"><a href="#2-2-热点商品击穿" class="headerlink" title="2.2 热点商品击穿"></a>2.2 热点商品击穿</h3><p>秒杀时某商品缓存失效，大量请求同时打到DB。你用<strong>互斥锁</strong>：当缓存不存在时，尝试<code>SETNX</code>获取锁，成功则查库并回写，失败则sleep后重试。<br><strong>锁的细节</strong>：<code>SETNX</code>要结合<code>EXPIRE</code>原子操作（Redis 2.6后可用<code>SET key value NX EX seconds</code>）。但业务执行时间可能超过锁时间，我们用<strong>Redisson</strong>的看门狗：客户端拿到锁后启动一个定时线程，每10秒检查一次，如果锁还在，就续期30秒（默认）。<br><strong>Redlock算法</strong>：在Redis集群中，为了避免主从切换导致锁丢失，客户端向所有master加锁，超过半数成功才算成功。但实际使用时，由于时钟漂移，Redlock并不完美，我们只在极端重要场景用。</p>
+<h3 id="2-3-布隆过滤器防穿透"><a href="#2-3-布隆过滤器防穿透" class="headerlink" title="2.3 布隆过滤器防穿透"></a>2.3 布隆过滤器防穿透</h3><p>恶意请求不存在的商品ID，缓存穿透。你用<strong>布隆过滤器</strong>初始化所有存在的商品ID。<br><strong>原理</strong>：多个哈希函数映射到一个bit数组，判断不存在则一定不存在，存在可能有误判。Redis的Bitmaps操作：<code>SETBIT</code>和<code>GETBIT</code>。我们使用<code>Redisson</code>的<code>RBloomFilter</code>，底层是bitmap，当误判率超过阈值，自动扩容。</p>
+<h3 id="2-4-排行榜用Sorted-Set"><a href="#2-4-排行榜用Sorted-Set" class="headerlink" title="2.4 排行榜用Sorted Set"></a>2.4 排行榜用Sorted Set</h3><p>超市要做“热销商品排行榜”，用Redis的<strong>Sorted Set</strong>，每次销售后<code>ZINCRBY</code>，后台<code>ZREVRANGE</code>取前N名。<br><strong>底层是跳跃表+哈希表</strong>：跳跃表支持范围查询（ZRANGEBYSCORE），哈希表用于快速查权重（ZSCORE）。插入、删除、更新复杂度O(logN)。<br><strong>内存优化</strong>：如果成员数少于128且成员长度小于64，用ziplist编码，紧凑存储节省内存。</p>
+<h3 id="2-5-分布式Session"><a href="#2-5-分布式Session" class="headerlink" title="2.5 分布式Session"></a>2.5 分布式Session</h3><p>用户登录超市会员系统，以前用Tomcat Session，但集群部署后Session不同步。你用Redis存储Session，Spring Session整合，利用Redis的<code>Hash</code>结构，<code>EXPIRE</code>设置失效时间。<br><strong>序列化问题</strong>：默认JDK序列化性能差，改用Jackson或Kryo。并且要确保对象变更时能反序列化（兼容性设计）。</p>
+<h3 id="2-6-计数器和限流"><a href="#2-6-计数器和限流" class="headerlink" title="2.6 计数器和限流"></a>2.6 计数器和限流</h3><p>超市门口需要限制进店人数，你用Redis的<code>INCR</code>，并设置过期时间。<br><strong>原子性</strong>：<code>INCR</code>是原子操作，底层是单线程处理命令，不会有并发问题。<br><strong>限流算法</strong>：令牌桶用Redis实现：<code>lua</code>脚本批量获取令牌，保证原子性。<br><strong>Lua脚本优势</strong>：Redis执行lua脚本是原子的，中间不会被其他命令插入，适合复杂逻辑。但要注意脚本超时、死循环可能导致阻塞。</p>
+<h3 id="2-7-分布式ID生成"><a href="#2-7-分布式ID生成" class="headerlink" title="2.7 分布式ID生成"></a>2.7 分布式ID生成</h3><p>订单号需要全局唯一，用Redis的<code>INCR</code>生成，但Redis单机存在上限。我们用<strong>雪花算法</strong>：64位，1位符号+41位时间戳+10位机器ID+12位序列号。每毫秒可生成4096个ID。<br><strong>时钟回拨问题</strong>：如果机器时间回拨，ID可能重复。我们记录上次生成时间，如果当前时间小于上次时间，等待时间追平或抛出异常。</p>
+<h3 id="2-8-持久化"><a href="#2-8-持久化" class="headerlink" title="2.8 持久化"></a>2.8 持久化</h3><p>Redis重启后数据不能丢，你开启了<strong>RDB</strong>和<strong>AOF</strong>。<br><strong>RDB</strong>：<code>SAVE</code>或<code>BGSAVE</code>生成快照，<code>fork</code>子进程，利用写时复制，不阻塞主进程。但可能丢失最后一次快照后的数据。<br><strong>AOF</strong>：记录每一条写命令，用<code>appendfsync</code>策略（always&#x2F;everysec&#x2F;no）。always最安全但性能差，everysec最多丢1秒数据。<br><strong>混合持久化</strong>：Redis 4.0后，<code>aof-use-rdb-preamble</code>，AOF重写时先写RDB格式，再追加增量命令，加载更快。</p>
+<h3 id="2-9-集群与分片"><a href="#2-9-集群与分片" class="headerlink" title="2.9 集群与分片"></a>2.9 集群与分片</h3><p>超市开分店了，单机Redis内存不足，你搭建了<strong>Redis Cluster</strong>。<br><strong>数据分片</strong>：16384个哈希槽，每个节点负责一部分槽。key通过CRC16(key) &amp; 16383计算槽位。客户端直连任意节点，如果槽不在该节点，返回MOVED重定向，客户端缓存槽位信息。<br><strong>高可用</strong>：主从复制，主节点挂了，从节点自动提升。集群中每个主节点可以有多个从节点。<br><strong>网络抖动</strong>：cluster-node-timeout时间内节点无法连通，则标记为疑似下线，如果超过半数主节点认为该节点下线，则真正标记下线，并开始故障转移。<br><strong>智能客户端</strong>：JedisCluster、Lettuce都维护了槽位映射表，减少重定向。</p>
+<hr>
+<h2 id="3-超市连锁：微服务化与中间件"><a href="#3-超市连锁：微服务化与中间件" class="headerlink" title="3. 超市连锁：微服务化与中间件"></a>3. 超市连锁：微服务化与中间件</h2><p>超市开成连锁店，业务拆分：商品中心、订单中心、库存中心、会员中心。各系统独立部署，引入Java中间件。</p>
+<h3 id="3-1-服务发现与配置中心（Nacos）"><a href="#3-1-服务发现与配置中心（Nacos）" class="headerlink" title="3.1 服务发现与配置中心（Nacos）"></a>3.1 服务发现与配置中心（Nacos）</h3><p>每个服务实例地址动态变化，你引入<strong>Nacos</strong>。<br><strong>服务注册</strong>：服务启动时向Nacos注册IP、端口、健康检查URL。Nacos定期主动探测或接收心跳，如果实例失联，临时实例直接剔除，持久实例标记为不健康但不删除。<br><strong>服务发现</strong>：客户端拉取服务列表，并监听变更。Nacos通过UDP或长轮询推送变更。<br><strong>CP还是AP？</strong> Nacos支持切换：临时实例用AP（Distro协议），非持久实例用CP（Raft协议）。我们通常用AP，保证可用性。<br><strong>配置中心</strong>：Nacos也做配置管理，客户端长轮询检查配置变更，变更后实时推送。配置存储使用Derby或MySQL，支持版本回滚、灰度发布。</p>
+<h3 id="3-2-远程调用（Dubbo-OpenFeign）"><a href="#3-2-远程调用（Dubbo-OpenFeign）" class="headerlink" title="3.2 远程调用（Dubbo&#x2F;OpenFeign）"></a>3.2 远程调用（Dubbo&#x2F;OpenFeign）</h3><p>服务间需要调用，你用<strong>Dubbo</strong>，基于Netty的RPC框架。<br><strong>SPI扩展</strong>：Dubbo的扩展点加载机制，可以替换协议、序列化、负载均衡。比如默认负载均衡是随机，我们改用<strong>一致性哈希</strong>，让相同参数的请求落到同一节点，利用缓存。<br><strong>服务治理</strong>：集群容错（Failover、Failfast、Failsafe）、服务降级（mock）、路由（tag路由、条件路由）。<br><strong>序列化</strong>：我们改用Kryo，比Hessian2更快，体积更小。<br><strong>Netty通信</strong>：Dubbo基于Netty异步非阻塞，减少线程开销。连接复用，但需要处理粘包半包（Dubbo自定义协议：header+body）。</p>
+<h3 id="3-3-网关（Spring-Cloud-Gateway）"><a href="#3-3-网关（Spring-Cloud-Gateway）" class="headerlink" title="3.3 网关（Spring Cloud Gateway）"></a>3.3 网关（Spring Cloud Gateway）</h3><p>外部请求统一从网关进入，你选了<strong>Spring Cloud Gateway</strong>，基于WebFlux。<br><strong>路由</strong>：根据路径、header、host等断言匹配路由。<br><strong>过滤器</strong>：实现鉴权、日志、限流。限流用Redis的令牌桶，集成<code>RequestRateLimiter</code>。<br><strong>跨域</strong>：通过CORS配置。<br><strong>高可用</strong>：网关集群部署，前端用Nginx负载均衡。网关层也做熔断，集成Sentinel。</p>
+<h3 id="3-4-消息队列（RocketMQ）"><a href="#3-4-消息队列（RocketMQ）" class="headerlink" title="3.4 消息队列（RocketMQ）"></a>3.4 消息队列（RocketMQ）</h3><p>订单创建后需要通知库存减扣、积分增加、短信发送，同步调用太慢，你引入<strong>RocketMQ</strong>。</p>
+<p><strong>架构</strong>：NameServer（无状态，路由注册）、Broker（主从，存储消息）、Producer、Consumer。<br><strong>消息存储</strong>：CommitLog顺序写，每个消息写入后，生成ConsumeQueue（逻辑队列），方便消费者拉取。零拷贝（mmap）加速读写。<br><strong>刷盘机制</strong>：同步刷盘（消息写入物理磁盘后才返回成功） vs 异步刷盘（写入PageCache即返回）。我们为了性能用异步刷盘+主从同步复制。<br><strong>消息可靠性</strong>：主从复制，同步复制保证消息不丢（slave确认后才返回），但性能差；异步复制可能丢少量消息，但可用性高。<br><strong>顺序消息</strong>：将同一订单的所有消息发送到同一队列，消费者单线程消费该队列。RocketMQ通过队列锁保证顺序，但故障转移时可能乱序。<br><strong>事务消息</strong>：预扣库存和发送消息需原子。流程：半消息发送，执行本地事务，提交&#x2F;回滚。如果半消息长时间未提交，MQ回查业务方确认状态。<br><strong>消息重试与死信</strong>：消费失败会重试16次，间隔递增。超过重试次数进入死信队列，人工干预。<br><strong>消息幂等</strong>：消费者通过业务主键（订单号）去重，用Redis的<code>SETNX</code>或数据库唯一键。<br><strong>消息过滤</strong>：TAG或SQL92表达式，Broker端过滤，减少网络传输。<br><strong>消息轨迹</strong>：开启轨迹记录，追踪消息生命周期。</p>
+<h3 id="3-5-分布式事务（Seata）"><a href="#3-5-分布式事务（Seata）" class="headerlink" title="3.5 分布式事务（Seata）"></a>3.5 分布式事务（Seata）</h3><p>订单服务调用库存服务、积分服务，需要分布式事务。你用<strong>Seata AT模式</strong>。<br><strong>AT原理</strong>：两阶段提交，第一阶段各个分支事务执行SQL并记录undo_log，返回成功；第二阶段全局提交时异步删除undo_log，全局回滚时根据undo_log回滚。<br><strong>全局锁</strong>：TC（Transaction Coordinator）协调，防止脏写。性能较好，但对SQL有要求（必须支持回滚）。<br><strong>TCC模式</strong>：Try、Confirm、Cancel，业务侵入大，适合性能要求高的场景。<br><strong>Saga模式</strong>：长事务，补偿机制，适合业务流程复杂的场景。</p>
+<h3 id="3-6-分布式调度（XXL-JOB）"><a href="#3-6-分布式调度（XXL-JOB）" class="headerlink" title="3.6 分布式调度（XXL-JOB）"></a>3.6 分布式调度（XXL-JOB）</h3><p>每天凌晨需要统计销售报表，你引入<strong>XXL-JOB</strong>。<br><strong>架构</strong>：调度中心（集群）、执行器。调度中心触发任务，执行器执行。<br><strong>任务分片</strong>：统计任务可拆分成多个分片，每个分片处理一部分数据，利用Redis分布式锁协调。<br><strong>故障转移</strong>：调度中心发现执行器失效，自动转移到其他执行器。<br><strong>动态任务</strong>：支持API动态创建任务，我们用于临时数据修复。</p>
+<h3 id="3-7-限流与熔断（Sentinel）"><a href="#3-7-限流与熔断（Sentinel）" class="headerlink" title="3.7 限流与熔断（Sentinel）"></a>3.7 限流与熔断（Sentinel）</h3><p>双十一大促，为防止系统崩溃，你配置<strong>Sentinel</strong>。<br><strong>滑动窗口</strong>：统计QPS、RT、异常比例。滑动窗口将时间划分为多个格子，每个格子独立计数，比固定窗口更平滑。<br><strong>流量控制</strong>：直接拒绝、Warm Up、排队等待。Warm Up让流量缓慢增加，避免冷启动。<br><strong>熔断降级</strong>：异常比例、慢调用比例超过阈值，熔断器打开，快速失败。熔断器状态机：关闭-&gt;打开-&gt;半开，半开后尝试放行少量请求。<br><strong>热点参数限流</strong>：针对商品ID限流，比如秒杀商品只允许每秒100次请求。<br><strong>规则持久化</strong>：推送到Nacos，动态生效。</p>
+<h3 id="3-8-链路追踪（SkyWalking）"><a href="#3-8-链路追踪（SkyWalking）" class="headerlink" title="3.8 链路追踪（SkyWalking）"></a>3.8 链路追踪（SkyWalking）</h3><p>微服务调用链复杂，你部署<strong>SkyWalking</strong>，基于字节码注入。<br><strong>数据采集</strong>：探针收集Trace、Span信息，包括调用时长、异常栈。<br><strong>采样</strong>：默认每秒最多10条，避免性能损耗。<br><strong>存储</strong>：用Elasticsearch存储追踪数据。<br><strong>拓扑图</strong>：自动生成服务依赖图。<br><strong>告警</strong>：根据指标触发告警。</p>
+<h3 id="3-9-容器化与编排（K8s）"><a href="#3-9-容器化与编排（K8s）" class="headerlink" title="3.9 容器化与编排（K8s）"></a>3.9 容器化与编排（K8s）</h3><p>为便于部署，你将服务打包成Docker镜像，用<strong>K8s</strong>编排。<br><strong>Pod</strong>：每个服务运行在Pod，可水平伸缩。<br><strong>ConfigMap&#x2F;Secret</strong>：配置挂载。<br><strong>Service</strong>：服务发现，集群内部通过DNS访问。<br><strong>Ingress</strong>：外部访问入口，类似网关。<br><strong>HPA</strong>：根据CPU或自定义指标自动扩缩容。<br><strong>Helm</strong>：打包部署。<br><strong>Service Mesh</strong>：后期尝试Istio，实现流量治理、安全、可观测性。</p>
+<hr>
+<h2 id="4-持续优化：深入底层细节"><a href="#4-持续优化：深入底层细节" class="headerlink" title="4. 持续优化：深入底层细节"></a>4. 持续优化：深入底层细节</h2><h3 id="4-1-MySQL深度优化"><a href="#4-1-MySQL深度优化" class="headerlink" title="4.1 MySQL深度优化"></a>4.1 MySQL深度优化</h3><ul>
+<li><strong>InnoDB缓冲池</strong>：<code>innodb_buffer_pool_size</code>设为内存的70%。监控命中率，如果低于95%，考虑增加内存。</li>
+<li><strong>自适应哈希索引</strong>：监控<code>Innodb_adaptive_hash_searches</code>，如果很高，说明效果不错。</li>
+<li><strong>redo log</strong>：<code>innodb_log_file_size</code>设大，减少checkpoint频率。但恢复时间长。</li>
+<li><strong>binlog格式</strong>：用ROW格式，便于主从同步和数据恢复。</li>
+<li><strong>主从延迟</strong>：并行复制，slave-parallel-workers&#x3D;4。监控<code>Seconds_Behind_Master</code>。</li>
+<li><strong>分库分表中间件</strong>：ShardingSphere的SQL解析优化，支持分页查询优化（先查分片键再查数据）。</li>
+</ul>
+<h3 id="4-2-Redis深度优化"><a href="#4-2-Redis深度优化" class="headerlink" title="4.2 Redis深度优化"></a>4.2 Redis深度优化</h3><ul>
+<li><strong>内存碎片</strong>：<code>info memory</code>查看<code>mem_fragmentation_ratio</code>，大于1.5时重启或<code>CONFIG SET activedefrag yes</code>。</li>
+<li><strong>bigkey</strong>：用<code>redis-cli --bigkeys</code>扫描，大key可能导致阻塞。拆分成多个小key或用哈希结构。</li>
+<li><strong>热key</strong>：本地缓存（Caffeine）+ Redis二级缓存，或者热key备份到多个节点，读写分散。</li>
+<li><strong>pipeline</strong>：批量操作减少RTT，但注意命令过多会阻塞网络。</li>
+<li><strong>Redis 6.0多线程</strong>：IO多线程处理网络读写，但命令执行仍是单线程，避免并发问题。</li>
+</ul>
+<h3 id="4-3-JVM调优"><a href="#4-3-JVM调优" class="headerlink" title="4.3 JVM调优"></a>4.3 JVM调优</h3><ul>
+<li><strong>堆内存</strong>：根据服务特点调整新生代、老年代比例，GC日志分析。</li>
+<li><strong>CMS&#x2F;G1</strong>：低延迟服务用G1，设置最大停顿时间。</li>
+<li><strong>类加载</strong>：避免重复加载，使用<code>-XX:+TraceClassLoading</code>排查。</li>
+<li><strong>OOM</strong>：<code>HeapDumpOnOutOfMemoryError</code>生成dump，用MAT分析。</li>
+</ul>
+<h3 id="4-4-网络与IO"><a href="#4-4-网络与IO" class="headerlink" title="4.4 网络与IO"></a>4.4 网络与IO</h3><ul>
+<li><strong>Netty</strong>：直接内存池，减少GC压力；零拷贝（FileRegion）传输文件。</li>
+<li><strong>Nginx</strong>：调优worker_processes、keepalive、缓冲区。</li>
+<li><strong>TCP参数</strong>：tcp_nodelay、tcp_tw_reuse等。</li>
+</ul>
+<hr>
+<h2 id="5-踩坑与复盘"><a href="#5-踩坑与复盘" class="headerlink" title="5. 踩坑与复盘"></a>5. 踩坑与复盘</h2><ul>
+<li><strong>MySQL死锁</strong>：一次批量更新导致死锁，因为不同线程更新顺序不一致。强制排序解决。</li>
+<li><strong>Redis缓存雪崩</strong>：大量key同时过期，导致DB被打爆。过期时间加随机偏移。</li>
+<li><strong>消息堆积</strong>：消费者挂了，消息堆积到几十亿，磁盘快满。紧急扩容消费者，并跳过非关键消息。</li>
+<li><strong>分布式事务回滚失败</strong>：AT模式中undo_log被删，无法回滚。启用全局锁后，必须保证本地事务幂等。</li>
+<li><strong>网关限流误杀</strong>：Sentinel配置错误导致正常请求被限。灰度发布，逐步调参。</li>
+<li><strong>K8s OOMKilled</strong>：JVM未感知容器内存限制，加<code>-XX:+UseCGroupMemoryLimitForHeap</code>。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://YWMHHBAIminminAI.gitee.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-2-%E2%80%9D/">https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-2-%E2%80%9D/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><a class="post-meta__tags" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> Donate</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“数据库和中间件(3)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">我要开一个超市，超市里面卖的是“数据库和中间件(3)”</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/16/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“数据库和中间件(1)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">我要开一个超市，超市里面卖的是“数据库和中间件(1)”</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“数据库和中间件(3)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“数据库和中间件(3)”</div></div></a></div><div><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-4-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“数据库和中间件(4)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“数据库和中间件(4)”</div></div></a></div><div><a href="/2026/05/16/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%B8%AD%E9%97%B4%E4%BB%B6-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“数据库和中间件(1)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“数据库和中间件(1)”</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">72</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">88</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">83</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%AD%B9%E5%A4%87%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%EF%BC%88MySQL%E5%9F%BA%E7%A1%80%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">1. 筹备阶段：基础数据管理（MySQL基础）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%95%86%E5%93%81%E8%A1%A8%E8%AE%BE%E8%AE%A1%EF%BC%9A%E5%AD%97%E6%AE%B5%E7%B1%BB%E5%9E%8B%E9%80%89%E6%8B%A9"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 商品表设计：字段类型选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%B4%A2%E5%BC%95%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 索引的底层原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-SQL%E4%BC%98%E5%8C%96%E4%B8%8E%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 SQL优化与执行计划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E9%94%81"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 事务与锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E4%B8%8EMVCC"><span class="toc-number">1.5.</span> <span class="toc-text">1.5 事务隔离级别与MVCC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%B6%85%E5%B8%82%E7%81%AB%E4%BA%86%EF%BC%9A%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%8B%E5%BC%95%E5%85%A5Redis%E7%BC%93%E5%AD%98"><span class="toc-number">2.</span> <span class="toc-text">2. 超市火了：高并发下引入Redis缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%95%86%E5%93%81%E8%AF%A6%E6%83%85%E7%BC%93%E5%AD%98"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 商品详情缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%83%AD%E7%82%B9%E5%95%86%E5%93%81%E5%87%BB%E7%A9%BF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 热点商品击穿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E9%98%B2%E7%A9%BF%E9%80%8F"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 布隆过滤器防穿透</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E6%8E%92%E8%A1%8C%E6%A6%9C%E7%94%A8Sorted-Set"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 排行榜用Sorted Set</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-%E5%88%86%E5%B8%83%E5%BC%8FSession"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 分布式Session</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-%E8%AE%A1%E6%95%B0%E5%99%A8%E5%92%8C%E9%99%90%E6%B5%81"><span class="toc-number">2.6.</span> <span class="toc-text">2.6 计数器和限流</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90"><span class="toc-number">2.7.</span> <span class="toc-text">2.7 分布式ID生成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-8-%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">2.8.</span> <span class="toc-text">2.8 持久化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-9-%E9%9B%86%E7%BE%A4%E4%B8%8E%E5%88%86%E7%89%87"><span class="toc-number">2.9.</span> <span class="toc-text">2.9 集群与分片</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%B6%85%E5%B8%82%E8%BF%9E%E9%94%81%EF%BC%9A%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%8C%96%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">3. 超市连锁：微服务化与中间件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E4%B8%8E%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%EF%BC%88Nacos%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 服务发现与配置中心（Nacos）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%EF%BC%88Dubbo-OpenFeign%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 远程调用（Dubbo&#x2F;OpenFeign）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E7%BD%91%E5%85%B3%EF%BC%88Spring-Cloud-Gateway%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 网关（Spring Cloud Gateway）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%88RocketMQ%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 消息队列（RocketMQ）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%EF%BC%88Seata%EF%BC%89"><span class="toc-number">3.5.</span> <span class="toc-text">3.5 分布式事务（Seata）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E5%BA%A6%EF%BC%88XXL-JOB%EF%BC%89"><span class="toc-number">3.6.</span> <span class="toc-text">3.6 分布式调度（XXL-JOB）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-%E9%99%90%E6%B5%81%E4%B8%8E%E7%86%94%E6%96%AD%EF%BC%88Sentinel%EF%BC%89"><span class="toc-number">3.7.</span> <span class="toc-text">3.7 限流与熔断（Sentinel）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-8-%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%EF%BC%88SkyWalking%EF%BC%89"><span class="toc-number">3.8.</span> <span class="toc-text">3.8 链路追踪（SkyWalking）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-9-%E5%AE%B9%E5%99%A8%E5%8C%96%E4%B8%8E%E7%BC%96%E6%8E%92%EF%BC%88K8s%EF%BC%89"><span class="toc-number">3.9.</span> <span class="toc-text">3.9 容器化与编排（K8s）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%8C%81%E7%BB%AD%E4%BC%98%E5%8C%96%EF%BC%9A%E6%B7%B1%E5%85%A5%E5%BA%95%E5%B1%82%E7%BB%86%E8%8A%82"><span class="toc-number">4.</span> <span class="toc-text">4. 持续优化：深入底层细节</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-MySQL%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%8C%96"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 MySQL深度优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Redis%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%8C%96"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 Redis深度优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-JVM%E8%B0%83%E4%BC%98"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 JVM调优</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E7%BD%91%E7%BB%9C%E4%B8%8EIO"><span class="toc-number">4.4.</span> <span class="toc-text">4.4 网络与IO</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%B8%A9%E5%9D%91%E4%B8%8E%E5%A4%8D%E7%9B%98"><span class="toc-number">5.</span> <span class="toc-text">5. 踩坑与复盘</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-4-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(4)”">我要开一个超市，超市里面卖的是“计算机网络(4)”</a><time datetime="2026-05-16T15:08:31.000Z" title="Created 2026-05-16 23:08:31">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(3)”">我要开一个超市，超市里面卖的是“计算机网络(3)”</a><time datetime="2026-05-16T15:08:04.000Z" title="Created 2026-05-16 23:08:04">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-2-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(2)”">我要开一个超市，超市里面卖的是“计算机网络(2)”</a><time datetime="2026-05-16T15:07:22.000Z" title="Created 2026-05-16 23:07:22">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(1)”">我要开一个超市，超市里面卖的是“计算机网络(1)”</a><time datetime="2026-05-16T15:06:53.000Z" title="Created 2026-05-16 23:06:53">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“操作系统(3)”">我要开一个超市，超市里面卖的是“操作系统(3)”</a><time datetime="2026-05-16T15:05:52.000Z" title="Created 2026-05-16 23:05:52">2026-05-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="Chat"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

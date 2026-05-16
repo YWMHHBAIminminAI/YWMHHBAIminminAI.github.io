@@ -1,0 +1,270 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>我要开一个超市，超市里面卖的是“C++” | Welcome,Guys,Join Me for the AIminminAI Episode!</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="假设我要从零开发一个“智能超市管理系统”，咱们就跟着需求一步步看C++是怎么派上用场的，而且为什么非得用它这些特性不可。 第一阶段：商品和货架——类与对象、封装、RAII最开始，超市得有商品。每个商品有名称、价格、条码、保质期。这自然就用类来抽象： 12345678910class Product &amp;#123;    std::string name;    double price;    st">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我要开一个超市，超市里面卖的是“C++”">
+<meta property="og:url" content="https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9CC-%E2%80%9D/index.html">
+<meta property="og:site_name" content="Welcome,Guys,Join Me for the AIminminAI Episode!">
+<meta property="og:description" content="假设我要从零开发一个“智能超市管理系统”，咱们就跟着需求一步步看C++是怎么派上用场的，而且为什么非得用它这些特性不可。 第一阶段：商品和货架——类与对象、封装、RAII最开始，超市得有商品。每个商品有名称、价格、条码、保质期。这自然就用类来抽象： 12345678910class Product &amp;#123;    std::string name;    double price;    st">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ywmhhbaiminminai.gitee.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-16T14:55:47.000Z">
+<meta property="article:modified_time" content="2026-05-16T14:56:59.462Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="智能超市">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.gitee.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9CC-%E2%80%9D/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"Author: Hu hb","link":"Link: ","source":"Source: Welcome,Guys,Join Me for the AIminminAI Episode!","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source."}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '我要开一个超市，超市里面卖的是“C++”',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2026-05-16 22:56:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">72</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">88</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">83</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Welcome,Guys,Join Me for the AIminminAI Episode!"><span class="site-name">Welcome,Guys,Join Me for the AIminminAI Episode!</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">我要开一个超市，超市里面卖的是“C++”</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-05-16T14:55:47.000Z" title="Created 2026-05-16 22:55:47">2026-05-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-05-16T14:56:59.462Z" title="Updated 2026-05-16 22:56:59">2026-05-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/%E6%B7%B1%E6%8C%96%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84/">深挖项目开发中的</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/%E6%B7%B1%E6%8C%96%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9CC-%E2%80%9D/">我要开一个超市，超市里面卖的是“C++”</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="我要开一个超市，超市里面卖的是“C++”"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>假设我要从零开发一个“智能超市管理系统”，咱们就跟着需求一步步看C++是怎么派上用场的，而且为什么非得用它这些特性不可。</p>
+<h2 id="第一阶段：商品和货架——类与对象、封装、RAII"><a href="#第一阶段：商品和货架——类与对象、封装、RAII" class="headerlink" title="第一阶段：商品和货架——类与对象、封装、RAII"></a>第一阶段：商品和货架——类与对象、封装、RAII</h2><p>最开始，超市得有商品。每个商品有名称、价格、条码、保质期。这自然就用<strong>类</strong>来抽象：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Product</span> &#123;<br>    std::string name;<br>    <span class="hljs-type">double</span> price;<br>    std::string barcode;<br>    Date expiryDate;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">Product</span>(std::string n, <span class="hljs-type">double</span> p, std::string bc, Date exp)<br>        : <span class="hljs-built_in">name</span>(std::<span class="hljs-built_in">move</span>(n)), <span class="hljs-built_in">price</span>(p), <span class="hljs-built_in">barcode</span>(std::<span class="hljs-built_in">move</span>(bc)), <span class="hljs-built_in">expiryDate</span>(exp) &#123;&#125;<br>    <span class="hljs-comment">// ... 访问接口</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>这里就涉及<strong>RAII（资源获取即初始化）</strong>：<code>std::string</code> 自己管理内存，我们不用操心释放。如果不用RAII，手动 new&#x2F;delete 很容易泄漏或重复释放。RAII 是 C++ 资源管理的基石，它保证异常安全——比如构造函数里如果抛出异常，已构造的成员会自动析构，不会泄漏。</p>
+<h2 id="第二阶段：多种商品类型——继承与多态、虚函数表"><a href="#第二阶段：多种商品类型——继承与多态、虚函数表" class="headerlink" title="第二阶段：多种商品类型——继承与多态、虚函数表"></a>第二阶段：多种商品类型——继承与多态、虚函数表</h2><p>超市里有食品、电器、生鲜，它们有共同属性但也有各自特殊行为，比如食品要检查保质期，电器要有电压。于是我们设计基类和派生类：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Product</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-type">double</span> <span class="hljs-title">getDiscount</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123; <span class="hljs-keyword">return</span> <span class="hljs-number">1.0</span>; &#125; <span class="hljs-comment">// 默认无折扣</span><br>    <span class="hljs-keyword">virtual</span> ~<span class="hljs-built_in">Product</span>() = <span class="hljs-keyword">default</span>;  <span class="hljs-comment">// 基类析构必须虚</span><br>&#125;;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Food</span> : <span class="hljs-keyword">public</span> Product &#123;<br>    <span class="hljs-function"><span class="hljs-type">double</span> <span class="hljs-title">getDiscount</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> <span class="hljs-keyword">override</span> </span>&#123; <span class="hljs-comment">// 临期食品打折</span><br>        <span class="hljs-keyword">return</span> expiryDate.<span class="hljs-built_in">daysFromNow</span>() &lt; <span class="hljs-number">3</span> ? <span class="hljs-number">0.8</span> : <span class="hljs-number">1.0</span>;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>这里的关键是<strong>虚函数</strong>和<strong>虚函数表（vtable）</strong>。当你用基类指针或引用调用 <code>getDiscount</code> 时，实际调用哪个版本由对象的实际类型决定。这就实现了运行时多态。但虚函数有开销：每个对象多一个虚指针（vptr），每次调用要多一次间接跳转。在性能敏感的地方（比如高频调用），我们就得权衡，可能用模板替代。</p>
+<p>另外，基类析构函数必须虚，否则删除派生类对象时只会调用基类析构，导致资源泄漏。这是C++新手常犯的错误，但十年经验的人会下意识写对。</p>
+<h2 id="第三阶段：库存管理——STL容器、迭代器、算法"><a href="#第三阶段：库存管理——STL容器、迭代器、算法" class="headerlink" title="第三阶段：库存管理——STL容器、迭代器、算法"></a>第三阶段：库存管理——STL容器、迭代器、算法</h2><p>超市有成千上万商品，需要快速按条码查找、按价格排序、定期清理过期品。这时STL登场：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp">std::unordered_map&lt;std::string, std::unique_ptr&lt;Product&gt;&gt; inventory;  <span class="hljs-comment">// 条码 -&gt; 商品</span><br></code></pre></td></tr></table></figure>
+
+<p>用 <code>unordered_map</code> 实现O(1)查找。但为什么不用 <code>map</code>（红黑树）？因为查找频率远高于遍历，哈希表更合适。这里要理解哈希冲突、负载因子、rehash 对性能的影响——如果哈希函数不好，查找退化到O(n)，所以我们会为自定义类型特化 <code>std::hash</code>。</p>
+<p>遍历过期商品可以用 STL 算法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">auto</span> now = Date::<span class="hljs-built_in">today</span>();<br>std::<span class="hljs-built_in">erase_if</span>(inventory, [&amp;](<span class="hljs-keyword">auto</span>&amp; item) &#123;<br>    <span class="hljs-keyword">return</span> item.second-&gt;expiryDate &lt; now;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>C++20 的 <code>erase_if</code> 简洁又高效，它背后是容器特定的删除方式（比如 <code>unordered_map</code> 挨个 erase 会导致迭代器失效，但标准库封装好了）。</p>
+<h2 id="第四阶段：收银台并发——多线程、锁、无锁编程"><a href="#第四阶段：收银台并发——多线程、锁、无锁编程" class="headerlink" title="第四阶段：收银台并发——多线程、锁、无锁编程"></a>第四阶段：收银台并发——多线程、锁、无锁编程</h2><p>超市高峰期多个收银台同时结账，这就涉及<strong>并发</strong>。每个收银台是一个线程，它们共享一个“总销售额”变量，需要同步：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp">std::atomic&lt;<span class="hljs-type">double</span>&gt; totalSales&#123;<span class="hljs-number">0.0</span>&#125;;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">checkout</span><span class="hljs-params">(<span class="hljs-type">double</span> amount)</span> </span>&#123;<br>    totalSales += amount;  <span class="hljs-comment">// 原子操作，无锁</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>std::atomic</code> 利用CPU的CAS指令实现无锁原子操作，比用 <code>mutex</code> 轻量。但如果是复杂数据结构（比如库存），就得用互斥锁：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp">std::mutex inventoryMutex;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">addToInventory</span><span class="hljs-params">(std::unique_ptr&lt;Product&gt; p)</span> </span>&#123;<br>    <span class="hljs-function">std::lock_guard&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(inventoryMutex)</span></span>;<br>    inventory[p-&gt;barcode] = std::<span class="hljs-built_in">move</span>(p);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>lock_guard</code> 是RAII包装，自动解锁，避免死锁。这里要理解锁的粒度——锁太大并发度低，锁太小容易死锁。十年经验会考虑用读写锁（<code>std::shared_mutex</code>）优化读多写少场景，甚至用无锁数据结构（如 <code>concurrent_unordered_map</code>）来避免锁竞争，但无锁编程要处理ABA问题、内存序，非常复杂，不是必须就不用。</p>
+<h2 id="第五阶段：促销活动——模板、泛型、编译时多态"><a href="#第五阶段：促销活动——模板、泛型、编译时多态" class="headerlink" title="第五阶段：促销活动——模板、泛型、编译时多态"></a>第五阶段：促销活动——模板、泛型、编译时多态</h2><p>超市经常搞活动，比如“满100减20”或者“第二件半价”。这些规则可以抽象成“策略”，用模板实现编译时多态，避免虚函数开销：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> DiscountStrategy&gt;</span><br><span class="hljs-function"><span class="hljs-type">double</span> <span class="hljs-title">calculatePrice</span><span class="hljs-params">(<span class="hljs-type">double</span> original, DiscountStrategy strategy)</span> </span>&#123;<br>    <span class="hljs-keyword">return</span> strategy.<span class="hljs-built_in">apply</span>(original);<br>&#125;<br><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">FullReduction</span> &#123;<br>    <span class="hljs-type">double</span> threshold;<br>    <span class="hljs-type">double</span> reduction;<br>    <span class="hljs-function"><span class="hljs-type">double</span> <span class="hljs-title">apply</span><span class="hljs-params">(<span class="hljs-type">double</span> price)</span> <span class="hljs-type">const</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> price &gt;= threshold ? price - reduction : price;<br>    &#125;<br>&#125;;<br><br><span class="hljs-comment">// 使用</span><br><span class="hljs-type">double</span> <span class="hljs-keyword">final</span> = <span class="hljs-built_in">calculatePrice</span>(<span class="hljs-number">150.0</span>, FullReduction&#123;<span class="hljs-number">100</span>, <span class="hljs-number">20</span>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>这里模板在编译期生成代码，没有虚函数调用，性能更好。但代价是代码膨胀，如果滥用会导致可执行文件巨大。另外，模板的<strong>特化</strong>、<strong>偏特化</strong>、<strong>SFINAE</strong>（替换失败不是错误）这些高级特性，在写通用库时会用到，比如我们想判断一个类型是否有 <code>apply</code> 方法，可以用 <code>std::void_t</code> 和 SFINAE 实现 traits。</p>
+<h2 id="第六阶段：日志系统——单例模式、懒汉-饿汉、线程安全"><a href="#第六阶段：日志系统——单例模式、懒汉-饿汉、线程安全" class="headerlink" title="第六阶段：日志系统——单例模式、懒汉&#x2F;饿汉、线程安全"></a>第六阶段：日志系统——单例模式、懒汉&#x2F;饿汉、线程安全</h2><p>超市系统需要记录每笔交易，日志组件常用<strong>单例模式</strong>。但单例在C++里有很多坑：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Logger</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">static</span> Logger&amp; <span class="hljs-title">instance</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-type">static</span> Logger logger;  <span class="hljs-comment">// C++11 起线程安全的静态局部变量初始化</span><br>        <span class="hljs-keyword">return</span> logger;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">log</span><span class="hljs-params">(<span class="hljs-type">const</span> std::string&amp; msg)</span> </span>&#123; <span class="hljs-comment">/* 写文件 */</span> &#125;<br><span class="hljs-keyword">private</span>:<br>    <span class="hljs-built_in">Logger</span>() = <span class="hljs-keyword">default</span>;<br>    ~<span class="hljs-built_in">Logger</span>() = <span class="hljs-keyword">default</span>;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>C++11 保证了静态局部变量初始化的线程安全性，编译器会加双重检查锁。但如果是老标准，就得自己加锁。另外，单例的析构顺序可能导致问题，比如其他静态对象在析构时还要写日志，但日志已经没了。这时可以用 <code>atexit</code> 或 <code>std::shared_ptr</code> 管理生命周期，确保日志最后析构。</p>
+<h2 id="第七阶段：高效数据处理——移动语义、右值引用"><a href="#第七阶段：高效数据处理——移动语义、右值引用" class="headerlink" title="第七阶段：高效数据处理——移动语义、右值引用"></a>第七阶段：高效数据处理——移动语义、右值引用</h2><p>超市每天产生大量交易记录，需要从临时对象中转移数据，避免拷贝。比如把收银台的交易记录合并到总账：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Transaction</span> &#123;<br>    std::vector&lt;Item&gt; items;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">Transaction</span>(Transaction&amp;&amp; other) <span class="hljs-keyword">noexcept</span><br>        : <span class="hljs-built_in">items</span>(std::<span class="hljs-built_in">move</span>(other.items)) &#123;&#125;  <span class="hljs-comment">// 移动构造</span><br>&#125;;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">addTransaction</span><span class="hljs-params">(Transaction&amp;&amp; t)</span> </span>&#123;<br>    allTransactions.<span class="hljs-built_in">push_back</span>(std::<span class="hljs-built_in">move</span>(t));  <span class="hljs-comment">// 转移资源</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>右值引用和移动语义是 C++11 的核心，它能显著减少临时对象的拷贝开销。但要写好移动构造，必须保证原对象处于“有效但未指定”状态，且通常标记 <code>noexcept</code> 以便标准库在重新分配时优先使用移动而非拷贝。如果移动可能抛异常，容器会回退到拷贝，所以 <code>noexcept</code> 很重要。</p>
+<h2 id="第八阶段：编译期计算——constexpr、模板元编程"><a href="#第八阶段：编译期计算——constexpr、模板元编程" class="headerlink" title="第八阶段：编译期计算——constexpr、模板元编程"></a>第八阶段：编译期计算——constexpr、模板元编程</h2><p>超市需要根据当前时间自动调整生鲜折扣，如果折扣规则能在编译期确定（比如节假日固定折扣），可以用 <code>constexpr</code> 让编译器计算：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">constexpr</span> <span class="hljs-type">double</span> <span class="hljs-title">holidayDiscount</span><span class="hljs-params">(<span class="hljs-type">bool</span> isHoliday)</span> </span>&#123;<br>    <span class="hljs-keyword">return</span> isHoliday ? <span class="hljs-number">0.9</span> : <span class="hljs-number">1.0</span>;<br>&#125;<br><span class="hljs-comment">// 编译期就能算出 discount</span><br><span class="hljs-keyword">constexpr</span> <span class="hljs-type">double</span> discountToday = <span class="hljs-built_in">holidayDiscount</span>(<span class="hljs-literal">true</span>);<br></code></pre></td></tr></table></figure>
+
+<p>更复杂的，比如计算商品组合的最优折扣，可以用模板元编程在编译期枚举组合。虽然实际中很少这么干，但理解模板元编程（比如 <code>std::integral_constant</code>、递归模板实例化）能帮助你写出更灵活的泛型代码，也让你明白为什么模板实例化深度太大会导致编译缓慢。</p>
+<h2 id="第九阶段：内存与性能优化——placement-new、内存池"><a href="#第九阶段：内存与性能优化——placement-new、内存池" class="headerlink" title="第九阶段：内存与性能优化——placement new、内存池"></a>第九阶段：内存与性能优化——placement new、内存池</h2><p>超市的收银台每秒处理大量小对象（比如临时票据），频繁 new&#x2F;delete 会产生内存碎片和性能损耗。我们可以实现一个<strong>内存池</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Ticket</span> &#123;<br>    <span class="hljs-comment">// ...</span><br>&#125;;<br><br>std::array&lt;<span class="hljs-type">char</span>, 1024*1024&gt; pool;  <span class="hljs-comment">// 1MB 内存池</span><br><span class="hljs-type">char</span>* poolPtr = pool.<span class="hljs-built_in">data</span>();<br><br><span class="hljs-function">Ticket* <span class="hljs-title">createTicket</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">if</span> (poolPtr + <span class="hljs-built_in">sizeof</span>(Ticket) &lt;= pool.<span class="hljs-built_in">data</span>() + pool.<span class="hljs-built_in">size</span>()) &#123;<br>        Ticket* t = <span class="hljs-built_in">new</span> (poolPtr) <span class="hljs-built_in">Ticket</span>();  <span class="hljs-comment">// placement new</span><br>        poolPtr += <span class="hljs-built_in">sizeof</span>(Ticket);<br>        <span class="hljs-keyword">return</span> t;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">nullptr</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>placement new 在指定内存上构造对象，避免系统调用。但必须手动调用析构，且要处理内存对齐（<code>alignas</code>）。这里涉及 C++ 对象模型：对象的构造、析构、内存布局。十年经验的人知道何时用内存池，何时用通用分配器，而且能自己实现简单的分配器给 STL 容器用。</p>
+<h2 id="第十阶段：错误处理——异常安全、noexcept"><a href="#第十阶段：错误处理——异常安全、noexcept" class="headerlink" title="第十阶段：错误处理——异常安全、noexcept"></a>第十阶段：错误处理——异常安全、noexcept</h2><p>超市系统里，如果商品库存不足，需要抛出异常。异常在C++中争议很大，但用好能写出更清晰的错误处理。关键是要保证<strong>异常安全</strong>：比如在修改库存时如果抛出异常，库存不能处于不一致状态。我们通常用RAII和commit策略：先检查再修改，或者用拷贝后swap。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updatePrice</span><span class="hljs-params">(<span class="hljs-type">const</span> std::string&amp; barcode, <span class="hljs-type">double</span> newPrice)</span> </span>&#123;<br>    <span class="hljs-keyword">auto</span> it = inventory.<span class="hljs-built_in">find</span>(barcode);<br>    <span class="hljs-keyword">if</span> (it == inventory.<span class="hljs-built_in">end</span>()) <span class="hljs-keyword">throw</span> std::<span class="hljs-built_in">runtime_error</span>(<span class="hljs-string">&quot;not found&quot;</span>);<br>    Product* p = it-&gt;second.<span class="hljs-built_in">get</span>();<br>    <span class="hljs-comment">// 假设 price 是 double，赋值不会抛异常</span><br>    p-&gt;price = newPrice;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里赋值基本类型不会抛异常，所以是强异常安全。如果涉及资源操作，就要更小心。C++11 引入了 <code>noexcept</code> 关键字，用来声明函数不会抛异常，帮助编译器优化，也用于移动操作等。</p>
+<h2 id="总结：C-的全貌"><a href="#总结：C-的全貌" class="headerlink" title="总结：C++ 的全貌"></a>总结：C++ 的全貌</h2><p>你看，从开超市这个需求出发，我们一步步引入了 C++ 的：</p>
+<ul>
+<li>核心语言特性：类、继承、多态、模板、异常、右值引用、内存模型</li>
+<li>标准库组件：容器、算法、智能指针、原子操作、线程、正则表达式（日志格式化）</li>
+<li>设计模式：单例、策略、RAII</li>
+<li>底层原理：虚表、内存布局、编译期计算、异常展开机制</li>
+</ul>
+<p>这些不是孤立的知识，而是相互关联的。比如 RAII 贯穿始终，移动语义优化性能，模板提供灵活性，多态支持扩展。十年经验的工程师不仅会用这些，还知道每个特性背后的实现原理、性能开销、适用场景，以及如何组合它们写出高效、可维护的系统。</p>
+<p>比如在超市系统里，我可能用模板元编程生成促销规则的静态表，用内存池管理高频小对象，用无锁队列处理收银台事件，用自定义分配器优化 STL 容器的内存使用，用 <code>std::variant</code> 代替继承来处理某些类型分派，用 <code>std::chrono</code> 精确计时打烊折扣。所有这些选择，都源于对 C++ 的深刻理解。</p>
+<p>所以，C++ 不是一堆特性的大杂烩，而是一个可以让你精确控制每一比特、每一时钟周期的工具集，同时提供足够的抽象来管理复杂性。这正是它能在大厂底层系统、游戏引擎、高频交易等领域屹立不倒的原因。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://YWMHHBAIminminAI.gitee.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9CC-%E2%80%9D/">https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9CC-%E2%80%9D/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%99%BA%E8%83%BD%E8%B6%85%E5%B8%82/">智能超市</a><a class="post-meta__tags" href="/tags/C/">C++</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> Donate</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9CC-%E7%BB%AD%E9%9B%86-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“C++续集(1)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">我要开一个超市，超市里面卖的是“C++续集(1)”</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E3%80%81%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2%E3%80%81%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%89%AA%E6%9E%9D%E4%B8%8E%E5%8E%8B%E7%BC%A9-%E9%81%87%E5%88%B0%E4%BA%86%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%8C%91%E6%88%98-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“图像分类、语义分割、模型量化剪枝与压缩-遇到了第一个挑战(1)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">我要开一个超市，超市里面卖的是“图像分类、语义分割、模型量化剪枝与压缩-遇到了第一个挑战(1)”</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9CC-%E7%BB%AD%E9%9B%86-2-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“C++续集(2)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“C++续集(2)”</div></div></a></div><div><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9CC-%E7%BB%AD%E9%9B%86-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“C++续集(1)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“C++续集(1)”</div></div></a></div><div><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E3%80%81%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2%E3%80%81%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%89%AA%E6%9E%9D%E4%B8%8E%E5%8E%8B%E7%BC%A9-%E9%81%87%E5%88%B0%E4%BA%86%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%8C%91%E6%88%98-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“图像分类、语义分割、模型量化剪枝与压缩-遇到了第一个挑战(1)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“图像分类、语义分割、模型量化剪枝与压缩-遇到了第一个挑战(1)”</div></div></a></div><div><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E3%80%81%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2%E3%80%81%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%89%AA%E6%9E%9D%E4%B8%8E%E5%8E%8B%E7%BC%A9%E2%80%9D/" title="我要开一个超市，超市里面卖的是“图像分类、语义分割、模型量化剪枝与压缩"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“图像分类、语义分割、模型量化剪枝与压缩</div></div></a></div><div><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB%E3%80%81%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2%E3%80%81%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%89%AA%E6%9E%9D%E4%B8%8E%E5%8E%8B%E7%BC%A9%EF%BC%88%E5%8D%87%E7%BA%A7%E7%89%88V1%EF%BC%89%E2%80%9D/" title="我要开一个超市，超市里面卖的是“图像分类、语义分割、模型量化剪枝与压缩（升级版V1）”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“图像分类、语义分割、模型量化剪枝与压缩（升级版V1）”</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">72</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">88</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">83</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%95%86%E5%93%81%E5%92%8C%E8%B4%A7%E6%9E%B6%E2%80%94%E2%80%94%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1%E3%80%81%E5%B0%81%E8%A3%85%E3%80%81RAII"><span class="toc-number">1.</span> <span class="toc-text">第一阶段：商品和货架——类与对象、封装、RAII</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%A4%9A%E7%A7%8D%E5%95%86%E5%93%81%E7%B1%BB%E5%9E%8B%E2%80%94%E2%80%94%E7%BB%A7%E6%89%BF%E4%B8%8E%E5%A4%9A%E6%80%81%E3%80%81%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8"><span class="toc-number">2.</span> <span class="toc-text">第二阶段：多种商品类型——继承与多态、虚函数表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%BA%93%E5%AD%98%E7%AE%A1%E7%90%86%E2%80%94%E2%80%94STL%E5%AE%B9%E5%99%A8%E3%80%81%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">第三阶段：库存管理——STL容器、迭代器、算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E9%98%B6%E6%AE%B5%EF%BC%9A%E6%94%B6%E9%93%B6%E5%8F%B0%E5%B9%B6%E5%8F%91%E2%80%94%E2%80%94%E5%A4%9A%E7%BA%BF%E7%A8%8B%E3%80%81%E9%94%81%E3%80%81%E6%97%A0%E9%94%81%E7%BC%96%E7%A8%8B"><span class="toc-number">4.</span> <span class="toc-text">第四阶段：收银台并发——多线程、锁、无锁编程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E9%98%B6%E6%AE%B5%EF%BC%9A%E4%BF%83%E9%94%80%E6%B4%BB%E5%8A%A8%E2%80%94%E2%80%94%E6%A8%A1%E6%9D%BF%E3%80%81%E6%B3%9B%E5%9E%8B%E3%80%81%E7%BC%96%E8%AF%91%E6%97%B6%E5%A4%9A%E6%80%81"><span class="toc-number">5.</span> <span class="toc-text">第五阶段：促销活动——模板、泛型、编译时多态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E9%98%B6%E6%AE%B5%EF%BC%9A%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E3%80%81%E6%87%92%E6%B1%89-%E9%A5%BF%E6%B1%89%E3%80%81%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="toc-number">6.</span> <span class="toc-text">第六阶段：日志系统——单例模式、懒汉&#x2F;饿汉、线程安全</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E9%98%B6%E6%AE%B5%EF%BC%9A%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E2%80%94%E2%80%94%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E3%80%81%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8"><span class="toc-number">7.</span> <span class="toc-text">第七阶段：高效数据处理——移动语义、右值引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AB%E9%98%B6%E6%AE%B5%EF%BC%9A%E7%BC%96%E8%AF%91%E6%9C%9F%E8%AE%A1%E7%AE%97%E2%80%94%E2%80%94constexpr%E3%80%81%E6%A8%A1%E6%9D%BF%E5%85%83%E7%BC%96%E7%A8%8B"><span class="toc-number">8.</span> <span class="toc-text">第八阶段：编译期计算——constexpr、模板元编程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B9%9D%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%86%85%E5%AD%98%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94placement-new%E3%80%81%E5%86%85%E5%AD%98%E6%B1%A0"><span class="toc-number">9.</span> <span class="toc-text">第九阶段：内存与性能优化——placement new、内存池</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%8D%81%E9%98%B6%E6%AE%B5%EF%BC%9A%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E2%80%94%E2%80%94%E5%BC%82%E5%B8%B8%E5%AE%89%E5%85%A8%E3%80%81noexcept"><span class="toc-number">10.</span> <span class="toc-text">第十阶段：错误处理——异常安全、noexcept</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9AC-%E7%9A%84%E5%85%A8%E8%B2%8C"><span class="toc-number">11.</span> <span class="toc-text">总结：C++ 的全貌</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-4-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(4)”">我要开一个超市，超市里面卖的是“计算机网络(4)”</a><time datetime="2026-05-16T15:08:31.000Z" title="Created 2026-05-16 23:08:31">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(3)”">我要开一个超市，超市里面卖的是“计算机网络(3)”</a><time datetime="2026-05-16T15:08:04.000Z" title="Created 2026-05-16 23:08:04">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-2-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(2)”">我要开一个超市，超市里面卖的是“计算机网络(2)”</a><time datetime="2026-05-16T15:07:22.000Z" title="Created 2026-05-16 23:07:22">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(1)”">我要开一个超市，超市里面卖的是“计算机网络(1)”</a><time datetime="2026-05-16T15:06:53.000Z" title="Created 2026-05-16 23:06:53">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“操作系统(3)”">我要开一个超市，超市里面卖的是“操作系统(3)”</a><time datetime="2026-05-16T15:05:52.000Z" title="Created 2026-05-16 23:05:52">2026-05-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="Chat"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

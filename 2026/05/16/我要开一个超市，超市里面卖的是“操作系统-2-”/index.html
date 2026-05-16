@@ -1,0 +1,354 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>我要开一个超市，超市里面卖的是“操作系统(2)” | Welcome,Guys,Join Me for the AIminminAI Episode!</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="这次我们把这个超市扩展成一家大型连锁超市集团，有多个分店、线上商城、中央仓库和会员系统。操作系统就相当于整个集团的管理中枢，负责调度所有资源。我们从最基础的开始，一步步深入。  0. 总体视角：操作系统是资源管理者操作系统管理CPU、内存、磁盘、网络等硬件，为上层应用提供抽象。就像连锁集团管理各个分店（进程）、货架（内存）、仓库（磁盘）、收银台（CPU核心）和网络订单。每个分店有自己的虚拟地址空间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我要开一个超市，超市里面卖的是“操作系统(2)”">
+<meta property="og:url" content="https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-2-%E2%80%9D/index.html">
+<meta property="og:site_name" content="Welcome,Guys,Join Me for the AIminminAI Episode!">
+<meta property="og:description" content="这次我们把这个超市扩展成一家大型连锁超市集团，有多个分店、线上商城、中央仓库和会员系统。操作系统就相当于整个集团的管理中枢，负责调度所有资源。我们从最基础的开始，一步步深入。  0. 总体视角：操作系统是资源管理者操作系统管理CPU、内存、磁盘、网络等硬件，为上层应用提供抽象。就像连锁集团管理各个分店（进程）、货架（内存）、仓库（磁盘）、收银台（CPU核心）和网络订单。每个分店有自己的虚拟地址空间">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ywmhhbaiminminai.gitee.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-16T15:05:10.000Z">
+<meta property="article:modified_time" content="2026-05-16T15:05:37.941Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.gitee.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-2-%E2%80%9D/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"Author: Hu hb","link":"Link: ","source":"Source: Welcome,Guys,Join Me for the AIminminAI Episode!","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source."}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '我要开一个超市，超市里面卖的是“操作系统(2)”',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2026-05-16 23:05:37'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">72</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">88</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">83</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Welcome,Guys,Join Me for the AIminminAI Episode!"><span class="site-name">Welcome,Guys,Join Me for the AIminminAI Episode!</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">我要开一个超市，超市里面卖的是“操作系统(2)”</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-05-16T15:05:10.000Z" title="Created 2026-05-16 23:05:10">2026-05-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-05-16T15:05:37.941Z" title="Updated 2026-05-16 23:05:37">2026-05-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/%E6%B7%B1%E6%8C%96%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84/">深挖项目开发中的</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/%E6%B7%B1%E6%8C%96%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-2-%E2%80%9D/">我要开一个超市，超市里面卖的是“操作系统(2)”</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="我要开一个超市，超市里面卖的是“操作系统(2)”"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>这次我们把这个超市扩展成一家大型连锁超市集团，有多个分店、线上商城、中央仓库和会员系统。操作系统就相当于整个集团的管理中枢，负责调度所有资源。我们从最基础的开始，一步步深入。</p>
+<hr>
+<h3 id="0-总体视角：操作系统是资源管理者"><a href="#0-总体视角：操作系统是资源管理者" class="headerlink" title="0. 总体视角：操作系统是资源管理者"></a>0. 总体视角：操作系统是资源管理者</h3><p>操作系统管理CPU、内存、磁盘、网络等硬件，为上层应用提供抽象。就像连锁集团管理各个分店（进程）、货架（内存）、仓库（磁盘）、收银台（CPU核心）和网络订单。每个分店有自己的虚拟地址空间，感觉自己独占所有资源，实际上资源是共享的。</p>
+<hr>
+<h3 id="1-进程与线程管理：分店的运营调度"><a href="#1-进程与线程管理：分店的运营调度" class="headerlink" title="1. 进程与线程管理：分店的运营调度"></a>1. 进程与线程管理：分店的运营调度</h3><h4 id="1-1-进程控制块（PCB）——分店的档案"><a href="#1-1-进程控制块（PCB）——分店的档案" class="headerlink" title="1.1 进程控制块（PCB）——分店的档案"></a>1.1 进程控制块（PCB）——分店的档案</h4><p>每个分店（进程）在操作系统里都有一个对应的结构体，比如Linux的<code>task_struct</code>，这就是PCB。它记录了分店的所有信息：</p>
+<ul>
+<li><strong>标识符</strong>：PID，分店编号。</li>
+<li><strong>状态</strong>：运行、就绪、阻塞（比如等货）。</li>
+<li><strong>程序计数器</strong>：当前正在执行哪一步（比如正在结账还是理货）。</li>
+<li><strong>CPU寄存器</strong>：上下文信息。</li>
+<li><strong>内存指针</strong>：指向分店自己用的货架（虚拟地址空间）。</li>
+<li><strong>打开文件表</strong>：分店正在用的文件（比如库存清单）。</li>
+<li><strong>信号处理</strong>：分店收到总部的指令（信号）如何处理。</li>
+<li><strong>资源统计</strong>：用了多少CPU时间、内存等。</li>
+</ul>
+<h4 id="1-2-调度器——总部如何分配收银员（CPU核心）"><a href="#1-2-调度器——总部如何分配收银员（CPU核心）" class="headerlink" title="1.2 调度器——总部如何分配收银员（CPU核心）"></a>1.2 调度器——总部如何分配收银员（CPU核心）</h4><p>分店很多，但收银员（CPU核心）有限。总部需要决定哪个分店、哪个收银台（线程）能获得收银员服务。</p>
+<ul>
+<li><strong>调度队列</strong>：就绪队列、等待队列。分店开业（进程创建）后进入就绪队列。</li>
+<li><strong>CFS（完全公平调度器）</strong>：Linux的默认调度器。它不采用时间片轮转，而是维护一个虚拟运行时间<code>vruntime</code>，每次选择<code>vruntime</code>最小的进程运行。随着进程运行，<code>vruntime</code>增加。nice值影响<code>vruntime</code>的增长速度（nice值高，增长快，获得CPU少）。这就像总部记录每个分店累计的营业时间，优先让营业时间少的分店多派收银员，保证公平。</li>
+<li><strong>调度类</strong>：CFS是公平调度类，还有实时调度类（如FIFO、RR）。实时进程优先级高，比如超市的紧急补货任务必须立即处理。</li>
+<li><strong>调度时机</strong>：进程主动让出（系统调用、I&#x2F;O等待）、时钟中断（时间片用完）、被高优先级进程抢占。</li>
+</ul>
+<h4 id="1-3-上下文切换——换收银员"><a href="#1-3-上下文切换——换收银员" class="headerlink" title="1.3 上下文切换——换收银员"></a>1.3 上下文切换——换收银员</h4><p>当一个分店的收银员被换下，换上另一个分店时，必须保存当前分店的现场（寄存器、程序计数器等），加载新分店的现场。这个操作开销不小，因为要切换页表（刷新TLB）、保存加载寄存器。所以，线程（轻量级进程）比进程切换开销小，因为它们共享地址空间，不需要切换页表。</p>
+<h4 id="1-4-线程——分店内的多个收银台"><a href="#1-4-线程——分店内的多个收银台" class="headerlink" title="1.4 线程——分店内的多个收银台"></a>1.4 线程——分店内的多个收银台</h4><p>一个分店可以有多个收银台（线程），共享分店的货架（内存）和库存清单（文件）。线程也有自己的PCB（简化版），但共享进程的资源。线程的实现有三种模型：</p>
+<ul>
+<li><strong>用户级线程</strong>：分店自己管理多个收银台，总部看不到。好处是切换快（不需要内核参与），但一个收银台阻塞（比如等顾客付款）会导致整个分店阻塞。</li>
+<li><strong>内核级线程</strong>：总部直接管理每个收银台，一个阻塞不影响其他。但切换开销大。</li>
+<li><strong>混合模型</strong>：比如Go的Goroutine，用户态调度多个轻量级线程，但最终映射到内核线程。</li>
+</ul>
+<h4 id="1-5-协程——更轻量的“收银员助手”"><a href="#1-5-协程——更轻量的“收银员助手”" class="headerlink" title="1.5 协程——更轻量的“收银员助手”"></a>1.5 协程——更轻量的“收银员助手”</h4><p>协程是用户态调度的，由程序自己控制切换，不需要内核参与，切换开销极小（就像收银员让助手临时顶替一下）。Go的Goroutine、Python的async&#x2F;await都是协程。它们适合I&#x2F;O密集型场景。</p>
+<hr>
+<h3 id="2-内存管理：货架的布局与调度"><a href="#2-内存管理：货架的布局与调度" class="headerlink" title="2. 内存管理：货架的布局与调度"></a>2. 内存管理：货架的布局与调度</h3><h4 id="2-1-虚拟内存——每个分店都感觉有无穷大的货架"><a href="#2-1-虚拟内存——每个分店都感觉有无穷大的货架" class="headerlink" title="2.1 虚拟内存——每个分店都感觉有无穷大的货架"></a>2.1 虚拟内存——每个分店都感觉有无穷大的货架</h4><p>为了让每个分店（进程）觉得自己拥有独立的、连续的大货架，操作系统引入了虚拟内存。虚拟地址经过页表映射到物理内存。这样，分店A的地址0x1000和分店B的地址0x1000可以映射到不同的物理地址，互不干扰。</p>
+<h4 id="2-2-页表——货架映射表"><a href="#2-2-页表——货架映射表" class="headerlink" title="2.2 页表——货架映射表"></a>2.2 页表——货架映射表</h4><ul>
+<li><strong>多级页表</strong>：32位系统常用两级页表，64位系统用四级甚至五级页表。为什么？因为如果用一个巨大的页表，会占用大量内存。多级页表允许部分页表不存在（比如未使用的区域），节省空间。就像超市只给有商品的区域建货架索引，空区域不建。</li>
+<li><strong>TLB（转译后备缓冲器）</strong>：页表查询慢，所以硬件有一个快表TLB，缓存最近使用的虚拟地址到物理地址的映射。这相当于收银员记住常用商品的位置，不用每次都查货架图。</li>
+<li><strong>大页（Huge Pages）</strong>：对于大内存应用，用4KB小页会导致页表过大、TLB压力大。可以使用2MB或1GB的大页，减少页表级数，提升TLB命中率。就像超市把畅销品整箱摆放，减少查找次数。</li>
+</ul>
+<h4 id="2-3-缺页异常——货架上没有商品"><a href="#2-3-缺页异常——货架上没有商品" class="headerlink" title="2.3 缺页异常——货架上没有商品"></a>2.3 缺页异常——货架上没有商品</h4><p>当访问的虚拟页不在物理内存中（页表项无效），CPU触发缺页异常，内核介入处理：</p>
+<ul>
+<li><strong>合法缺页</strong>：页面在磁盘上（比如代码段、文件映射），需要从磁盘加载到内存。这涉及到磁盘I&#x2F;O，速度慢。</li>
+<li><strong>非法访问</strong>：段错误，程序崩溃。</li>
+</ul>
+<p>缺页处理完后，重新执行引起缺页的指令。</p>
+<h4 id="2-4-页面置换算法——货架满了，腾哪个？"><a href="#2-4-页面置换算法——货架满了，腾哪个？" class="headerlink" title="2.4 页面置换算法——货架满了，腾哪个？"></a>2.4 页面置换算法——货架满了，腾哪个？</h4><p>物理内存有限，需要把一些页面换出到交换分区（磁盘上的仓库）。如何选择换出页面？</p>
+<ul>
+<li><strong>LRU（最近最少使用）</strong>：换出最长时间没访问的页面。但硬件很难精确记录访问时间，所以常用近似算法。</li>
+<li><strong>Clock算法（二次机会）</strong>：每个页面有一个访问位。当需要换出时，扫描页面，如果访问位为1，则清零并跳过（给第二次机会）；如果为0，则换出。这是LRU的近似，开销小。</li>
+<li><strong>工作集模型</strong>：进程当前活跃使用的页面集合称为工作集。操作系统尽量保证进程的工作集在内存中，否则会频繁缺页，称为“抖动”。</li>
+</ul>
+<h4 id="2-5-内存分配器——如何给分店分配货架"><a href="#2-5-内存分配器——如何给分店分配货架" class="headerlink" title="2.5 内存分配器——如何给分店分配货架"></a>2.5 内存分配器——如何给分店分配货架</h4><p>物理内存管理需要高效分配和释放小块内存。</p>
+<ul>
+<li><strong>伙伴系统</strong>：把内存按2的幂次分成块，分配时找大小合适的块，若没有则拆分更大的块。释放时合并相邻的伙伴块。就像超市把货架区域划分成标准大小，便于组合。</li>
+<li><strong>slab分配器</strong>：内核经常频繁分配和释放某些固定大小的对象（如<code>task_struct</code>），伙伴系统太粗。slab为每种对象创建缓存，维护空闲对象链表，分配时直接从链表取，释放时放回，减少碎片和初始化开销。就像超市专门给收银员准备一抽屉零钱，不用每次都去金库换。</li>
+</ul>
+<h4 id="2-6-共享内存与内存映射"><a href="#2-6-共享内存与内存映射" class="headerlink" title="2.6 共享内存与内存映射"></a>2.6 共享内存与内存映射</h4><ul>
+<li><strong>共享内存</strong>：两个分店可以映射同一块物理内存，实现高效通信。这是IPC最快的方式，需要同步机制配合。</li>
+<li><strong>mmap</strong>：将文件或设备映射到进程地址空间，读写内存就像读写文件，省去read&#x2F;write系统调用开销。比如数据库用mmap管理数据文件。</li>
+</ul>
+<hr>
+<h3 id="3-并发与同步：多个收银台操作同一库存"><a href="#3-并发与同步：多个收银台操作同一库存" class="headerlink" title="3. 并发与同步：多个收银台操作同一库存"></a>3. 并发与同步：多个收银台操作同一库存</h3><h4 id="3-1-原子操作——单步不可打断"><a href="#3-1-原子操作——单步不可打断" class="headerlink" title="3.1 原子操作——单步不可打断"></a>3.1 原子操作——单步不可打断</h4><p>最基础的同步是硬件支持的原子操作，比如x86的<code>lock</code>前缀指令，保证读-改-写操作不被中断。就像收银员用带锁的扫码枪，一次只能一个操作。</p>
+<h4 id="3-2-互斥锁——收银台的“使用中”牌子"><a href="#3-2-互斥锁——收银台的“使用中”牌子" class="headerlink" title="3.2 互斥锁——收银台的“使用中”牌子"></a>3.2 互斥锁——收银台的“使用中”牌子</h4><ul>
+<li><strong>自旋锁</strong>：如果锁被占用，线程原地循环等待，不睡眠。适合短时间持有锁的场景，比如多核系统中保护临界区很短。就像收银员看见牌子，站在旁边等，很快就能拿到。</li>
+<li><strong>互斥锁（mutex）</strong>：如果锁被占用，线程睡眠，让出CPU。代价是上下文切换。Linux的mutex采用futex实现，先尝试自旋，若自旋失败再睡眠，兼顾两者。</li>
+</ul>
+<h4 id="3-3-信号量——收银台数量的控制"><a href="#3-3-信号量——收银台数量的控制" class="headerlink" title="3.3 信号量——收银台数量的控制"></a>3.3 信号量——收银台数量的控制</h4><p>信号量可以控制多个资源。比如，超市有5台自助结账机，信号量初始值5，每个顾客用一次P操作，用完V操作。信号量也用于同步，例如生产者-消费者问题。</p>
+<h4 id="3-4-读写锁——区分读和写"><a href="#3-4-读写锁——区分读和写" class="headerlink" title="3.4 读写锁——区分读和写"></a>3.4 读写锁——区分读和写</h4><p>如果大部分是读操作，写操作很少，可以用读写锁。读锁可以多个同时持有，写锁互斥。就像超市的库存查询（读）可以多人同时查，但修改库存（写）必须独占。</p>
+<h4 id="3-5-条件变量——等待某个条件"><a href="#3-5-条件变量——等待某个条件" class="headerlink" title="3.5 条件变量——等待某个条件"></a>3.5 条件变量——等待某个条件</h4><p>收银员需要等待补货，不能一直空转。条件变量与互斥锁配合，让线程等待某个条件满足（比如货到了），其他线程可以唤醒它。比如，顾客排队等收银台，收银员等主管授权。</p>
+<h4 id="3-6-死锁——互相等待导致僵局"><a href="#3-6-死锁——互相等待导致僵局" class="headerlink" title="3.6 死锁——互相等待导致僵局"></a>3.6 死锁——互相等待导致僵局</h4><p>死锁产生的四个必要条件：互斥、持有并等待、不可剥夺、循环等待。解决死锁的方法：</p>
+<ul>
+<li><strong>死锁预防</strong>：破坏四个条件之一。比如，要求一次性申请所有资源（破坏持有并等待）。</li>
+<li><strong>死锁避免</strong>：银行家算法，在分配资源前计算是否会导致不安全状态。</li>
+<li><strong>死锁检测与恢复</strong>：允许死锁发生，检测到后强制回收资源（比如杀死进程）。</li>
+</ul>
+<h4 id="3-7-无锁编程——高级技巧"><a href="#3-7-无锁编程——高级技巧" class="headerlink" title="3.7 无锁编程——高级技巧"></a>3.7 无锁编程——高级技巧</h4><p>用原子操作和内存屏障实现无锁数据结构，避免锁的开销和死锁。比如无锁队列、无锁哈希表。难点在于处理ABA问题（CAS时值被改回原值）和内存顺序（编译器&#x2F;CPU重排）。C++11提供了<code>std::atomic</code>和内存顺序参数。</p>
+<h4 id="3-8-RCU（读-复制-更新）——读多写少的终极优化"><a href="#3-8-RCU（读-复制-更新）——读多写少的终极优化" class="headerlink" title="3.8 RCU（读-复制-更新）——读多写少的终极优化"></a>3.8 RCU（读-复制-更新）——读多写少的终极优化</h4><p>RCU允许多个读者无锁并发访问，写者更新时先复制一份，修改后发布，等待所有旧读者完成再回收旧数据。Linux内核广泛使用，比如路由表更新。就像超市价格标签：修改价格时，先打印新标签，贴上去，等所有顾客看完旧标签后，再扔掉旧的。</p>
+<h4 id="3-9-futex——快速用户态互斥"><a href="#3-9-futex——快速用户态互斥" class="headerlink" title="3.9 futex——快速用户态互斥"></a>3.9 futex——快速用户态互斥</h4><p>futex是Linux的同步基础。大多数情况下锁无竞争，直接在用户态用原子操作完成；有竞争时才通过系统调用进入内核睡眠或唤醒。这样避免了每次锁操作都进内核的开销。</p>
+<hr>
+<h3 id="4-文件系统与存储：库存记录持久化"><a href="#4-文件系统与存储：库存记录持久化" class="headerlink" title="4. 文件系统与存储：库存记录持久化"></a>4. 文件系统与存储：库存记录持久化</h3><h4 id="4-1-VFS（虚拟文件系统）——统一的接口"><a href="#4-1-VFS（虚拟文件系统）——统一的接口" class="headerlink" title="4.1 VFS（虚拟文件系统）——统一的接口"></a>4.1 VFS（虚拟文件系统）——统一的接口</h4><p>VFS为上层提供统一的文件操作接口（open, read, write），底层对接各种具体文件系统（ext4, xfs, ntfs）。就像超市有统一的库存管理系统，不管货物存在哪个仓库，都能用相同的方式查询。</p>
+<h4 id="4-2-ext4文件系统——典型的磁盘文件系统"><a href="#4-2-ext4文件系统——典型的磁盘文件系统" class="headerlink" title="4.2 ext4文件系统——典型的磁盘文件系统"></a>4.2 ext4文件系统——典型的磁盘文件系统</h4><ul>
+<li><strong>超级块</strong>：文件系统的全局信息，如块大小、inode总数。</li>
+<li><strong>inode</strong>：每个文件&#x2F;目录有一个inode，存储元数据（大小、权限、时间戳、数据块指针）。inode不包含文件名。</li>
+<li><strong>目录项</strong>：目录是一个特殊文件，内容为文件名到inode的映射。目录项缓存（dentry cache）加速路径解析。</li>
+<li><strong>块组</strong>：ext4将磁盘分成多个块组，每个组有备份的超级块、inode位图、块位图、inode表和数据块。这样文件系统更健壮。</li>
+<li><strong>数据块寻址</strong>：inode中有12个直接块指针，1个间接块指针，1个二级间接，1个三级间接，支持大文件。</li>
+<li><strong>日志（journal）</strong>：ext3&#x2F;4支持日志，在修改元数据前先写入日志，保证崩溃后能恢复一致性。就像超市每天记流水账，如果断电，可以根据日志恢复库存。</li>
+</ul>
+<h4 id="4-3-软链接与硬链接"><a href="#4-3-软链接与硬链接" class="headerlink" title="4.3 软链接与硬链接"></a>4.3 软链接与硬链接</h4><ul>
+<li><strong>硬链接</strong>：多个目录项指向同一个inode，inode的链接计数增加。删除一个目录项，链接计数减一，直到零才真正删除文件。就像同一个商品贴多个标签，但都是同一个实物。</li>
+<li><strong>软链接</strong>：一个特殊文件，内容指向另一个文件的路径。如果原文件被删除，软链接失效。就像超市里放一个指示牌，指向另一个货架。</li>
+</ul>
+<h4 id="4-4-页缓存与回写"><a href="#4-4-页缓存与回写" class="headerlink" title="4.4 页缓存与回写"></a>4.4 页缓存与回写</h4><p>文件读写通过页缓存（page cache）进行，减少磁盘I&#x2F;O。读文件时，如果数据在缓存中，直接返回；否则从磁盘读入缓存。写文件时，数据先写入缓存，标记为脏，后台线程（pdflush）定期将脏页写回磁盘。这就像超市把常用商品放在收银台附近，不用每次都去仓库取；销售记录先记在账本上，晚上统一录入系统。</p>
+<h4 id="4-5-直接I-O与异步I-O"><a href="#4-5-直接I-O与异步I-O" class="headerlink" title="4.5 直接I&#x2F;O与异步I&#x2F;O"></a>4.5 直接I&#x2F;O与异步I&#x2F;O</h4><p>某些应用（如数据库）希望绕过页缓存，直接读写磁盘，避免双份拷贝，这就是直接I&#x2F;O。而异步I&#x2F;O允许发起I&#x2F;O请求后立即返回，I&#x2F;O完成时通知应用，提高并发。Linux的io_uring是现代高性能异步I&#x2F;O接口，通过共享队列减少系统调用次数，性能极高。</p>
+<h4 id="4-6-I-O调度器"><a href="#4-6-I-O调度器" class="headerlink" title="4.6 I&#x2F;O调度器"></a>4.6 I&#x2F;O调度器</h4><p>当多个I&#x2F;O请求到达磁盘时，需要排队和合并。I&#x2F;O调度器负责优化：</p>
+<ul>
+<li><strong>CFQ</strong>：完全公平队列，按进程分组，保证公平。</li>
+<li><strong>deadline</strong>：为每个请求设置截止时间，避免请求饿死，适合数据库。</li>
+<li><strong>noop</strong>：简单的FIFO，适用于SSD（寻道时间短，不需要调度）。</li>
+</ul>
+<hr>
+<h3 id="5-I-O管理：收银台与仓库的交互"><a href="#5-I-O管理：收银台与仓库的交互" class="headerlink" title="5. I&#x2F;O管理：收银台与仓库的交互"></a>5. I&#x2F;O管理：收银台与仓库的交互</h3><h4 id="5-1-中断处理——收银员不用一直盯着扫描枪"><a href="#5-1-中断处理——收银员不用一直盯着扫描枪" class="headerlink" title="5.1 中断处理——收银员不用一直盯着扫描枪"></a>5.1 中断处理——收银员不用一直盯着扫描枪</h4><p>硬件设备（磁盘、网卡）完成操作后，通过中断通知CPU。中断处理分上半部和下半部：</p>
+<ul>
+<li><strong>上半部</strong>：快速响应，保存必要信息，然后唤醒下半部。必须短，因为中断关闭。</li>
+<li><strong>下半部</strong>：处理耗时的部分，可被中断。实现方式有软中断、tasklet、工作队列。</li>
+</ul>
+<p>就像收银员按铃通知主管来取钱，主管稍后处理。</p>
+<h4 id="5-2-DMA——不用CPU搬货"><a href="#5-2-DMA——不用CPU搬货" class="headerlink" title="5.2 DMA——不用CPU搬货"></a>5.2 DMA——不用CPU搬货</h4><p>DMA控制器可以直接在设备和内存之间传输数据，完成后发中断通知CPU。这样CPU不用逐字节搬运，可以同时做其他事。就像超市有传送带直接连接仓库和收银台，不用收银员自己跑腿。</p>
+<h4 id="5-3-设备驱动模型"><a href="#5-3-设备驱动模型" class="headerlink" title="5.3 设备驱动模型"></a>5.3 设备驱动模型</h4><p>每个硬件设备对应一个驱动程序，通过文件操作接口（如read&#x2F;write）暴露给用户。Linux设备分为字符设备、块设备、网络设备。</p>
+<hr>
+<h3 id="6-网络协议栈：线上商城的订单处理"><a href="#6-网络协议栈：线上商城的订单处理" class="headerlink" title="6. 网络协议栈：线上商城的订单处理"></a>6. 网络协议栈：线上商城的订单处理</h3><h4 id="6-1-socket——线上客服窗口"><a href="#6-1-socket——线上客服窗口" class="headerlink" title="6.1 socket——线上客服窗口"></a>6.1 socket——线上客服窗口</h4><p>每个线上订单对应一个socket。服务器监听端口，等待连接。socket本质是一个文件描述符，可以用read&#x2F;write操作。</p>
+<h4 id="6-2-TCP协议——可靠快递"><a href="#6-2-TCP协议——可靠快递" class="headerlink" title="6.2 TCP协议——可靠快递"></a>6.2 TCP协议——可靠快递</h4><p>TCP提供可靠、有序、面向连接的传输。核心机制：</p>
+<ul>
+<li><strong>三次握手</strong>：建立连接，确保双方就绪。</li>
+<li><strong>拥塞控制</strong>：慢启动、拥塞避免、快速重传、快速恢复。CUBIC是现代TCP的默认算法，适应高带宽长延迟网络。</li>
+<li><strong>流量控制</strong>：滑动窗口，防止发送方过快。</li>
+<li><strong>状态机</strong>：LISTEN、SYN_SENT、ESTABLISHED、CLOSE_WAIT等。</li>
+</ul>
+<h4 id="6-3-协议栈分层"><a href="#6-3-协议栈分层" class="headerlink" title="6.3 协议栈分层"></a>6.3 协议栈分层</h4><p>从socket到网卡，数据经过传输层（TCP&#x2F;UDP）、网络层（IP）、链路层（以太网）。每层添加头部，对端逐层解析。</p>
+<h4 id="6-4-epoll——高效处理海量连接"><a href="#6-4-epoll——高效处理海量连接" class="headerlink" title="6.4 epoll——高效处理海量连接"></a>6.4 epoll——高效处理海量连接</h4><p>传统select&#x2F;poll每次调用都要传递所有fd，且在内核中遍历，效率低。epoll使用事件驱动，内核维护一个事件表，只返回就绪的fd。实现基于回调，当fd可读&#x2F;写时，回调函数将fd加入就绪队列。epoll支持边缘触发（ET）和水平触发（LT），边缘触发效率更高，但要求程序员一次性读完数据。</p>
+<h4 id="6-5-零拷贝——减少数据拷贝"><a href="#6-5-零拷贝——减少数据拷贝" class="headerlink" title="6.5 零拷贝——减少数据拷贝"></a>6.5 零拷贝——减少数据拷贝</h4><p>传统网络发送文件需要多次拷贝：磁盘→页缓存→用户缓冲区→socket缓冲区→网卡。零拷贝技术如<code>sendfile</code>，允许数据直接从页缓存传到socket缓冲区，甚至通过DMA直接到网卡，减少CPU拷贝。就像超市直接把仓库的货装车，不用搬到收银台再装。</p>
+<h4 id="6-6-RDMA——远程直接内存访问"><a href="#6-6-RDMA——远程直接内存访问" class="headerlink" title="6.6 RDMA——远程直接内存访问"></a>6.6 RDMA——远程直接内存访问</h4><p>RDMA允许一台机器的应用直接读写另一台机器的内存，绕过操作系统和CPU，延迟极低。用于高性能计算和分布式存储。就像两个分店可以直接交换库存数据，不用总部中转。</p>
+<hr>
+<h3 id="7-系统调用与内核-用户态切换"><a href="#7-系统调用与内核-用户态切换" class="headerlink" title="7. 系统调用与内核&#x2F;用户态切换"></a>7. 系统调用与内核&#x2F;用户态切换</h3><h4 id="7-1-系统调用——请求总部服务"><a href="#7-1-系统调用——请求总部服务" class="headerlink" title="7.1 系统调用——请求总部服务"></a>7.1 系统调用——请求总部服务</h4><p>用户程序不能直接操作硬件，必须通过系统调用进入内核。例如，<code>read()</code>会触发软中断（x86的<code>int 0x80</code>或<code>syscall</code>指令），CPU切换到内核态，执行内核代码，然后返回。</p>
+<h4 id="7-2-系统调用开销"><a href="#7-2-系统调用开销" class="headerlink" title="7.2 系统调用开销"></a>7.2 系统调用开销</h4><p>每次系统调用都有上下文切换（保存用户寄存器、恢复内核寄存器）和权限检查。频繁系统调用影响性能。所以需要减少系统调用次数，比如用缓冲区、mmap、io_uring。</p>
+<h4 id="7-3-vsyscall-vDSO——加速某些系统调用"><a href="#7-3-vsyscall-vDSO——加速某些系统调用" class="headerlink" title="7.3 vsyscall&#x2F;vDSO——加速某些系统调用"></a>7.3 vsyscall&#x2F;vDSO——加速某些系统调用</h4><p>某些系统调用（如<code>gettimeofday</code>）不需要特权，内核通过映射一段代码到用户空间（vDSO），用户直接调用，无需陷入内核。就像超市把常见问题解答贴在墙上，顾客自己看，不用问客服。</p>
+<hr>
+<h3 id="8-虚拟化与容器：多个超市共用一个场地"><a href="#8-虚拟化与容器：多个超市共用一个场地" class="headerlink" title="8. 虚拟化与容器：多个超市共用一个场地"></a>8. 虚拟化与容器：多个超市共用一个场地</h3><h4 id="8-1-硬件虚拟化——VMware、KVM"><a href="#8-1-硬件虚拟化——VMware、KVM" class="headerlink" title="8.1 硬件虚拟化——VMware、KVM"></a>8.1 硬件虚拟化——VMware、KVM</h4><p>在物理机上运行多个操作系统，需要硬件支持（Intel VT-x, AMD-V）。VMM（虚拟机监视器）负责调度CPU、管理内存（EPT）、模拟设备。每个虚拟机以为自己独占硬件。</p>
+<h4 id="8-2-容器——轻量级隔离"><a href="#8-2-容器——轻量级隔离" class="headerlink" title="8.2 容器——轻量级隔离"></a>8.2 容器——轻量级隔离</h4><p>容器共享宿主机内核，但通过namespace隔离资源（PID、网络、挂载点等），通过cgroups限制资源使用（CPU、内存、磁盘IO）。就像多个部门共用同一栋办公楼，但各自有自己的办公室和预算。</p>
+<ul>
+<li><strong>namespace</strong>：让每个容器看到自己的进程树、网络栈等。</li>
+<li><strong>cgroups</strong>：限制容器最多用多少CPU、内存。</li>
+</ul>
+<h4 id="8-3-容器与虚拟机的区别"><a href="#8-3-容器与虚拟机的区别" class="headerlink" title="8.3 容器与虚拟机的区别"></a>8.3 容器与虚拟机的区别</h4><p>容器更轻量，启动快，但隔离性弱；虚拟机隔离性强，但开销大。</p>
+<hr>
+<h3 id="9-其他重要机制"><a href="#9-其他重要机制" class="headerlink" title="9. 其他重要机制"></a>9. 其他重要机制</h3><h4 id="9-1-信号——总部的紧急指令"><a href="#9-1-信号——总部的紧急指令" class="headerlink" title="9.1 信号——总部的紧急指令"></a>9.1 信号——总部的紧急指令</h4><p>进程可以接收信号，如SIGINT（Ctrl+C）、SIGKILL。信号处理异步，可能中断当前执行。内核维护每个进程的信号挂起队列，在从内核返回用户态时检查并处理。</p>
+<h4 id="9-2-定时器——闹钟"><a href="#9-2-定时器——闹钟" class="headerlink" title="9.2 定时器——闹钟"></a>9.2 定时器——闹钟</h4><p>内核提供定时器，用于超时处理、定时任务。硬件时钟中断驱动，高精度定时器（hrtimer）基于硬件时间戳。</p>
+<h4 id="9-3-性能优化工具"><a href="#9-3-性能优化工具" class="headerlink" title="9.3 性能优化工具"></a>9.3 性能优化工具</h4><ul>
+<li><strong>perf</strong>：分析CPU性能瓶颈，采样事件。</li>
+<li><strong>strace</strong>：跟踪系统调用。</li>
+<li><strong>top&#x2F;htop</strong>：查看进程资源。</li>
+<li><strong>vmstat&#x2F;iostat</strong>：查看内存、I&#x2F;O。</li>
+</ul>
+<hr>
+<h3 id="10-总结：操作系统的艺术"><a href="#10-总结：操作系统的艺术" class="headerlink" title="10. 总结：操作系统的艺术"></a>10. 总结：操作系统的艺术</h3><p>操作系统是计算机系统的核心，它通过抽象、虚拟化、并发和持久化，为应用程序提供了简洁而强大的接口。理解操作系统不仅仅是记住概念，而是要深入理解其设计哲学和实现细节，这样在开发高性能、高可靠系统时，才能做出正确的权衡和优化。</p>
+<p>比如，当我们用epoll写网络服务器时，要知道它为什么比select快；当我们优化数据库时，要懂页缓存、直接I&#x2F;O和fsync；当我们在容器里部署应用时，要明白cgroups如何限制资源。这些知识来源于对操作系统的深刻理解。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://YWMHHBAIminminAI.gitee.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-2-%E2%80%9D/">https://ywmhhbaiminminai.gitee.io/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-2-%E2%80%9D/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> Donate</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“操作系统(3)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">我要开一个超市，超市里面卖的是“操作系统(3)”</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“操作系统(1)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">我要开一个超市，超市里面卖的是“操作系统(1)”</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“操作系统(1)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“操作系统(1)”</div></div></a></div><div><a href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“操作系统(3)”"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-16</div><div class="title">我要开一个超市，超市里面卖的是“操作系统(3)”</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">72</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">88</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">83</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#0-%E6%80%BB%E4%BD%93%E8%A7%86%E8%A7%92%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%98%AF%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E8%80%85"><span class="toc-number">1.</span> <span class="toc-text">0. 总体视角：操作系统是资源管理者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B%E7%AE%A1%E7%90%86%EF%BC%9A%E5%88%86%E5%BA%97%E7%9A%84%E8%BF%90%E8%90%A5%E8%B0%83%E5%BA%A6"><span class="toc-number">2.</span> <span class="toc-text">1. 进程与线程管理：分店的运营调度</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%9D%97%EF%BC%88PCB%EF%BC%89%E2%80%94%E2%80%94%E5%88%86%E5%BA%97%E7%9A%84%E6%A1%A3%E6%A1%88"><span class="toc-number">2.1.</span> <span class="toc-text">1.1 进程控制块（PCB）——分店的档案</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E8%B0%83%E5%BA%A6%E5%99%A8%E2%80%94%E2%80%94%E6%80%BB%E9%83%A8%E5%A6%82%E4%BD%95%E5%88%86%E9%85%8D%E6%94%B6%E9%93%B6%E5%91%98%EF%BC%88CPU%E6%A0%B8%E5%BF%83%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">1.2 调度器——总部如何分配收银员（CPU核心）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E2%80%94%E2%80%94%E6%8D%A2%E6%94%B6%E9%93%B6%E5%91%98"><span class="toc-number">2.3.</span> <span class="toc-text">1.3 上下文切换——换收银员</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-%E7%BA%BF%E7%A8%8B%E2%80%94%E2%80%94%E5%88%86%E5%BA%97%E5%86%85%E7%9A%84%E5%A4%9A%E4%B8%AA%E6%94%B6%E9%93%B6%E5%8F%B0"><span class="toc-number">2.4.</span> <span class="toc-text">1.4 线程——分店内的多个收银台</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-%E5%8D%8F%E7%A8%8B%E2%80%94%E2%80%94%E6%9B%B4%E8%BD%BB%E9%87%8F%E7%9A%84%E2%80%9C%E6%94%B6%E9%93%B6%E5%91%98%E5%8A%A9%E6%89%8B%E2%80%9D"><span class="toc-number">2.5.</span> <span class="toc-text">1.5 协程——更轻量的“收银员助手”</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E8%B4%A7%E6%9E%B6%E7%9A%84%E5%B8%83%E5%B1%80%E4%B8%8E%E8%B0%83%E5%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">2. 内存管理：货架的布局与调度</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E2%80%94%E2%80%94%E6%AF%8F%E4%B8%AA%E5%88%86%E5%BA%97%E9%83%BD%E6%84%9F%E8%A7%89%E6%9C%89%E6%97%A0%E7%A9%B7%E5%A4%A7%E7%9A%84%E8%B4%A7%E6%9E%B6"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 虚拟内存——每个分店都感觉有无穷大的货架</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E9%A1%B5%E8%A1%A8%E2%80%94%E2%80%94%E8%B4%A7%E6%9E%B6%E6%98%A0%E5%B0%84%E8%A1%A8"><span class="toc-number">3.2.</span> <span class="toc-text">2.2 页表——货架映射表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E7%BC%BA%E9%A1%B5%E5%BC%82%E5%B8%B8%E2%80%94%E2%80%94%E8%B4%A7%E6%9E%B6%E4%B8%8A%E6%B2%A1%E6%9C%89%E5%95%86%E5%93%81"><span class="toc-number">3.3.</span> <span class="toc-text">2.3 缺页异常——货架上没有商品</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94%E8%B4%A7%E6%9E%B6%E6%BB%A1%E4%BA%86%EF%BC%8C%E8%85%BE%E5%93%AA%E4%B8%AA%EF%BC%9F"><span class="toc-number">3.4.</span> <span class="toc-text">2.4 页面置换算法——货架满了，腾哪个？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%99%A8%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E7%BB%99%E5%88%86%E5%BA%97%E5%88%86%E9%85%8D%E8%B4%A7%E6%9E%B6"><span class="toc-number">3.5.</span> <span class="toc-text">2.5 内存分配器——如何给分店分配货架</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E4%B8%8E%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84"><span class="toc-number">3.6.</span> <span class="toc-text">2.6 共享内存与内存映射</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%B9%B6%E5%8F%91%E4%B8%8E%E5%90%8C%E6%AD%A5%EF%BC%9A%E5%A4%9A%E4%B8%AA%E6%94%B6%E9%93%B6%E5%8F%B0%E6%93%8D%E4%BD%9C%E5%90%8C%E4%B8%80%E5%BA%93%E5%AD%98"><span class="toc-number">4.</span> <span class="toc-text">3. 并发与同步：多个收银台操作同一库存</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C%E2%80%94%E2%80%94%E5%8D%95%E6%AD%A5%E4%B8%8D%E5%8F%AF%E6%89%93%E6%96%AD"><span class="toc-number">4.1.</span> <span class="toc-text">3.1 原子操作——单步不可打断</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E4%BA%92%E6%96%A5%E9%94%81%E2%80%94%E2%80%94%E6%94%B6%E9%93%B6%E5%8F%B0%E7%9A%84%E2%80%9C%E4%BD%BF%E7%94%A8%E4%B8%AD%E2%80%9D%E7%89%8C%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">3.2 互斥锁——收银台的“使用中”牌子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E4%BF%A1%E5%8F%B7%E9%87%8F%E2%80%94%E2%80%94%E6%94%B6%E9%93%B6%E5%8F%B0%E6%95%B0%E9%87%8F%E7%9A%84%E6%8E%A7%E5%88%B6"><span class="toc-number">4.3.</span> <span class="toc-text">3.3 信号量——收银台数量的控制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-%E8%AF%BB%E5%86%99%E9%94%81%E2%80%94%E2%80%94%E5%8C%BA%E5%88%86%E8%AF%BB%E5%92%8C%E5%86%99"><span class="toc-number">4.4.</span> <span class="toc-text">3.4 读写锁——区分读和写</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5-%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F%E2%80%94%E2%80%94%E7%AD%89%E5%BE%85%E6%9F%90%E4%B8%AA%E6%9D%A1%E4%BB%B6"><span class="toc-number">4.5.</span> <span class="toc-text">3.5 条件变量——等待某个条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-6-%E6%AD%BB%E9%94%81%E2%80%94%E2%80%94%E4%BA%92%E7%9B%B8%E7%AD%89%E5%BE%85%E5%AF%BC%E8%87%B4%E5%83%B5%E5%B1%80"><span class="toc-number">4.6.</span> <span class="toc-text">3.6 死锁——互相等待导致僵局</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-7-%E6%97%A0%E9%94%81%E7%BC%96%E7%A8%8B%E2%80%94%E2%80%94%E9%AB%98%E7%BA%A7%E6%8A%80%E5%B7%A7"><span class="toc-number">4.7.</span> <span class="toc-text">3.7 无锁编程——高级技巧</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-8-RCU%EF%BC%88%E8%AF%BB-%E5%A4%8D%E5%88%B6-%E6%9B%B4%E6%96%B0%EF%BC%89%E2%80%94%E2%80%94%E8%AF%BB%E5%A4%9A%E5%86%99%E5%B0%91%E7%9A%84%E7%BB%88%E6%9E%81%E4%BC%98%E5%8C%96"><span class="toc-number">4.8.</span> <span class="toc-text">3.8 RCU（读-复制-更新）——读多写少的终极优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-9-futex%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E7%94%A8%E6%88%B7%E6%80%81%E4%BA%92%E6%96%A5"><span class="toc-number">4.9.</span> <span class="toc-text">3.9 futex——快速用户态互斥</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%8E%E5%AD%98%E5%82%A8%EF%BC%9A%E5%BA%93%E5%AD%98%E8%AE%B0%E5%BD%95%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">5.</span> <span class="toc-text">4. 文件系统与存储：库存记录持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-VFS%EF%BC%88%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%EF%BC%89%E2%80%94%E2%80%94%E7%BB%9F%E4%B8%80%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-number">5.1.</span> <span class="toc-text">4.1 VFS（虚拟文件系统）——统一的接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-ext4%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E5%85%B8%E5%9E%8B%E7%9A%84%E7%A3%81%E7%9B%98%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">5.2.</span> <span class="toc-text">4.2 ext4文件系统——典型的磁盘文件系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-%E8%BD%AF%E9%93%BE%E6%8E%A5%E4%B8%8E%E7%A1%AC%E9%93%BE%E6%8E%A5"><span class="toc-number">5.3.</span> <span class="toc-text">4.3 软链接与硬链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-%E9%A1%B5%E7%BC%93%E5%AD%98%E4%B8%8E%E5%9B%9E%E5%86%99"><span class="toc-number">5.4.</span> <span class="toc-text">4.4 页缓存与回写</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-%E7%9B%B4%E6%8E%A5I-O%E4%B8%8E%E5%BC%82%E6%AD%A5I-O"><span class="toc-number">5.5.</span> <span class="toc-text">4.5 直接I&#x2F;O与异步I&#x2F;O</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-6-I-O%E8%B0%83%E5%BA%A6%E5%99%A8"><span class="toc-number">5.6.</span> <span class="toc-text">4.6 I&#x2F;O调度器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-I-O%E7%AE%A1%E7%90%86%EF%BC%9A%E6%94%B6%E9%93%B6%E5%8F%B0%E4%B8%8E%E4%BB%93%E5%BA%93%E7%9A%84%E4%BA%A4%E4%BA%92"><span class="toc-number">6.</span> <span class="toc-text">5. I&#x2F;O管理：收银台与仓库的交互</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E2%80%94%E2%80%94%E6%94%B6%E9%93%B6%E5%91%98%E4%B8%8D%E7%94%A8%E4%B8%80%E7%9B%B4%E7%9B%AF%E7%9D%80%E6%89%AB%E6%8F%8F%E6%9E%AA"><span class="toc-number">6.1.</span> <span class="toc-text">5.1 中断处理——收银员不用一直盯着扫描枪</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-DMA%E2%80%94%E2%80%94%E4%B8%8D%E7%94%A8CPU%E6%90%AC%E8%B4%A7"><span class="toc-number">6.2.</span> <span class="toc-text">5.2 DMA——不用CPU搬货</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E6%A8%A1%E5%9E%8B"><span class="toc-number">6.3.</span> <span class="toc-text">5.3 设备驱动模型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A0%88%EF%BC%9A%E7%BA%BF%E4%B8%8A%E5%95%86%E5%9F%8E%E7%9A%84%E8%AE%A2%E5%8D%95%E5%A4%84%E7%90%86"><span class="toc-number">7.</span> <span class="toc-text">6. 网络协议栈：线上商城的订单处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-socket%E2%80%94%E2%80%94%E7%BA%BF%E4%B8%8A%E5%AE%A2%E6%9C%8D%E7%AA%97%E5%8F%A3"><span class="toc-number">7.1.</span> <span class="toc-text">6.1 socket——线上客服窗口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-TCP%E5%8D%8F%E8%AE%AE%E2%80%94%E2%80%94%E5%8F%AF%E9%9D%A0%E5%BF%AB%E9%80%92"><span class="toc-number">7.2.</span> <span class="toc-text">6.2 TCP协议——可靠快递</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-%E5%8D%8F%E8%AE%AE%E6%A0%88%E5%88%86%E5%B1%82"><span class="toc-number">7.3.</span> <span class="toc-text">6.3 协议栈分层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-epoll%E2%80%94%E2%80%94%E9%AB%98%E6%95%88%E5%A4%84%E7%90%86%E6%B5%B7%E9%87%8F%E8%BF%9E%E6%8E%A5"><span class="toc-number">7.4.</span> <span class="toc-text">6.4 epoll——高效处理海量连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-5-%E9%9B%B6%E6%8B%B7%E8%B4%9D%E2%80%94%E2%80%94%E5%87%8F%E5%B0%91%E6%95%B0%E6%8D%AE%E6%8B%B7%E8%B4%9D"><span class="toc-number">7.5.</span> <span class="toc-text">6.5 零拷贝——减少数据拷贝</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-6-RDMA%E2%80%94%E2%80%94%E8%BF%9C%E7%A8%8B%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98%E8%AE%BF%E9%97%AE"><span class="toc-number">7.6.</span> <span class="toc-text">6.6 RDMA——远程直接内存访问</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E4%B8%8E%E5%86%85%E6%A0%B8-%E7%94%A8%E6%88%B7%E6%80%81%E5%88%87%E6%8D%A2"><span class="toc-number">8.</span> <span class="toc-text">7. 系统调用与内核&#x2F;用户态切换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E2%80%94%E2%80%94%E8%AF%B7%E6%B1%82%E6%80%BB%E9%83%A8%E6%9C%8D%E5%8A%A1"><span class="toc-number">8.1.</span> <span class="toc-text">7.1 系统调用——请求总部服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%BC%80%E9%94%80"><span class="toc-number">8.2.</span> <span class="toc-text">7.2 系统调用开销</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-vsyscall-vDSO%E2%80%94%E2%80%94%E5%8A%A0%E9%80%9F%E6%9F%90%E4%BA%9B%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="toc-number">8.3.</span> <span class="toc-text">7.3 vsyscall&#x2F;vDSO——加速某些系统调用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E8%99%9A%E6%8B%9F%E5%8C%96%E4%B8%8E%E5%AE%B9%E5%99%A8%EF%BC%9A%E5%A4%9A%E4%B8%AA%E8%B6%85%E5%B8%82%E5%85%B1%E7%94%A8%E4%B8%80%E4%B8%AA%E5%9C%BA%E5%9C%B0"><span class="toc-number">9.</span> <span class="toc-text">8. 虚拟化与容器：多个超市共用一个场地</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#8-1-%E7%A1%AC%E4%BB%B6%E8%99%9A%E6%8B%9F%E5%8C%96%E2%80%94%E2%80%94VMware%E3%80%81KVM"><span class="toc-number">9.1.</span> <span class="toc-text">8.1 硬件虚拟化——VMware、KVM</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-%E5%AE%B9%E5%99%A8%E2%80%94%E2%80%94%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%9A%94%E7%A6%BB"><span class="toc-number">9.2.</span> <span class="toc-text">8.2 容器——轻量级隔离</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-3-%E5%AE%B9%E5%99%A8%E4%B8%8E%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">9.3.</span> <span class="toc-text">8.3 容器与虚拟机的区别</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E5%85%B6%E4%BB%96%E9%87%8D%E8%A6%81%E6%9C%BA%E5%88%B6"><span class="toc-number">10.</span> <span class="toc-text">9. 其他重要机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#9-1-%E4%BF%A1%E5%8F%B7%E2%80%94%E2%80%94%E6%80%BB%E9%83%A8%E7%9A%84%E7%B4%A7%E6%80%A5%E6%8C%87%E4%BB%A4"><span class="toc-number">10.1.</span> <span class="toc-text">9.1 信号——总部的紧急指令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-2-%E5%AE%9A%E6%97%B6%E5%99%A8%E2%80%94%E2%80%94%E9%97%B9%E9%92%9F"><span class="toc-number">10.2.</span> <span class="toc-text">9.2 定时器——闹钟</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-3-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7"><span class="toc-number">10.3.</span> <span class="toc-text">9.3 性能优化工具</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E6%80%BB%E7%BB%93%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%89%BA%E6%9C%AF"><span class="toc-number">11.</span> <span class="toc-text">10. 总结：操作系统的艺术</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-4-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(4)”">我要开一个超市，超市里面卖的是“计算机网络(4)”</a><time datetime="2026-05-16T15:08:31.000Z" title="Created 2026-05-16 23:08:31">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(3)”">我要开一个超市，超市里面卖的是“计算机网络(3)”</a><time datetime="2026-05-16T15:08:04.000Z" title="Created 2026-05-16 23:08:04">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-2-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(2)”">我要开一个超市，超市里面卖的是“计算机网络(2)”</a><time datetime="2026-05-16T15:07:22.000Z" title="Created 2026-05-16 23:07:22">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-1-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“计算机网络(1)”">我要开一个超市，超市里面卖的是“计算机网络(1)”</a><time datetime="2026-05-16T15:06:53.000Z" title="Created 2026-05-16 23:06:53">2026-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/16/%E6%88%91%E8%A6%81%E5%BC%80%E4%B8%80%E4%B8%AA%E8%B6%85%E5%B8%82%EF%BC%8C%E8%B6%85%E5%B8%82%E9%87%8C%E9%9D%A2%E5%8D%96%E7%9A%84%E6%98%AF%E2%80%9C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-3-%E2%80%9D/" title="我要开一个超市，超市里面卖的是“操作系统(3)”">我要开一个超市，超市里面卖的是“操作系统(3)”</a><time datetime="2026-05-16T15:05:52.000Z" title="Created 2026-05-16 23:05:52">2026-05-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="Chat"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
