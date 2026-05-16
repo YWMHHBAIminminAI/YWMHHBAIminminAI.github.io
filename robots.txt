@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ywmhhbaiminminai.github.io/sitemap.xml
