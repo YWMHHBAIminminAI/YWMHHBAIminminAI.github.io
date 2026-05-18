@@ -1,0 +1,340 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策 | AIminminAI的技术博客</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🎯 第七课：聚类与分类算法——从”理解几何”到”做出决策”为什么排第七？第六课算出了每个顶点的曲率（K, H, thickness），但零散的数值对人没意义——用户不需要知道”第3742号顶点的高斯曲率是0.823”，用户需要的是”这个零件上有一个孔洞、两处凸台、一个薄壁区域”。 聚类 &#x3D; 把零散数值变成有意义的区域分类 &#x3D; 给每个区域一个人类能懂的名字 用你的话说：”这就是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策">
+<meta property="og:url" content="https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/index.html">
+<meta property="og:site_name" content="AIminminAI的技术博客">
+<meta property="og:description" content="🎯 第七课：聚类与分类算法——从”理解几何”到”做出决策”为什么排第七？第六课算出了每个顶点的曲率（K, H, thickness），但零散的数值对人没意义——用户不需要知道”第3742号顶点的高斯曲率是0.823”，用户需要的是”这个零件上有一个孔洞、两处凸台、一个薄壁区域”。 聚类 &#x3D; 把零散数值变成有意义的区域分类 &#x3D; 给每个区域一个人类能懂的名字 用你的话说：”这就是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-18T15:40:43.000Z">
+<meta property="article:modified_time" content="2026-05-18T15:42:20.342Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="聚类与分类算法">
+<meta property="article:tag" content="DFS 连通域聚类">
+<meta property="article:tag" content="法线分类">
+<meta property="article:tag" content="几何特征分类">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Hu hb","link":"链接: ","source":"来源: AIminminAI的技术博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: false,
+  postUpdate: '2026-05-18 23:42:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="AIminminAI的技术博客"><span class="site-name">AIminminAI的技术博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-18T15:40:43.000Z" title="发表于 2026-05-18 23:40:43">2026-05-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-18T15:42:20.342Z" title="更新于 2026-05-18 23:42:20">2026-05-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/">AI时代应该培养的能力</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/">AI最容易写错的区域</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>🎯 第七课：聚类与分类算法——从”理解几何”到”做出决策”<br>为什么排第七？<br>第六课算出了每个顶点的曲率（K, H, thickness），但零散的数值对人没意义——用户不需要知道”第3742号顶点的高斯曲率是0.823”，用户需要的是”这个零件上有一个孔洞、两处凸台、一个薄壁区域”。</p>
+<p>聚类 &#x3D; 把零散数值变成有意义的区域<br>分类 &#x3D; 给每个区域一个人类能懂的名字</p>
+<p>用你的话说：”这就是’定义什么方案更符合人性’的算法化”（理念 1.1）——你定义了”什么是孔洞、什么是凸起”，AI 负责执行分类。</p>
+<p>费曼学习法 Step 1：用大白话解释它是什么<br>想象你拿到了一张等高线地图：</p>
+<p>地图上有无数个点，每个点有海拔数值（&#x3D; 曲率值）<br>聚类：把海拔相同且相邻的点圈在一起 → “这是一座山”、”这是一片平原”、”这是一个盆地”<br>分类：给圈出来的区域命名 → “山”&#x3D; 凸起、”盆地”&#x3D; 孔洞、”平原”&#x3D; 平面<br>在 Huhb3D 中：</p>
+<p>每个三角形有曲率类别（第六课算的）<br>曲率类别相同 + 共享边的三角形聚在一起 → DFS 连通域聚类<br>根据聚类的面积、边界、曲率特征 → 几何特征分类（12类）<br>根据三角形法线朝向 → 法线方向分类（6类）<br>费曼学习法 Step 2：逐个拆解核心知识点<br>📦 A. 曲率分类——聚类的”黏合剂”<br>A1. 为什么需要曲率分类？</p>
+<p>DFS 聚类需要判断”两个邻居三角形能不能合并到同一个聚类”——标准是曲率类别相同。但曲率是连续值，两个三角形的 K 值分别是 0.3 和 0.5，算不算”相同”？</p>
+<p>解决方案：把连续曲率值离散化成6个类别，同类才合并。</p>
+<p>A2. 六类曲率分类规则</p>
+<p>| 类别 | 名称 | |K| | |H| | 3D打印直觉 |<br>|——|——|——|——|———–|<br>| 0 | 平面 | &lt; 0.5 | &lt; 0.5 | 几乎平坦，最容易打印 |<br>| 1 | 椭圆凸（dome） | &gt; 2.0 | &gt; 0.5 | 明显球面凸起 |<br>| 2 | 椭圆凹（bowl） | &gt; 2.0 | &lt; -0.5 | 明显碗面凹陷 |<br>| 3 | 圆柱凸&#x2F;脊 | &gt; 1.0 | &gt; 0 | 急弯凸出 |<br>| 4 | 圆柱凹&#x2F;谷 | &gt; 1.0 | &lt; 0 | 急弯凹入 |<br>| 5 | 混合&#x2F;过渡 | 其他 | 其他 | 不确定区域 |</p>
+<p>A3. 阈值怎么定？</p>
+<p>阈值	数学含义	物理直觉<br>|H| &lt; 0.5	法线变化率很小	几乎平坦<br>|H| &gt; 1.0	法线变化率很大	急弯（法线几乎垂直）<br>|K| &lt; 0.5	曲率积很小	没有明显凸&#x2F;凹<br>|K| &gt; 2.0	曲率积很大	明显球面特征<br>关键认知： 这些阈值不是从教科书抄的，是根据3D打印业务调出来的——K 的 2.0 和 H 的 1.0 不是数学真理，而是根据”什么算明显凸起”定的。</p>
+<p>这就是”出题人”的权力——你定义”什么算平面”，AI 只负责执行判断。</p>
+<p>AI坑点： AI 通常用 K &gt; 0 做硬判断，没有阈值缓冲。3D扫描模型的数值噪声会让 K 在 0 附近抖动，硬判断会导致同一片平面上出现大量碎片聚类（一会儿正一会儿负），结果完全不可用。</p>
+<p>📦 B. DFS 连通域聚类——核心算法<br>B1. 图论模型</p>
+<p>把三角形网格看成一张图：</p>
+<p>节点 &#x3D; 三角形<br>边 &#x3D; 两个三角形共享一条边（邻居关系，用第三课的边哈希表查询）<br>节点属性 &#x3D; 曲率类别（0-5）<br>聚类 &#x3D; 找出所有”曲率类别相同”的连通子图。</p>
+<p>B2. DFS 完整流程（源码：render_manager.cpp:1195-1260）</p>
+<p>&#x2F;&#x2F; 前置：用第3课的边哈希表构建 边→三角形 映射<br>unordered_map&lt;EdgeKey, vector<int>, EdgeKeyHash&gt; edge_to_triangles;</int></p>
+<p>for (each triangle i) {<br>    EdgeKey e1(tri[i].v1, tri[i].v2);<br>    EdgeKey e2(tri[i].v2, tri[i].v3);<br>    EdgeKey e3(tri[i].v3, tri[i].v1);<br>    edge_to_triangles[e1].push_back(i);<br>    edge_to_triangles[e2].push_back(i);<br>    edge_to_triangles[e3].push_back(i);<br>}</p>
+<p>&#x2F;&#x2F; ──── 主聚类流程 ────<br>vector<bool> visited(N, false);  &#x2F;&#x2F; N &#x3D; 三角形总数<br>vector<Cluster> clusters;</Cluster></bool></p>
+<p>for (int i &#x3D; 0; i &lt; N; i++) {<br>    if (visited[i]) continue;  &#x2F;&#x2F; 已经属于某个聚类</p>
+<pre><code>// 创建新聚类
+Cluster cluster;
+cluster.curvature_class = get_curvature_class(i);  // 第6课的K,H
+
+// DFS 用 vector 当栈
+vector&lt;int&gt; stack;
+stack.push_back(i);
+visited[i] = true;
+
+while (!stack.empty()) &#123;
+    int curr = stack.back();
+    stack.pop_back();
+    cluster.triangles.push_back(curr);
+    
+    // 通过边哈希表找邻居
+    Triangle&amp; tri = triangles[curr];
+    EdgeKey e1(tri.v1, tri.v2);
+    EdgeKey e2(tri.v2, tri.v3);
+    EdgeKey e3(tri.v3, tri.v1);
+    
+    for (EdgeKey e : &#123;e1, e2, e3&#125;) &#123;
+        auto it = edge_to_triangles.find(e);
+        if (it == edge_to_triangles.end()) continue;
+        
+        for (int neighbor : it-&gt;second) &#123;
+            if (visited[neighbor]) continue;
+            // ★ 核心决策：只扩展同类别
+            if (get_curvature_class(neighbor) != cluster.curvature_class)
+                continue;
+            visited[neighbor] = true;
+            stack.push_back(neighbor);
+        &#125;
+    &#125;
+&#125;
+
+// 统计聚类信息
+for (int tri_idx : cluster.triangles) &#123;
+    cluster.area += triangle_area(triangles[tri_idx]);
+    cluster.avg_curvature += ...;  // K,H 加权平均
+&#125;
+cluster.boundary_edges = count_boundary_edges(cluster);
+clusters.push_back(cluster);
+</code></pre>
+<p>}<br>B3. ★ 核心设计：”只扩展同类别”</p>
+<p>if get_curvature_class(neighbor) !&#x3D; cluster.curvature_class: continue;<br>这一行是整个聚类的核心决策——曲率类别不同的邻居不扩展，相当于在图上”竖了一堵墙”。</p>
+<p>想象一片零件表面：</p>
+<p>  平面  平面  平面 │ 圆柱面 圆柱面 │ 平面  平面<br>   0     0     0  │   3      3    │  0     0<br>                  ↑               ↑<br>              这里类别变了       这里又变了</p>
+<p>DFS 从左上角出发 → 聚类A（3个平面三角形）<br>跳过圆柱面 → 继续DFS → 聚类B（2个圆柱面三角形）<br>跳过平面   → 继续DFS → 聚类C（2个平面三角形）</p>
+<p>注意：A 和 C 都是平面，但它们不相连（中间隔了圆柱面），所以是两个独立聚类！<br>B4. vector 当栈——为什么不用 std::stack？</p>
+<p>vector<int>	std::stack<int><br>底层容器	自己就是连续内存	默认用 deque（分段连续）<br>缓存友好	✅ 连续内存，CPU预取	❌ 分段跳跃<br>内存开销	无额外开销	deque 的分段管理开销<br>随机访问	可以 stack[i]	只能 top()<br>项目用 vector 而不是 std::stack，原因跟第四课的 BVH 线性化存储一样——缓存友好。</int></int></p>
+<p>AI坑点： AI 默认用 std::stack，因为名字就叫”栈”。但 std::stack 默认用 deque 做 underlying container，在百万三角形级别下，分段内存的缓存惩罚可以慢 20-30%。</p>
+<p>📦 C. 聚类边界检测——哪里是”墙”<br>C1. 边界边的定义</p>
+<p>一个三角形属于某个聚类，但它的某条边对面的邻居属于另一个聚类（或者没有邻居）→ 这条边就是边界边。</p>
+<p>  聚类A    │ 边界边    聚类B<br>  ─────────┼────────── ─────────<br>  tri_0    │ ←这条边→   tri_5<br>  tri_1    │            tri_6<br>C2. 边界统计的实现</p>
+<p>int count_boundary_edges(Cluster&amp; cluster,<br>                         unordered_map&lt;EdgeKey, vector<int>&gt;&amp; edge_map) {<br>    &#x2F;&#x2F; 用 unordered_set 做 O(1) 成员查询<br>    unordered_set<int> members;<br>    for (int idx : cluster.triangles) members.insert(idx);</int></int></p>
+<pre><code>int boundary = 0;
+for (int tri_idx : cluster.triangles) &#123;
+    Triangle&amp; tri = triangles[tri_idx];
+    for (EdgeKey e : &#123;EdgeKey(tri.v1, tri.v2), 
+                      EdgeKey(tri.v2, tri.v3), 
+                      EdgeKey(tri.v3, tri.v1)&#125;) &#123;
+        auto it = edge_map.find(e);
+        if (it == edge_map.end() || it-&gt;second.size() == 1) &#123;
+            boundary++;  // 网格边界（只有1个三角形）
+            continue;
+        &#125;
+        for (int neighbor : it-&gt;second) &#123;
+            if (members.find(neighbor) == members.end()) &#123;
+                boundary++;  // 邻居不属于本聚类
+                break;
+            &#125;
+        &#125;
+    &#125;
+&#125;
+return boundary;
+</code></pre>
+<p>}<br>C3. unordered_set<int> 查成员——O(1) 判断”是不是自己人”</int></p>
+<p>为什么不直接用 vector 线性查找？O(N) vs O(1)——每个聚类可能有上万个三角形，每个三角形查3条边的邻居，线性查找太慢。</p>
+<p>C4. 边界数量的业务含义</p>
+<p>boundary_edges 少	boundary_edges 多	含义<br>凸起（dome）	→	少边界 &#x3D; 独立凸台；多边界 &#x3D; 嵌入式凸起<br>凹陷（bowl）	→	少边界 &#x3D; 局部凹陷；多边界 &#x3D; 可能是孔洞<br>面积小 + 多边界	→	孔洞的典型特征<br>边界数量是区分”孔洞”和”凹陷”的关键维度——两者曲率类别一样（都是椭圆凹），但边界形态不同。</p>
+<p>📦 D. 法线方向分类——朝向决定可打印性<br>D1. 6种法线方向</p>
+<p>类别	方向	判断条件	3D打印含义<br>0	斜面	maxComp ≤ 0.85	倾斜面，需适度支撑<br>1	+Y（朝上）	maxComp &gt; 0.98, Y分量最大且正	最容易打印，不需要支撑<br>2	-Y（朝下）	maxComp &gt; 0.98, Y分量最大且负	悬垂面，必须有支撑<br>3	±X（侧面）	maxComp &gt; 0.98, X分量最大	需适度支撑<br>4	±Z（侧面）	maxComp &gt; 0.98, Z分量最大	需适度支撑<br>5	近垂直	0.85 &lt; maxComp ≤ 0.98	接近垂直，支撑需求取决于角度<br>6	近水平	maxComp &lt; 0.85	悬垂面，翘曲风险极高<br>D2. 为什么阈值 0.98 和 0.85？</p>
+<p>maxComp &gt; 0.98：对应约 10° 偏移，法线几乎正对某轴 → 纯方向<br>0.85 &lt; maxComp ≤ 0.98：对应约 30° 偏移 → 近方向<br>maxComp ≤ 0.85：偏移超过 30° → 斜面&#x2F;悬垂<br>3D打印中，25°以内的悬垂角通常可以自支撑，超过就需要额外支撑结构。0.85 ≈ cos(30°) 正好对应这个业务临界。</p>
+<p>又是一个”出题人”的决策——你定义了”什么角度算悬垂”，直接决定了支撑结构的用量和材料成本。</p>
+<p>📦 E. 几何特征分类——12类零件特征<br>E1. 12类完整列表</p>
+<p>类别	名称	判断条件	3D打印含义<br>0	小碎片	size &lt; 5（三角形数量）	噪声&#x2F;扫描伪影，可忽略<br>1	平面	|H| &lt; 0.5, |K| &lt; 0.5	主体面，最易打印<br>2	椭圆凸	K &gt; 2.0, H &gt; 0.5	明显球面凸起<br>3	椭圆凹	K &gt; 2.0, H &lt; -0.5	明显碗面凹陷<br>4	圆柱凸&#x2F;脊	|K| &gt; 1.0, H &gt; 0	急弯凸出，注意层纹<br>5	圆柱凹&#x2F;谷	|K| &gt; 1.0, H &lt; 0	急弯凹入，可能需支撑<br>6	鞍面凸脊	K &lt; 0, H &gt; 0	应力集中区<br>7	鞍面凹谷	K &lt; 0, H &lt; 0	容易开裂<br>8	凸起	K &gt; 1.5, H &gt; 0.5, A &lt; 0.5	局部小凸起，注意过热<br>9	凹陷	K &gt; 1.5, H &lt; -0.5, A &lt; 0.3	局部凹陷，可能积水<br>10	孔洞	H &lt; -1.0, boundaryEdges ≥ 3	需要后处理（钻孔&#x2F;攻丝）<br>11	凸台	H &gt; 1.0, 0.1 &lt; A &lt; 2.0	局部加强筋<br>E2. 分类是”决策瀑布”——不是平铺的12个if</p>
+<pre><code>            ┌─── size &lt; 5? ──→ 0: 小碎片
+            │
+            ├─── |H| &lt; 0.5 &amp;&amp; |K| &lt; 0.5? ──→ 1: 平面
+            │
+            │    ┌─── H &lt; -1.0 &amp;&amp; boundaryEdges ≥ 3? ──→ 10: 孔洞
+            │    │
+            │    ├─── K &gt; 1.5 &amp;&amp; H &lt; -0.5 &amp;&amp; A &lt; 0.3? ──→ 9: 凹陷
+            │    │
+</code></pre>
+<p> 曲率类型 ──────┤    └─── K &gt; 2.0 &amp;&amp; H &lt; -0.5? ──→ 3: 椭圆凹<br>                │<br>                │    ┌─── H &gt; 1.0 &amp;&amp; 0.1 &lt; A &lt; 2.0? ──→ 11: 凸台<br>                │    │<br>                │    ├─── K &gt; 1.5 &amp;&amp; H &gt; 0.5 &amp;&amp; A &lt; 0.5? ──→ 8: 凸起<br>                │    │<br>                │    └─── K &gt; 2.0 &amp;&amp; H &gt; 0.5? ──→ 2: 椭圆凸<br>                │<br>                ├─── |K| &gt; 1.0 &amp;&amp; H &gt; 0? ──→ 4: 圆柱凸&#x2F;脊<br>                │<br>                ├─── |K| &gt; 1.0 &amp;&amp; H &lt; 0? ──→ 5: 圆柱凹&#x2F;谷<br>                │<br>                ├─── K &lt; 0 &amp;&amp; H &gt; 0? ──→ 6: 鞍面凸脊<br>                │<br>                └─── K &lt; 0 &amp;&amp; H &lt; 0? ──→ 7: 鞍面凹谷<br>关键洞察： 分类不是”12个平等的选择”，而是有优先级的决策链——先检查全局风险（碎片、平面），再按曲率类型细分，最后用面积和边界做二次区分。</p>
+<p>这就像医生诊断： 先查致命的（碎片&#x3D;噪声），再查严重的（平面&#x3D;主体），最后查具体的（凸起&#x2F;凹陷&#x2F;孔洞&#x3D;局部问题）。</p>
+<p>E3. “孔洞”vs”凹陷”——同一曲率类别，不同业务含义</p>
+<p>两者都是 H &lt; 0（凹面），区别在于：</p>
+<p>凹陷（9）	孔洞（10）<br>H 值	H &lt; -0.5	H &lt; -1.0（更弯）<br>边界边	不限	boundaryEdges ≥ 3（几乎被包围）<br>面积	A &lt; 0.3	不限<br>形状	局部碗面	小圆洞<br>打印影响	可能积水	需后处理（钻孔&#x2F;攻丝）<br>业务严重度	中	高<br>这就是”定义问题”的价值——数学上它们都是凹面，但工程上完全不同。你作为出题人，用 H 的强度 + 边界边数量把它们区分开。</p>
+<p>📦 F. 两套分类系统的关系——“黏合剂”vs”翻译器”<br>曲率分类（6类）	几何特征分类（12类）<br>角色	🧴 黏合剂	🌐 翻译器<br>作用	驱动 DFS 聚类（决定谁跟谁合并）	解释聚类含义（告诉用户这是什么）<br>输入	K, H（数学量）	面积 + 边界 + K + H + 法线<br>输出	同类三角形聚成区域	“孔洞”、”凸台”、”薄壁”<br>消费者	算法内部（DFS）	用户 &#x2F; AI Agent<br>可理解性	不可理解（”椭圆凹”是什么？）	可理解（”孔洞”&#x3D;要打洞的地方）<br>核心认知： 曲率分类是给机器看的，几何特征分类是给人看的。你同时设计了两种语言——一种让算法高效工作，一种让人能理解结果。</p>
+<p>费曼学习法 Step 3：完整流水线<br>┌─────────────────────────────────────────────────────────────┐<br>│                 前置：第3课+第6课的成果                        │<br>│                                                             │<br>│  边哈希表: EdgeKey → vector<int>                            │<br>│  曲率: 每个顶点的 K, H, thickness                            │<br>│  法线: 每个三角形的 normal[3]                                │<br>└──────────────────────┬──────────────────────────────────────┘<br>                       │<br>                       ▼<br>┌─────────────────────────────────────────────────────────────┐<br>│           Step 1: 曲率分类 (每个三角形 → 0-5)                 │<br>│                                                             │<br>│  K, H ──→ 阈值判断 ──→ curvature_type                       │<br>│  0&#x3D;平面, 1&#x3D;椭圆凸, 2&#x3D;椭圆凹, 3&#x3D;圆柱凸, 4&#x3D;圆柱凹, 5&#x3D;混合     │<br>└──────────────────────┬──────────────────────────────────────┘<br>                       │<br>                       ▼<br>┌─────────────────────────────────────────────────────────────┐<br>│           Step 2: DFS 连通域聚类                              │<br>│                                                             │<br>│  只扩展同 curvature_type 的邻居 ──→ M 个 Cluster             │<br>│  每个 Cluster: {triangles, curvature_type, area,             │<br>│                boundary_edges, avg_curvature, center}        │<br>└──────────────────────┬──────────────────────────────────────┘<br>                       │<br>                       ▼<br>┌─────────────────────────────────────────────────────────────┐<br>│           Step 3: 法线方向分类 (每个Cluster → 0-6)            │<br>│                                                             │<br>│  maxComponent &gt; 0.98 → 纯方向                               │<br>│  0.85~0.98 → 近方向                                         │<br>│  &lt; 0.85 → 斜面&#x2F;悬垂                                         │<br>└──────────────────────┬──────────────────────────────────────┘<br>                       │<br>                       ▼<br>┌─────────────────────────────────────────────────────────────┐<br>│           Step 4: 几何特征分类 (每个Cluster → 0-11)           │<br>│                                                             │<br>│  决策瀑布: 小碎片? → 平面? → 曲率+面积+边界 → 12种特征       │<br>└──────────────────────┬──────────────────────────────────────┘<br>                       │<br>                       ▼<br>              用户报告: “2个孔洞, 1处薄壁, 3个凸台, 1处悬垂”<br>              AI Agent: “建议添加支撑于悬垂面区域，壁厚不足0.8mm”<br>费曼学习法 Step 4：识别你的知识缺口<br>#	自检问题	如果你答不出<br>1	DFS 只扩展同曲率类别，那两个同为”平面”但不相邻的区域会被合并吗？	重新理解”连通”——必须共享边，不只是同类别<br>2	为什么用 vector 当栈而不是 std::stack？性能差在哪？	重新理解缓存友好（第4课 BVH 线性化同理）<br>3	曲率分类的 K 阈值从 2.0 改成 0.5，聚类结果会怎样变化？	阈值越小→更多被判为”曲面”→聚类更碎片化<br>4	“孔洞”和”凹陷”的曲率类别一样，靠什么区分？	H 的强度 + 边界边数量——这是你定义的决策规则<br>5	为什么几何分类要先检查”碎片”和”平面”，再按曲率细分？	优先级——全局特征 &gt; 局部细节，这是架构思维<br>6	法线分类的阈值 0.85（cos30°）如果改成 0.7（cos45°），支撑结构用量会怎样？	阈值越低→更多面被判为”斜面”→支撑更多，但翘曲风险降低<br>7	一个聚类的 boundary_edges 很少但面积很大，最可能是什么特征？	平面（大面积 + 少边界 &#x3D; 主体面）<br>费曼学习法 Step 5：用你的话复述<br>试着这样解释：</int></p>
+<p>“3D模型几十万个三角形，每个都有曲率值。但用户不要数值，要的是’哪里有问题’。所以先把连续曲率离散化成6类（平面&#x2F;椭圆凸&#x2F;椭圆凹&#x2F;圆柱凸凹&#x2F;混合），曲率类别相同且共享边的三角形用 DFS 聚成区域——就像地图上把相邻的同色块圈出来。聚完后统计每个区域的面积、边界、曲率强度，通过决策瀑布分成12种工程特征：小碎片、平面、椭圆凸凹、圆柱面、鞍面、凸起、凹陷、孔洞、凸台。</p>
+<p>两套分类系统各司其职：6类曲率是给 DFS 用的’黏合剂’，12类特征是给用户看的’翻译器’。同样的凹面，H强度一般就是’凹陷’，H强度很高且被边界包围就是’孔洞’——这之间的区别不是数学决定的，是你作为出题人定义的。”</p>
+<p>📌 本课与你的 AI 时代理念的映射<br>你的理念	本课体现<br>1.1 当出题人	12类特征的定义、阈值的选取（K&#x3D;2.0, H&#x3D;1.0, boundary≥3）、决策瀑布的优先级——全是出题人的权力。”什么是孔洞”是你定义的<br>1.2 技术是切入点	DFS、unordered_set、vector当栈是技术，但”为什么需要聚类”是业务——用户要的是问题区域，不是数值<br>1.4 架构能力	决策瀑布是算法架构，两套分类系统是数据架构——每一层查什么、用什么精度，是架构师的设计<br>1.5 AI代码有坑	AI 用 std::stack（缓存差）、无阈值缓冲（碎片聚类）、平铺12个if（无优先级）——每个都”能跑但差很远”<br>1.6 软实力	“椭圆凹”是技术语言，”孔洞”是业务语言——翻译能力就是软实力，让你跟产品经理和客户对话<br>1.3 技术够用就可以	6类曲率不是数学最优（连续值更精确），但够用就行——聚类只需要”同类合并”，不需要精确度量</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/">https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ywmhhbaiminminai.github.io" target="_blank">AIminminAI的技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/">聚类与分类算法</a><a class="post-meta__tags" href="/tags/DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB/">DFS 连通域聚类</a><a class="post-meta__tags" href="/tags/%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB/">法线分类</a><a class="post-meta__tags" href="/tags/%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB/">几何特征分类</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/18/%E7%AC%AC%E5%85%AB%E8%AF%BE%EF%BC%9ASTL-%E8%A7%A3%E6%9E%90%E4%B8%8E-JSON-%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E6%B5%81%E5%BC%8F%E8%A7%A3%E6%9E%90%EF%BC%8C%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E7%9A%84%E5%AE%9E%E6%88%98/" title="第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/18/%E7%AC%AC%E5%85%AD%E8%AF%BE%EF%BC%9A%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97%EF%BC%88%E7%A6%BB%E6%95%A3%E9%AB%98%E6%96%AF%E6%9B%B2%E7%8E%87-%E7%A6%BB%E6%95%A3%E5%B9%B3%E5%9D%87%E6%9B%B2%E7%8E%87%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E5%91%BD%E4%B8%AD%E7%82%B9%E5%88%B0%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%BD%A2%E7%8A%B6/" title="第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E4%B8%80%E8%AF%BE%EF%BC%9A%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E6%8A%8A%E5%8D%81%E8%AF%BE%E7%9A%84%E9%9B%B6%E4%BB%B6%E7%BB%84%E8%A3%85%E6%88%90%E5%BC%95%E6%93%8E/" title="第十一课：系统集成与性能优化——把十课的零件组装成引擎">第十一课：系统集成与性能优化——把十课的零件组装成引擎</a><time datetime="2026-05-18T15:46:07.000Z" title="发表于 2026-05-18 23:46:07">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/" title="第十课：渲染与可视化——OpenGL 实战，把分析结果画出来">第十课：渲染与可视化——OpenGL 实战，把分析结果画出来</a><time datetime="2026-05-18T15:45:02.000Z" title="发表于 2026-05-18 23:45:02">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B9%9D%E8%AF%BE%EF%BC%9A%E6%8A%A5%E5%91%8A%E7%94%9F%E6%88%90%E2%80%94%E2%80%94%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%88%B0%E5%86%B3%E7%AD%96%EF%BC%8C%E6%8A%8A%E7%AE%97%E6%B3%95%E7%BB%93%E6%9E%9C%E7%BF%BB%E8%AF%91%E6%88%90%E4%BA%BA%E7%B1%BB%E8%A1%8C%E5%8A%A8/" title="第九课：报告生成——从数据到决策，把算法结果翻译成人类行动">第九课：报告生成——从数据到决策，把算法结果翻译成人类行动</a><time datetime="2026-05-18T15:43:54.000Z" title="发表于 2026-05-18 23:43:54">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%85%AB%E8%AF%BE%EF%BC%9ASTL-%E8%A7%A3%E6%9E%90%E4%B8%8E-JSON-%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E6%B5%81%E5%BC%8F%E8%A7%A3%E6%9E%90%EF%BC%8C%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E7%9A%84%E5%AE%9E%E6%88%98/" title="第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战">第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战</a><time datetime="2026-05-18T15:42:37.000Z" title="发表于 2026-05-18 23:42:37">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/" title="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</a><time datetime="2026-05-18T15:40:43.000Z" title="发表于 2026-05-18 23:40:43">2026-05-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I hope that we have the feeling of "Scooping the water,the moon is in my hand, Playing with flowers, my dress is full of scent" in life and study.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

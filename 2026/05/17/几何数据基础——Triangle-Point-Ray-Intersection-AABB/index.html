@@ -1,0 +1,253 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>几何数据基础——Triangle / Point / Ray / Intersection / AABB | AIminminAI的技术博客</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🎯 第二课：几何数据基础——Triangle &#x2F; Point &#x2F; Ray &#x2F; Intersection &#x2F; AABB为什么排第二？第一课的 ObjectPool 是”货架”，这一课的几何数据就是”货架上的货物”。3D 打印分析的一切算法——光线追踪、曲率计算、聚类分类——都在操作这些东西。你如果连操作对象是什么都不清楚，上层算法就是空中楼阁。 用你自己的话">
+<meta property="og:type" content="article">
+<meta property="og:title" content="几何数据基础——Triangle &#x2F; Point &#x2F; Ray &#x2F; Intersection &#x2F; AABB">
+<meta property="og:url" content="https://ywmhhbaiminminai.github.io/2026/05/17/%E5%87%A0%E4%BD%95%E6%95%B0%E6%8D%AE%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94Triangle-Point-Ray-Intersection-AABB/index.html">
+<meta property="og:site_name" content="AIminminAI的技术博客">
+<meta property="og:description" content="🎯 第二课：几何数据基础——Triangle &#x2F; Point &#x2F; Ray &#x2F; Intersection &#x2F; AABB为什么排第二？第一课的 ObjectPool 是”货架”，这一课的几何数据就是”货架上的货物”。3D 打印分析的一切算法——光线追踪、曲率计算、聚类分类——都在操作这些东西。你如果连操作对象是什么都不清楚，上层算法就是空中楼阁。 用你自己的话">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-17T15:19:31.000Z">
+<meta property="article:modified_time" content="2026-05-17T15:21:09.148Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="几何数据基础">
+<meta property="article:tag" content="第二课：几何数据基础——Triangle">
+<meta property="article:tag" content="Intersection">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.github.io/2026/05/17/%E5%87%A0%E4%BD%95%E6%95%B0%E6%8D%AE%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94Triangle-Point-Ray-Intersection-AABB/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Hu hb","link":"链接: ","source":"来源: AIminminAI的技术博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '几何数据基础——Triangle / Point / Ray / Intersection / AABB',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: false,
+  postUpdate: '2026-05-17 23:21:09'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="AIminminAI的技术博客"><span class="site-name">AIminminAI的技术博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">几何数据基础——Triangle / Point / Ray / Intersection / AABB</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-17T15:19:31.000Z" title="发表于 2026-05-17 23:19:31">2026-05-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-17T15:21:09.148Z" title="更新于 2026-05-17 23:21:09">2026-05-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/">AI时代应该培养的能力</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/">AI最容易写错的区域</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/%E5%87%A0%E4%BD%95%E6%95%B0%E6%8D%AE%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94Triangle-Point-Ray-Intersection-AABB/">几何数据基础——Triangle / Point / Ray / Intersection / AABB</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="几何数据基础——Triangle / Point / Ray / Intersection / AABB"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>🎯 第二课：几何数据基础——Triangle &#x2F; Point &#x2F; Ray &#x2F; Intersection &#x2F; AABB<br>为什么排第二？<br>第一课的 ObjectPool 是”货架”，这一课的几何数据就是”货架上的货物”。3D 打印分析的一切算法——光线追踪、曲率计算、聚类分类——都在操作这些东西。你如果连操作对象是什么都不清楚，上层算法就是空中楼阁。</p>
+<p>用你自己的话说：”理解业务域的核心实体，这是’定义问题’的能力”（理念 1.2）。这四个结构就是 Huhb3D 业务的原子。</p>
+<p>费曼学习法 Step 1：用大白话解释它们是什么<br>想象你是一个质检员，面前有一块 3D 打印的零件：</p>
+<p>Point：零件表面上的一个点——有 x, y, z 三个坐标<br>Triangle：零件表面是由无数小三角面拼成的，每个三角形就是一小块”皮”<br>Ray：你拿一束激光照过去，这束激光就是射线——有起点、有方向<br>Intersection：激光打在零件表面上的那个点——记录了”打在哪”、”打在哪个三角形上”、”距离多远”<br>AABB：把零件装进一个方盒子，盒子的六个面分别平行于坐标轴——这就是轴对齐包围盒<br>一句话关系链：</p>
+<p>零件表面 &#x3D; N 个 Triangle<br>Triangle &#x3D; 3 个 Point + 1 个法线<br>Ray 打上去 → 命中 Intersection（在哪、打谁、多远）<br>N 个 Triangle 塞进 AABB → 给 BVH 做快速排除<br>费曼学习法 Step 2：逐个拆解核心知识点<br>📦 A. Point — 3D 世界的一个位置<br>struct Point {<br>    float x, y, z;<br>};<br>看似简单，但有几个关键认知：</p>
+<p>A1. 为什么用 float 而不是 double？</p>
+<p>float (32位)	double (64位)<br>精度	约7位有效数字	约15位有效数字<br>内存	4字节	8字节<br>运算速度	SIMD可同时算4个	SIMD同时算2个<br>3D打印零件通常尺寸在毫米级，精度要求0.01mm，float 的 7 位有效数字（如 123.4567）完全够用。但选择 float 的真正原因是：一个 Triangle 3个顶点 &#x3D; 9个float &#x3D; 36字节，用 double 就是 72 字节——数据量翻倍，BVH遍历的缓存命中率直接砍半。</p>
+<p>AI坑点： AI默认写 double，因为”更精确不会错”。但在百万三角形级别的场景下，double 会把 BVH 遍历性能拖慢 30-50%。</p>
+<p>A2. 浮点精度陷阱</p>
+<p>float a &#x3D; 0.1f + 0.2f;<br>&#x2F;&#x2F; a ≠ 0.3f !  实际 a ≈ 0.30000001192…<br>这就是后面”空间哈希编码”为什么要做量化（把连续的 float 离散化到网格）的根本原因——浮点数不能直接比相等，必须量化到整数再比较。</p>
+<p>📦 B. Triangle — 3D 世界的最小面片<br>struct alignas(64) Triangle {<br>    float normal[3];      &#x2F;&#x2F; 法线方向<br>    float vertex1[3];     &#x2F;&#x2F; 顶点1<br>    float vertex2[3];     &#x2F;&#x2F; 顶点2<br>    float vertex3[3];     &#x2F;&#x2F; 顶点3<br>    float attribute_count; &#x2F;&#x2F; 属性计数<br>    &#x2F;&#x2F; padding 填充到 64 字节<br>};<br>B1. 为什么 alignas(64)？</p>
+<p>第一课学过——缓存行对齐。一个 Triangle 正好 64 字节（13 个 float &#x3D; 52 字节 + 12 字节 padding &#x3D; 64 字节），独占一个缓存行。</p>
+<p>当光线追踪遍历时，CPU 一次读取 64 字节 &#x3D; 恰好一个完整的 Triangle，不会有半个三角形跨两行缓存的浪费。这是”数据结构设计为硬件服务”的典型思维。</p>
+<p>B2. 法线为什么要单独存？</p>
+<p>法线可以通过叉积算出来：normal &#x3D; normalize(e1 × e2)，为什么还要额外存？</p>
+<p>场景	重新算	直接读<br>STL 文件本身就带法线	需要额外运算	零开销<br>曲率计算需要频繁访问法线	每次叉积+归一化	一次内存读取<br>法线可能和几何法线不同	—	存的是”真实法线”<br>STL 格式本身带法线，直接读进来存着，后面用到的时候不需要重复计算。这是**”空间换时间”**的经典决策。</p>
+<p>B3. 为什么用 float[3] 而不是 Point vertex1？</p>
+<p>因为 Triangle 和 Point 定义在不同头文件，而 Triangle 的布局需要严格可控——用裸数组保证内存布局是连续的 3 个 float，不会有编译器插入的 padding。在序列化（STL 文件读写）和 SIMD 运算中，内存布局的可预测性至关重要。</p>
+<p>AI坑点： AI 经常把 Triangle 写成 Point v1, v2, v3，看起来更”面向对象”，但破坏了内存布局的可控性，也无法直接 memcpy 从 STL 二进制数据中读取。</p>
+<p>📦 C. Ray — 一束有方向的激光<br>struct Ray {<br>    Point origin;       &#x2F;&#x2F; 起点<br>    Point direction;    &#x2F;&#x2F; 方向（单位向量）<br>};<br>C1. 方向向量为什么要归一化？</p>
+<p>如果方向向量长度不是1，那么 t * direction 算出来的距离 t 就不是真实距离。光线追踪中，交点距离 t 直接用于判断”谁最近”，方向不归一化会导致遮挡判断错误。</p>
+<p>C2. 射线的数学表达</p>
+<p>射线 &#x3D; 一个参数方程：</p>
+<p>P(t) &#x3D; origin + t × direction    (t ≥ 0)<br>t &lt; 0：交点在射线反方向，无意义<br>t &#x3D; 0：交点就是起点<br>t &gt; 0：沿射线方向的交点<br>这个 t 就是 Intersection 里的 distance。 理解这一点，后面学 Möller-Trumbore 光线追踪算法就只需要解一个方程。</p>
+<p>📦 D. Intersection — 命中结果<br>struct Intersection {<br>    Point point;           &#x2F;&#x2F; 命中位置<br>    const Triangle* tri;   &#x2F;&#x2F; 命中的三角形指针<br>    float distance;        &#x2F;&#x2F; 射线起点到命中点的距离<br>};<br>D1. 为什么存 Triangle* 而不是 int index？</p>
+<p>存指针 → 后续需要法线、顶点时直接 tri-&gt;normal 一步到位<br>存索引 → 需要 triangles[index] 额外一次间接寻址</p>
+<p>在光线追踪中，命中后立刻需要三角形的法线和顶点来做曲率计算，所以直接存指针省掉一次间接寻址。</p>
+<p>但这也引入了一个风险： 指针在 ObjectPool 回收后会悬空。所以 ObjectPool 的设计中，三角形一旦分配就不会被回收——这是架构层面的契约，不是代码层面能强制保证的。</p>
+<p>AI坑点： AI 不会意识到这个架构契约。它可能建议”用 shared_ptr 管理三角形生命周期”，这在百万级对象中会导致巨大的引用计数开销。</p>
+<p>D2. distance 的双重用途</p>
+<p>判断哪个交点最近（t 最小的那个）<br>在曲率计算中，distance 就是”射线走过多少距离碰到对面”，这个距离 &#x3D; 局部壁厚<br>📦 E. AABB (Bounds) — 万能的粗筛盒子<br>struct Bounds {<br>    float min[3];  &#x2F;&#x2F; 盒子的最小角点 (xmin, ymin, zmin)<br>    float max[3];  &#x2F;&#x2F; 盒子的最大角点 (xmax, ymax, zmax)<br>};<br>E1. 为什么 AABB 是 BVH 的基石？</p>
+<p>BVH 树的每个节点都存一个 AABB。遍历时：</p>
+<p>射线 vs AABB：用 Slab Method，O(1) 判断”有没有可能命中”<br>    → 不可能：直接跳过整棵子树（剪枝）<br>    → 可能：进入子节点继续判断<br>AABB 就是”粗筛”——用极低的成本排除大量不可能命中的区域。没有 AABB，光线追踪就要跟每个三角形都算一次，O(N) 变 O(log N)。</p>
+<p>E2. AABB 的关键操作</p>
+<p>操作	作用	复杂度<br>expand(point)	把点纳入盒子，更新 min&#x2F;max	O(1)<br>surface_area()	计算表面积——SAH 构建要用	O(1)<br>center()	盒子中心——BVH 按质心排序	O(1)<br>intersect(ray)	Slab Method 射线求交	O(1)<br>全都是 O(1)！这就是 AABB 的威力——所有操作都是常数时间。</p>
+<p>E3. surface_area() 的公式与直觉</p>
+<p>表面积 &#x3D; 2 × (宽×高 + 宽×深 + 高×深)<br>       &#x3D; 2 × ((max.x-min.x)(max.y-min.y) + (max.x-min.x)(max.z-min.z) + (max.y-min.y)(max.z-min.z))<br>为什么要算表面积？下一课 BVH 会讲——SAH（表面积启发式）用表面积估算”射线命中这个盒子的概率”。表面积越大，越容易被射线碰到，越值得进一步细分。</p>
+<p>费曼学习法 Step 3：五个结构的关系全景图<br>┌─────────────────────────────────────────────────────┐<br>│                    STL 文件                           │<br>│  Triangle × N (normal + v1 + v2 + v3, alignas(64))  │<br>│                         │                             │<br>│            ┌────────────┼────────────┐                │<br>│            ▼            ▼            ▼                │<br>│        Point         Point       Point               │<br>│       (v1)           (v2)        (v3)                │<br>│            │            │            │                │<br>│            └────────────┼────────────┘                │<br>│                         ▼                             │<br>│                  Bounds (AABB)                        │<br>│              min[3] ← expand(v1,v2,v3) → max[3]      │<br>│                         │                             │<br>│                         ▼                             │<br>│                    BVHNode                            │<br>│              bounds + left + right                    │<br>│                         │                             │<br>│              ┌──────────┴──────────┐                  │<br>│              ▼                     ▼                  │<br>│           Ray ────────→ Intersection                  │<br>│       origin + dir    point + tri* + dist             │<br>└─────────────────────────────────────────────────────┘<br>数据流： STL → Triangle → AABB → BVHNode → Ray+BVH → Intersection → 曲率&#x2F;壁厚</p>
+<p>费曼学习法 Step 4：识别你的知识缺口<br>#	自检问题	如果你答不出<br>1	一个 Triangle 为什么是 64 字节？13个float只有52字节，剩下12字节去哪了？	重新理解 alignas + padding<br>2	float a &#x3D; 0.1f; float b &#x3D; 0.10000001f; 它们”相等”吗？怎么判断？	重新理解浮点精度 → 引出第3课空间哈希<br>3	射线 P(t) &#x3D; O + tD，如果方向 D 不是单位向量，t&#x3D;2 代表什么？	重新理解归一化的意义<br>4	为什么 AABB 的所有操作都是 O(1)？一个包围盒要判断”射线是否命中”，最少需要几次比较？	去 Slab Method（第5课预告）<br>5	Intersection 存 Triangle* 而非 int index，有什么隐患？什么场景下会崩？	重新理解指针 vs 索引的架构取舍<br>6	为什么法线要单独存而不是每次重新算？这体现了什么设计原则？	“空间换时间” + 业务域知识<br>费曼学习法 Step 5：用你的话复述<br>试着这样解释：</p>
+<p>“Huhb3D 分析的是 3D 打印零件，零件表面由几十万个三角形（Triangle）拼成。每个三角形占 64 字节——刚好一个缓存行，CPU 一次就能读完。射线（Ray）从表面射出去找对面的壁，命中后记录交点（Intersection）——位置、打在哪个三角形上、距离多远。距离就是壁厚。几十万个三角形不可能逐个判断，所以先把它们装进轴对齐包围盒（AABB），用 O(1) 的粗筛排除掉不可能命中的区域——这就是 BVH 的基础。所有这些数据结构的设计，都不是’面向对象好看’，而是’为硬件服务和为算法服务’。”</p>
+<p>📌 本课与你的 AI 时代理念的映射<br>你的理念	本课体现<br>1.1 当出题人	Triangle&#x2F;Ray&#x2F;Intersection 不是教科书概念，而是”3D打印质量检测”这个业务问题的数据抽象——定义问题的人决定数据结构<br>1.2 技术是切入点	float[3] vs Point、Triangle* vs int index——技术决策背后是架构思维和业务理解<br>1.5 AI代码有坑	AI 默认用 double、用 Point 封装顶点、用 shared_ptr——每个都在真实场景下有性能或正确性问题<br>1.4 架构能力	Intersection 存指针而不是索引，这是”数据流向决定数据结构”的架构决策，而不是单纯的代码选择</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io/2026/05/17/%E5%87%A0%E4%BD%95%E6%95%B0%E6%8D%AE%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94Triangle-Point-Ray-Intersection-AABB/">https://ywmhhbaiminminai.github.io/2026/05/17/%E5%87%A0%E4%BD%95%E6%95%B0%E6%8D%AE%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94Triangle-Point-Ray-Intersection-AABB/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ywmhhbaiminminai.github.io" target="_blank">AIminminAI的技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%87%A0%E4%BD%95%E6%95%B0%E6%8D%AE%E5%9F%BA%E7%A1%80/">几何数据基础</a><a class="post-meta__tags" href="/tags/%E7%AC%AC%E4%BA%8C%E8%AF%BE%EF%BC%9A%E5%87%A0%E4%BD%95%E6%95%B0%E6%8D%AE%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94Triangle/">第二课：几何数据基础——Triangle</a><a class="post-meta__tags" href="/tags/Intersection/">Intersection</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/17/%E5%93%88%E5%B8%8C%E8%A1%A8%E4%B8%8E%E7%A9%BA%E9%97%B4%E7%BC%96%E7%A0%81%E2%80%94%E2%80%94%E6%B5%AE%E7%82%B9%E6%95%B0%E6%80%8E%E4%B9%88%E5%8F%98%E6%88%90%E5%93%88%E5%B8%8C%E9%94%AE%EF%BC%8C%E9%82%BB%E5%9F%9F%E6%80%8E%E4%B9%88%E6%9F%A5/" title="哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/17/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%88ObjectPool-BlockHeader-FreeNode%EF%BC%89-%E4%B8%80%E5%88%87%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%9C%B0%E5%9F%BA%EF%BC%8C%E9%A1%B9%E7%9B%AE%E6%9C%80%E5%BA%95%E5%B1%82-AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F%EF%BC%9A%E5%AF%B9%E9%BD%90%E3%80%81%E6%97%A0%E9%94%81%E3%80%81%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E2%80%94%E2%80%94%E4%BD%A0%E4%B8%8D%E6%87%82%E5%B0%B1%E7%9C%8B%E4%B8%8D%E5%87%BAAI%E7%9A%84%E5%9D%91/" title="内存管理（ObjectPool/BlockHeader/FreeNode）,一切数据结构的地基，项目最底层,AI最容易写错的区域：对齐、无锁、虚拟内存——你不懂就看不出AI的坑"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">内存管理（ObjectPool/BlockHeader/FreeNode）,一切数据结构的地基，项目最底层,AI最容易写错的区域：对齐、无锁、虚拟内存——你不懂就看不出AI的坑</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E4%B8%80%E8%AF%BE%EF%BC%9A%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E6%8A%8A%E5%8D%81%E8%AF%BE%E7%9A%84%E9%9B%B6%E4%BB%B6%E7%BB%84%E8%A3%85%E6%88%90%E5%BC%95%E6%93%8E/" title="第十一课：系统集成与性能优化——把十课的零件组装成引擎">第十一课：系统集成与性能优化——把十课的零件组装成引擎</a><time datetime="2026-05-18T15:46:07.000Z" title="发表于 2026-05-18 23:46:07">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/" title="第十课：渲染与可视化——OpenGL 实战，把分析结果画出来">第十课：渲染与可视化——OpenGL 实战，把分析结果画出来</a><time datetime="2026-05-18T15:45:02.000Z" title="发表于 2026-05-18 23:45:02">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B9%9D%E8%AF%BE%EF%BC%9A%E6%8A%A5%E5%91%8A%E7%94%9F%E6%88%90%E2%80%94%E2%80%94%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%88%B0%E5%86%B3%E7%AD%96%EF%BC%8C%E6%8A%8A%E7%AE%97%E6%B3%95%E7%BB%93%E6%9E%9C%E7%BF%BB%E8%AF%91%E6%88%90%E4%BA%BA%E7%B1%BB%E8%A1%8C%E5%8A%A8/" title="第九课：报告生成——从数据到决策，把算法结果翻译成人类行动">第九课：报告生成——从数据到决策，把算法结果翻译成人类行动</a><time datetime="2026-05-18T15:43:54.000Z" title="发表于 2026-05-18 23:43:54">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%85%AB%E8%AF%BE%EF%BC%9ASTL-%E8%A7%A3%E6%9E%90%E4%B8%8E-JSON-%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E6%B5%81%E5%BC%8F%E8%A7%A3%E6%9E%90%EF%BC%8C%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E7%9A%84%E5%AE%9E%E6%88%98/" title="第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战">第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战</a><time datetime="2026-05-18T15:42:37.000Z" title="发表于 2026-05-18 23:42:37">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/" title="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</a><time datetime="2026-05-18T15:40:43.000Z" title="发表于 2026-05-18 23:40:43">2026-05-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I hope that we have the feeling of "Scooping the water,the moon is in my hand, Playing with flowers, my dress is full of scent" in life and study.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

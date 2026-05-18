@@ -1,0 +1,456 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>第十课：渲染与可视化——OpenGL 实战，把分析结果画出来 | AIminminAI的技术博客</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="第十课：渲染与可视化——OpenGL 实战，把分析结果”画”出来为什么排第十？第九课的报告把数据翻译成了文字，但文字有局限—— “薄壁区域位于 (12.3, 5.0, 8.1) 至 (18.7, 9.2, 11.5)” 用户看到这行字，脑子里能浮现出那个位置吗？大概率不能。但如果模型上那块区域闪着红光，用户一秒就懂了。 可视化 &#x3D; 把”读”变成”看”。人类视觉带宽是文字阅读的 10 万倍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十课：渲染与可视化——OpenGL 实战，把分析结果画出来">
+<meta property="og:url" content="https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/index.html">
+<meta property="og:site_name" content="AIminminAI的技术博客">
+<meta property="og:description" content="第十课：渲染与可视化——OpenGL 实战，把分析结果”画”出来为什么排第十？第九课的报告把数据翻译成了文字，但文字有局限—— “薄壁区域位于 (12.3, 5.0, 8.1) 至 (18.7, 9.2, 11.5)” 用户看到这行字，脑子里能浮现出那个位置吗？大概率不能。但如果模型上那块区域闪着红光，用户一秒就懂了。 可视化 &#x3D; 把”读”变成”看”。人类视觉带宽是文字阅读的 10 万倍">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-18T15:45:02.000Z">
+<meta property="article:modified_time" content="2026-05-18T15:45:51.789Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="OpenGL 实战">
+<meta property="article:tag" content="可视化">
+<meta property="article:tag" content="渲染">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Hu hb","link":"链接: ","source":"来源: AIminminAI的技术博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第十课：渲染与可视化——OpenGL 实战，把分析结果画出来',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: false,
+  postUpdate: '2026-05-18 23:45:51'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="AIminminAI的技术博客"><span class="site-name">AIminminAI的技术博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">第十课：渲染与可视化——OpenGL 实战，把分析结果画出来</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-18T15:45:02.000Z" title="发表于 2026-05-18 23:45:02">2026-05-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-18T15:45:51.789Z" title="更新于 2026-05-18 23:45:51">2026-05-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/">AI时代应该培养的能力</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/">AI最容易写错的区域</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/">第十课：渲染与可视化——OpenGL 实战，把分析结果画出来</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第十课：渲染与可视化——OpenGL 实战，把分析结果画出来"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>第十课：渲染与可视化——OpenGL 实战，把分析结果”画”出来<br>为什么排第十？<br>第九课的报告把数据翻译成了文字，但文字有局限——</p>
+<p>“薄壁区域位于 (12.3, 5.0, 8.1) 至 (18.7, 9.2, 11.5)”</p>
+<p>用户看到这行字，脑子里能浮现出那个位置吗？大概率不能。但如果模型上那块区域闪着红光，用户一秒就懂了。</p>
+<p>可视化 &#x3D; 把”读”变成”看”。人类视觉带宽是文字阅读的 10 万倍——一张图胜过一千行报告。</p>
+<p>用你的话说：”技术是切入点，但用户最终感知的是视觉”（理念 1.2）——你的曲率算得再精确，用户看不到就等于没有。</p>
+<p>费曼学习法 Step 1：用大白话解释它是什么<br>想象你做了一份体检报告：</p>
+<p>文字版：”左肺下叶有 3mm 结节，位于第5肋间隙内侧”——你得自己想象位置<br>CT 影像版：一张 3D 重建图，结节用红色高亮标注——一眼就看到了<br>在 Huhb3D 中：</p>
+<p>文字报告 &#x3D; 第九课的输出<br>3D 可视化 &#x3D; 本课的任务——把薄壁画成红色、悬垂面画成橙色、孔洞画成紫色<br>用户可以旋转、缩放、点击区域查看详情<br>费曼学习法 Step 2：逐个拆解核心知识点<br>📦 A. 渲染管线——从数据到像素的旅程<br>A1. 一帧画面的诞生</p>
+<p>┌──────────────────────────────────────────────────────────────────┐<br>│                       渲染管线                                    │<br>│                                                                  │<br>│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐   │<br>│  │ 顶点数据  │──→│ 顶点着色器│──→│ 光栅化    │──→│ 片段着色器│   │<br>│  │ (VBO)    │    │ (变换+投影)│    │ (三角形→像素)│   │ (上色)   │   │<br>│  └──────────┘    └──────────┘    └──────────┘    └──────────┘   │<br>│       ↑                                               │          │<br>│       │                                          ┌────▼────┐    │<br>│  ┌────┴────┐                                     │ 帧缓冲  │    │<br>│  │ 索引数据 │                                     │ (屏幕)  │    │<br>│  │ (EBO)   │                                     └─────────┘    │<br>│  └─────────┘                                                     │<br>└──────────────────────────────────────────────────────────────────┘<br>A2. 每一步在做什么</p>
+<p>阶段	输入	做什么	输出<br>顶点数据	三角形顶点坐标 + 颜色 + 法线	准备 GPU 可读的内存	VBO + EBO<br>顶点着色器	每个顶点	MVP 变换（模型→世界→裁剪→屏幕）	屏幕空间坐标<br>光栅化	变换后的三角形	把三角形内部填满像素	片段<br>片段着色器	每个片段	计算颜色（光照 + 材质 + 高亮）	像素颜色<br>A3. ★ Huhb3D 的特殊需求：同一模型，多种上色模式</p>
+<p>模式1: 法线模式    → 每个顶点用法线方向映射RGB<br>模式2: 曲率模式    → 每个顶点用曲率值映射热力图<br>模式3: 聚类模式    → 每个聚类随机颜色<br>模式4: 特征模式    → 按第九课的严重度上色（红&#x2F;橙&#x2F;黄&#x2F;绿）<br>模式5: 壁厚模式    → 壁厚值映射热力图<br>关键洞察： 模型不变，颜色变了就是另一个视图。所以数据结构要分离：拓扑（不变）和颜色（可变）分开存储。</p>
+<p>📦 B. VBO 与 EBO——GPU 的”喂饭方式”<br>B1. 为什么需要 VBO + EBO？</p>
+<p>一个三角形 &#x3D; 3 个顶点。但相邻三角形共享顶点（第三课的合并后网格），如果每个三角形单独存 3 个顶点，内存浪费巨大。</p>
+<p>不合并：6 个三角形 × 3 顶点 &#x3D; 18 份顶点数据<br>合并后：8 个独立顶点（共享），用索引引用</p>
+<p>  共享顶点的情况：<br>  v0──v1──v2<br>  │ ╲ │ ╲ │<br>  v3──v4──v5<br>  │ ╲ │ ╲ │<br>  v6──v7</p>
+<p>  三角形用索引表示：<br>  tri0: [v0, v3, v4]    tri1: [v0, v4, v1]<br>  tri2: [v1, v4, v5]    tri3: [v1, v5, v2]<br>  …<br>B2. VBO（Vertex Buffer Object）——顶点数据的 GPU 内存</p>
+<p>struct Vertex {<br>    float position[3];  &#x2F;&#x2F; 位置 xyz<br>    float normal[3];    &#x2F;&#x2F; 法线 xyz<br>    float color[4];     &#x2F;&#x2F; 颜色 rgba<br>};  &#x2F;&#x2F; 每个顶点 40 字节</p>
+<p>&#x2F;&#x2F; 创建 VBO<br>GLuint vbo;<br>glGenBuffers(1, &amp;vbo);<br>glBindBuffer(GL_ARRAY_BUFFER, vbo);<br>glBufferData(GL_ARRAY_BUFFER,<br>             vertices.size() * sizeof(Vertex),<br>             vertices.data(),<br>             GL_STATIC_DRAW);  &#x2F;&#x2F; ★ 数据不变用 STATIC<br>B3. EBO（Element Buffer Object）——索引的 GPU 内存</p>
+<p>&#x2F;&#x2F; 创建 EBO<br>GLuint ebo;<br>glGenBuffers(1, &amp;ebo);<br>glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);<br>glBufferData(GL_ELEMENT_ARRAY_BUFFER,<br>             indices.size() * sizeof(uint32_t),<br>             indices.data(),<br>             GL_STATIC_DRAW);<br>B4. ★ GL_STATIC_DRAW vs GL_DYNAMIC_DRAW</p>
+<p>标志	含义	什么时候用<br>GL_STATIC_DRAW	数据一次上传，不变	模型的顶点坐标、法线、索引<br>GL_DYNAMIC_DRAW	数据频繁更新	颜色——切换渲染模式时颜色要重新上传<br>关键设计： 把 VBO 拆成两部分——</p>
+<p>&#x2F;&#x2F; 不变部分：位置 + 法线（STATIC）<br>GLuint vbo_geometry;<br>&#x2F;&#x2F; position[3] + normal[3] &#x3D; 24 bytes&#x2F;vertex</p>
+<p>&#x2F;&#x2F; 可变部分：颜色（DYNAMIC）<br>GLuint vbo_color;<br>&#x2F;&#x2F; color[4] &#x3D; 16 bytes&#x2F;vertex</p>
+<p>&#x2F;&#x2F; 切换渲染模式时，只更新 vbo_color，不动 vbo_geometry<br>这样切换渲染模式只需上传颜色数据（16 bytes&#x2F;vertex），不用重新上传几何数据（24 bytes&#x2F;vertex）。只动该动的，不动不该动的。</p>
+<p>AI坑点： AI 把位置、法线、颜色打成一个 struct，一个 VBO。切换渲染模式时整个 VBO 都要重新上传——百万顶点的模型，每切一次模式就要传 40MB 数据到 GPU，肉眼可见的卡顿。</p>
+<p>📦 C. 顶点着色器——3D 到 2D 的数学<br>C1. MVP 变换——模型怎么出现在屏幕上</p>
+<p>物体空间 ──[Model矩阵]──→ 世界空间 ──[View矩阵]──→ 相机空间 ──[Projection矩阵]──→ 裁剪空间<br>矩阵	做什么	谁控制<br>Model	模型在世界中的位置&#x2F;旋转&#x2F;缩放	用户拖拽<br>View	相机在哪、看哪	用户视角<br>Projection	透视&#x2F;正交，近大远小	投影设置<br>C2. 顶点着色器代码</p>
+<p>#version 330 core</p>
+<p>layout(location &#x3D; 0) in vec3 aPosition;   &#x2F;&#x2F; 位置<br>layout(location &#x3D; 1) in vec3 aNormal;     &#x2F;&#x2F; 法线<br>layout(location &#x3D; 2) in vec4 aColor;      &#x2F;&#x2F; 颜色</p>
+<p>uniform mat4 uModel;<br>uniform mat4 uView;<br>uniform mat4 uProjection;</p>
+<p>out vec3 vNormal;    &#x2F;&#x2F; 传给片段着色器<br>out vec4 vColor;</p>
+<p>void main() {<br>    gl_Position &#x3D; uProjection * uView * uModel * vec4(aPosition, 1.0);<br>    vNormal &#x3D; mat3(transpose(inverse(uModel))) * aNormal;  &#x2F;&#x2F; ★ 法线变换<br>    vColor &#x3D; aColor;<br>}<br>C3. ★ 法线变换为什么不是 mat3(uModel) * aNormal？</p>
+<p>只有均匀缩放（x&#x2F;y&#x2F;z 缩放相同）时，法线才能直接乘 Model 矩阵的上 3×3。如果有非均匀缩放（比如 x 方向拉长 2 倍），直接乘会让法线偏转，光照计算错误。</p>
+<p>正确公式：mat3(transpose(inverse(uModel))) * normal</p>
+<p>这是图形学的经典坑——数学上叫法线矩阵 &#x3D; 模型矩阵逆转置的上 3×3。</p>
+<p>AI坑点： AI 默认写 mat3(uModel) * aNormal——在均匀缩放时碰巧正确，非均匀缩放时光照完全错误，模型表面出现诡异的明暗条纹。</p>
+<p>📦 D. 片段着色器——上色的艺术<br>D1. 基础光照 + 颜色</p>
+<p>#version 330 core</p>
+<p>in vec3 vNormal;<br>in vec4 vColor;</p>
+<p>uniform vec3 uLightDir;       &#x2F;&#x2F; 光照方向<br>uniform float uAmbient;       &#x2F;&#x2F; 环境光强度<br>uniform bool uEnableLighting;  &#x2F;&#x2F; 是否启用光照<br>uniform bool uEnableHighlight; &#x2F;&#x2F; 是否启用高亮（选中区域）<br>uniform vec4 uHighlightColor;  &#x2F;&#x2F; 高亮颜色</p>
+<p>out vec4 FragColor;</p>
+<p>void main() {<br>    vec4 baseColor &#x3D; vColor;</p>
+<pre><code>if (uEnableLighting) &#123;
+    // ★ Lambert 漫反射
+    vec3 N = normalize(vNormal);
+    float diff = max(dot(N, normalize(uLightDir)), 0.0);
+    float lighting = uAmbient + (1.0 - uAmbient) * diff;
+    baseColor.rgb *= lighting;
+&#125;
+
+// ★ 选中区域闪烁效果
+if (uEnableHighlight) &#123;
+    float pulse = 0.5 + 0.5 * sin(uTime * 4.0);  // 脉冲动画
+    baseColor = mix(baseColor, uHighlightColor, pulse * 0.6);
+&#125;
+
+FragColor = baseColor;
+</code></pre>
+<p>}<br>D2. ★ 为什么用 Lambert 不用 Phong？</p>
+<p>光照模型	效果	计算量	适合场景<br>Lambert	柔和漫反射	1 个 dot	工程可视化——看形状，不看质感<br>Phong	高光 + 漫反射 + 环境光	3 次计算	游戏渲染——看质感<br>PBR	物理真实	5+ 次计算	电影级渲染<br>Huhb3D 的目的是让用户看清模型的问题区域，不是做漂亮的渲染。Lambert 够用，高光反而会干扰颜色的可读性——一块红色薄壁区域上面飘着白色高光，用户分不清”这是红色还是高光”。</p>
+<p>又见”技术够用就可以”（理念 1.3）。</p>
+<p>📦 E. 颜色映射——从数值到色彩<br>E1. 曲率热力图</p>
+<p>&#x2F;&#x2F; 把曲率值映射到热力图颜色<br>vec3 curvature_colormap(float value, float min_val, float max_val) {<br>    float t &#x3D; (value - min_val) &#x2F; (max_val - min_val);  &#x2F;&#x2F; 归一化到 [0, 1]<br>    t &#x3D; clamp(t, 0.0f, 1.0f);</p>
+<pre><code>// ★ 5 段热力图：蓝 → 青 → 绿 → 黄 → 红
+vec3 color;
+if (t &lt; 0.25f) &#123;
+    color = lerp(vec3(0, 0, 1), vec3(0, 1, 1), t * 4.0f);       // 蓝→青
+&#125; else if (t &lt; 0.5f) &#123;
+    color = lerp(vec3(0, 1, 1), vec3(0, 1, 0), (t - 0.25f) * 4.0f); // 青→绿
+&#125; else if (t &lt; 0.75f) &#123;
+    color = lerp(vec3(0, 1, 0), vec3(1, 1, 0), (t - 0.5f) * 4.0f);  // 绿→黄
+&#125; else &#123;
+    color = lerp(vec3(1, 1, 0), vec3(1, 0, 0), (t - 0.75f) * 4.0f); // 黄→红
+&#125;
+
+return color;
+</code></pre>
+<p>}<br>E2. 严重度颜色映射</p>
+<p>vec3 severity_color(Severity sev) {<br>    switch (sev) {<br>        case Severity::FATAL:    return vec3(0.9f, 0.0f, 0.0f);  &#x2F;&#x2F; 红<br>        case Severity::CRITICAL: return vec3(1.0f, 0.5f, 0.0f);  &#x2F;&#x2F; 橙<br>        case Severity::WARNING:  return vec3(1.0f, 0.9f, 0.0f);  &#x2F;&#x2F; 黄<br>        case Severity::INFO:     return vec3(0.3f, 0.8f, 0.3f);  &#x2F;&#x2F; 绿<br>    }<br>}<br>E3. ★ 颜色不是”好看”，是”信息”</p>
+<p>设计选择	原因<br>红色 &#x3D; FATAL	人类本能对红色警觉<br>橙色 &#x3D; CRITICAL	暖色但不是红色 &#x3D; “严重但不是绝境”<br>黄色 &#x3D; WARNING	注意但不必紧张<br>绿色 &#x3D; INFO	安全<br>蓝→红热力图	连续值的标准可视化——蓝&#x3D;低、红&#x3D;高，全球通用<br>AI坑点： AI 选颜色看”好看”不看”信息”——用紫色表示 FATAL、青色表示 WARNING。技术上没毛病，但违反了人类的颜色直觉（红&#x3D;危险、绿&#x3D;安全），用户需要额外学习才能理解。</p>
+<p>📦 F. 交互——旋转、缩放、点选<br>F1. Arcball 旋转——3D 旋转的正确方式</p>
+<p>&#x2F;&#x2F; ★ 核心思想：把2D鼠标拖拽映射到3D球面上的旋转</p>
+<p>vec3 get_arcball_vector(vec2 mouse_pos, vec2 screen_center, float radius) {<br>    vec3 P &#x3D; vec3(<br>        (mouse_pos.x - screen_center.x) &#x2F; radius,<br>        (mouse_pos.y - screen_center.y) &#x2F; radius,<br>        0.0f<br>    );</p>
+<pre><code>float P_sq = P.x * P.x + P.y * P.y;
+
+if (P_sq &lt;= 1.0f) &#123;
+    P.z = sqrtf(1.0f - P_sq);  // 球面上
+&#125; else &#123;
+    P = normalize(P);           // 球面外，投影到球面
+    P.z = 0.0f;
+&#125;
+
+return P;
+</code></pre>
+<p>}</p>
+<p>&#x2F;&#x2F; 鼠标从 P1 拖到 P2 → 旋转四元数<br>quat rotation &#x3D; quat_from_two_vectors(<br>    get_arcball_vector(mouse_prev, center, radius),<br>    get_arcball_vector(mouse_curr, center, radius)<br>);<br>F2. ★ 为什么不用欧拉角旋转？</p>
+<p>旋转方式	问题<br>欧拉角 (rx, ry, rz)	万向节锁——旋转到某些角度会丢失一个自由度<br>四元数	无万向节锁，插值平滑<br>欧拉角在 90° 附近会让模型”抽搐”——这是万向节锁的典型表现。四元数彻底解决。</p>
+<p>AI坑点： AI 默认用 glRotatef(angleX, 1,0,0); glRotatef(angleY, 0,1,0);——看起来简单，但拖拽到特定角度模型会”跳”，用户体验极差。</p>
+<p>F3. 点选——点击三角形的射线检测</p>
+<p>&#x2F;&#x2F; 鼠标点击 → 屏幕坐标 → 3D射线<br>Ray screen_to_ray(vec2 mouse_pos, mat4 view, mat4 projection,<br>                   vec2 screen_size) {<br>    &#x2F;&#x2F; 屏幕坐标 → NDC<br>    vec2 ndc &#x3D; vec2(<br>        (2.0f * mouse_pos.x) &#x2F; screen_size.x - 1.0f,<br>        1.0f - (2.0f * mouse_pos.y) &#x2F; screen_size.y<br>    );</p>
+<pre><code>// NDC → 世界空间射线
+mat4 inv_vp = inverse(projection * view);
+vec4 near_point = inv_vp * vec4(ndc, -1.0f, 1.0f);
+vec4 far_point  = inv_vp * vec4(ndc,  1.0f, 1.0f);
+
+vec3 origin = vec3(near_point) / near_point.w;
+vec3 dir = normalize(vec3(far_point) / far_point.w - origin);
+
+return &#123;origin, dir&#125;;
+</code></pre>
+<p>}</p>
+<p>&#x2F;&#x2F; 射线与三角形求交（Möller-Trumbore 算法）<br>bool ray_triangle_intersect(Ray ray, vec3 v0, vec3 v1, vec3 v2,<br>                             float* t_out) {<br>    vec3 e1 &#x3D; v1 - v0;<br>    vec3 e2 &#x3D; v2 - v0;<br>    vec3 h &#x3D; cross(ray.dir, e2);<br>    float a &#x3D; dot(e1, h);</p>
+<pre><code>if (fabs(a) &lt; 1e-8f) return false;  // 射线平行于三角形
+
+float f = 1.0f / a;
+vec3 s = ray.origin - v0;
+float u = f * dot(s, h);
+if (u &lt; 0.0f || u &gt; 1.0f) return false;
+
+vec3 q = cross(s, e1);
+float v = f * dot(ray.dir, q);
+if (v &lt; 0.0f || u + v &gt; 1.0f) return false;
+
+float t = f * dot(e2, q);
+if (t &gt; 1e-8f) &#123;
+    *t_out = t;
+    return true;
+&#125;
+
+return false;
+</code></pre>
+<p>}<br>F4. ★ 点选加速——BVH 又来了</p>
+<p>百万三角形逐个做射线求交？O(N) 太慢。用第四课的 BVH 加速：</p>
+<p>&#x2F;&#x2F; BVH 加速的射线求交——O(log N)<br>int find_hit_triangle(Ray ray, const BVHNode* bvh,<br>                       const vector<Triangle>&amp; triangles) {<br>    int hit_tri &#x3D; -1;<br>    float closest_t &#x3D; FLT_MAX;</Triangle></p>
+<pre><code>// BFS 遍历 BVH
+vector&lt;int&gt; stack;
+stack.push_back(0);  // 根节点
+
+while (!stack.empty()) &#123;
+    int node_idx = stack.back();
+    stack.pop_back();
+    const BVHNode&amp; node = bvh[node_idx];
+    
+    // 射线不与 AABB 相交 → 剪枝
+    if (!ray_aabb_intersect(ray, node.aabb)) continue;
+    
+    if (node.is_leaf()) &#123;
+        // 叶子节点：测试三角形
+        for (int i = node.start; i &lt; node.end; i++) &#123;
+            float t;
+            if (ray_triangle_intersect(ray, 
+                    triangles[i].v0, triangles[i].v1, triangles[i].v2, &amp;t)) &#123;
+                if (t &lt; closest_t) &#123;
+                    closest_t = t;
+                    hit_tri = i;
+                &#125;
+            &#125;
+        &#125;
+    &#125; else &#123;
+        // 内部节点：压入子节点
+        stack.push_back(node.left);
+        stack.push_back(node.right);
+    &#125;
+&#125;
+
+return hit_tri;
+</code></pre>
+<p>}<br>BVH 把射线求交从 O(N) 降到 O(log N)——第四课造的轮子，第十课用上了。架构设计的复利。</p>
+<p>📦 G. 选中区域高亮——交互的闭环<br>G1. 点选→高亮→显示详情</p>
+<p>用户点击模型表面<br>    │<br>    ▼<br>射线求交 → 找到 hit_triangle<br>    │<br>    ▼<br>查第七课的聚类表 → triangle_cluster[hit_triangle] → cluster_id<br>    │<br>    ▼<br>高亮该聚类的所有三角形（着色器 pulse 动画）<br>    │<br>    ▼<br>右侧面板显示该聚类的详情（第九课的 IssueDescription）<br>G2. 实现：选中状态的 GPU 传递</p>
+<p>&#x2F;&#x2F; CPU 端：标记选中的聚类<br>int selected_cluster_id &#x3D; -1;  &#x2F;&#x2F; -1 &#x3D; 未选中</p>
+<p>void on_mouse_click(vec2 mouse_pos) {<br>    Ray ray &#x3D; screen_to_ray(mouse_pos, view, projection, screen_size);<br>    int hit_tri &#x3D; find_hit_triangle(ray, bvh, triangles);</p>
+<pre><code>if (hit_tri &gt;= 0) &#123;
+    selected_cluster_id = triangle_cluster[hit_tri];
+    // 更新颜色缓冲——选中的聚类用高亮颜色
+    update_color_buffer(selected_cluster_id);
+&#125; else &#123;
+    selected_cluster_id = -1;
+    update_color_buffer(-1);  // 取消高亮
+&#125;
+</code></pre>
+<p>}</p>
+<p>&#x2F;&#x2F; 更新颜色：只改被选中聚类的颜色<br>void update_color_buffer(int selected_id) {<br>    vector<vec4> colors(vertex_count);</vec4></p>
+<pre><code>for (int i = 0; i &lt; vertex_count; i++) &#123;
+    int tri_idx = vertex_to_triangle[i];  // 顶点→三角形映射
+    int cluster_id = triangle_cluster[tri_idx];
+    int geo_type = cluster_geometry_type[cluster_id];
+    Severity sev = cluster_severity[cluster_id];
+    
+    vec3 base_color = severity_color(sev);  // 默认用严重度着色
+    
+    if (cluster_id == selected_id) &#123;
+        // ★ 选中区域：用亮色覆盖
+        colors[i] = vec4(1.0f, 1.0f, 0.5f, 1.0f);  // 亮黄色
+    &#125; else &#123;
+        colors[i] = vec4(base_color, 1.0f);
+    &#125;
+&#125;
+
+// ★ 只上传颜色 VBO，不上传几何 VBO
+glBindBuffer(GL_ARRAY_BUFFER, vbo_color);
+glBufferSubData(GL_ARRAY_BUFFER, 0,
+                colors.size() * sizeof(vec4),
+                colors.data());
+</code></pre>
+<p>}<br>📦 H. 渲染优化——帧率保卫战<br>H1. 性能预算</p>
+<p>模型规模	目标帧率	每帧时间<br>&lt; 10万三角形	60 FPS	&lt; 16.7ms<br>10-100万三角形	30 FPS	&lt; 33.3ms</p>
+<blockquote>
+<p>100万三角形	15 FPS	&lt; 66.7ms<br>H2. 面剔除——立刻省一半</p>
+</blockquote>
+<p>glEnable(GL_CULL_FACE);<br>glCullFace(GL_BACK);        &#x2F;&#x2F; 剔除背面<br>glFrontFace(GL_CCW);        &#x2F;&#x2F; 逆时针为正面（第三课的统一绕向）<br>3D模型是封闭表面，从外面看永远只看到正面。背面的三角形直接不画——三角形数量减半，帧率翻倍。</p>
+<p>前提： 第三课统一了三角形绕向（CCW），所以第十课才能安全地剔除背面。前课的设计是后课的基石。</p>
+<p>H3. ★ 视锥剔除——看不见的不画</p>
+<p>&#x2F;&#x2F; 只渲染 BVH 中与视锥相交的节点<br>void render_bvh_culled(const BVHNode* bvh, const Frustum&amp; frustum) {<br>    vector<int> stack;<br>    stack.push_back(0);</int></p>
+<pre><code>while (!stack.empty()) &#123;
+    int node_idx = stack.back();
+    stack.pop_back();
+    const BVHNode&amp; node = bvh[node_idx];
+    
+    // ★ BVH 节点不在视锥内 → 整棵子树都不画
+    if (!frustum.intersects(node.aabb)) continue;
+    
+    if (node.is_leaf()) &#123;
+        glDrawElements(GL_TRIANGLES, 
+                      node.tri_count * 3,
+                      GL_UNSIGNED_INT,
+                      (void*)(node.start * 3 * sizeof(uint32_t)));
+    &#125; else &#123;
+        stack.push_back(node.left);
+        stack.push_back(node.right);
+    &#125;
+&#125;
+</code></pre>
+<p>}<br>用户缩放到只看模型的一个角——BVH 帮你跳过 80% 的三角形。又见第四课的复利。</p>
+<p>H4. ★ 避免每帧 CPU→GPU 数据重传</p>
+<p>&#x2F;&#x2F; ❌ AI 的写法：每帧重新上传全部数据<br>void render() {<br>    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  &#x2F;&#x2F; 每帧！<br>    glDrawArrays(…);<br>}</p>
+<p>&#x2F;&#x2F; ✅ 正确做法：只在数据变化时上传<br>void init() {<br>    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);<br>}</p>
+<p>void render() {<br>    glDrawArrays(…);  &#x2F;&#x2F; GPU 侧数据还在，直接画<br>}</p>
+<p>void on_color_changed() {<br>    glBufferSubData(GL_ARRAY_BUFFER, offset, new_color_size, new_colors);<br>}<br>glBufferData 是分配+上传，glBufferSubData 是只上传变更部分。区别在于前者让 GPU 重新分配内存（触发隐式同步），后者原地更新。</p>
+<p>AI坑点： AI 在渲染循环里调用 glBufferData——每帧重新分配 GPU 内存。50万顶点的模型，每帧上传 20MB，GPU 驱动忙着分配&#x2F;释放，帧率直接腰斩。</p>
+<p>费曼学习法 Step 3：完整流水线<br>┌──────────────────────────────────────────────────────────────────┐<br>│                    初始化阶段                                     │<br>│                                                                  │<br>│  STL解析(第8课) → 网格构建(第3课) → 曲率计算(第6课)              │<br>│  → 聚类分类(第7课) → 报告生成(第9课)                              │<br>│                                                                  │<br>│  生成数据:                                                        │<br>│  ├── vertices[] (位置+法线) → vbo_geometry (STATIC)              │<br>│  ├── indices[]             → ebo (STATIC)                       │<br>│  ├── colors[] (随模式变)    → vbo_color (DYNAMIC)                │<br>│  ├── BVH (第4课)           → 视锥剔除 + 射线检测                 │<br>│  └── cluster_map[] (第7课) → 点选→聚类→高亮                     │<br>└──────────────────────┬───────────────────────────────────────────┘<br>                       │<br>                       ▼<br>┌──────────────────────────────────────────────────────────────────┐<br>│                    每帧渲染循环                                   │<br>│                                                                  │<br>│  1. 处理输入                                                     │<br>│     ├── 鼠标拖拽 → Arcball旋转 → 更新 View 矩阵                 │<br>│     ├── 滚轮缩放 → 更新 Projection 矩阵                         │<br>│     └── 鼠标点击 → 射线检测 → 选中聚类 → 更新颜色缓冲            │<br>│                                                                  │<br>│  2. 更新着色器 Uniform                                           │<br>│     ├── uModel, uView, uProjection                               │<br>│     ├── uLightDir                                                │<br>│     ├── uEnableHighlight + uHighlightColor + uTime               │<br>│                                                                  │<br>│  3. 视锥剔除（BVH 辅助）                                        │<br>│                                                                  │<br>│  4. 绘制                                                         │<br>│     ├── 绑定 VBO + EBO                                           │<br>│     ├── 背面剔除                                                  │<br>│     └── glDrawElements                                           │<br>│                                                                  │<br>│  5. 绘制 UI 叠加层                                               │<br>│     ├── 问题列表（与 3D 视口联动）                                │<br>│     ├── 模式切换按钮                                              │<br>│     └── 选中区域的详情面板                                        │<br>└──────────────────────────────────────────────────────────────────┘<br>费曼学习法 Step 4：识别你的知识缺口<br>#	自检问题	如果你答不出<br>1	为什么把几何 VBO 和颜色 VBO 分开？	STATIC vs DYNAMIC——只上传变化的部分，不重传不变的<br>2	法线变换为什么不能直接乘 Model 矩阵？	非均匀缩放会让法线偏转——需要用逆转置<br>3	为什么用 Lambert 不用 Phong 光照？	工程可视化看形状不看质感，高光会干扰颜色可读性<br>4	Arcball 旋转用四元数不用欧拉角，为什么？	万向节锁——欧拉角在 90° 附近丢失自由度，拖拽会”抽搐”<br>5	射线检测为什么要 BVH 加速？	百万三角形逐个求交 O(N) 太慢，BVH 降到 O(log N)<br>6	面剔除的前提是什么？为什么第三课要统一绕向？	面剔除依赖一致的正反面判定——绕向不统一剔除结果错误<br>7	glBufferData 和 glBufferSubData 的区别？	前者重新分配+上传，后者原地更新——前者在渲染循环里会让帧率腰斩<br>费曼学习法 Step 5：用你的话复述<br>“3D 可视化就是把分析结果’画’出来。模型数据上传到 GPU 的 VBO&#x2F;EBO，顶点着色器做 MVP 变换把 3D 投射到 2D，片段着色器用 Lambert 光照上色。</p>
+<p>关键设计是分离不变的几何数据和可变的颜色数据——切换渲染模式只上传颜色，不重传几何。颜色不是’好看’是’信息’——红&#x3D;FATAL、绿&#x3D;INFO，用的是人类直觉，不是审美。</p>
+<p>交互靠射线检测——鼠标点击转成 3D 射线，BVH 加速找交点，映射到聚类，高亮整个问题区域。旋转用四元数 Arcball，不用欧拉角，避免万向节锁。</p>
+<p>性能三板斧：面剔除（前提是第三课统一了绕向）、视锥剔除（第四课的 BVH 又派上用场）、避免每帧重传数据。每一步优化都依赖前课的设计——架构的复利。”</p>
+<p>📌 本课与你的 AI 时代理念的映射<br>你的理念	本课体现<br>1.1 当出题人	颜色映射规则（红&#x3D;致命）、渲染模式设计、交互流程——你定义了”怎么看”<br>1.2 技术是切入点	VBO&#x2F;EBO&#x2F;着色器是技术，”为什么用红绿黄不是紫青粉”是设计——技术为认知服务<br>1.4 架构能力	几何&#x2F;颜色 VBO 分离、BVH 复用、点选→聚类→高亮的交互链路——每一层为谁服务、怎么连接，是架构<br>1.5 AI代码有坑	AI 用欧拉角（万向节锁）、VBO 不分离（每帧重传）、法线直接乘 Model（非均匀缩放错误）、渲染循环调 glBufferData（帧率腰斩）<br>1.6 软实力	可视化本身就是软实力——把”壁厚0.3mm”翻译成”那块闪红光的区域”，用户秒懂<br>1.3 技术够用就可以	Lambert 不用 Phong、支撑估算不精确到0.01g——够用就行，过度设计浪费算力和时间</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/">https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ywmhhbaiminminai.github.io" target="_blank">AIminminAI的技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/OpenGL-%E5%AE%9E%E6%88%98/">OpenGL 实战</a><a class="post-meta__tags" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/">可视化</a><a class="post-meta__tags" href="/tags/%E6%B8%B2%E6%9F%93/">渲染</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/18/%E7%AC%AC%E5%8D%81%E4%B8%80%E8%AF%BE%EF%BC%9A%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E6%8A%8A%E5%8D%81%E8%AF%BE%E7%9A%84%E9%9B%B6%E4%BB%B6%E7%BB%84%E8%A3%85%E6%88%90%E5%BC%95%E6%93%8E/" title="第十一课：系统集成与性能优化——把十课的零件组装成引擎"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第十一课：系统集成与性能优化——把十课的零件组装成引擎</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/18/%E7%AC%AC%E4%B9%9D%E8%AF%BE%EF%BC%9A%E6%8A%A5%E5%91%8A%E7%94%9F%E6%88%90%E2%80%94%E2%80%94%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%88%B0%E5%86%B3%E7%AD%96%EF%BC%8C%E6%8A%8A%E7%AE%97%E6%B3%95%E7%BB%93%E6%9E%9C%E7%BF%BB%E8%AF%91%E6%88%90%E4%BA%BA%E7%B1%BB%E8%A1%8C%E5%8A%A8/" title="第九课：报告生成——从数据到决策，把算法结果翻译成人类行动"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">第九课：报告生成——从数据到决策，把算法结果翻译成人类行动</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E4%B8%80%E8%AF%BE%EF%BC%9A%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E6%8A%8A%E5%8D%81%E8%AF%BE%E7%9A%84%E9%9B%B6%E4%BB%B6%E7%BB%84%E8%A3%85%E6%88%90%E5%BC%95%E6%93%8E/" title="第十一课：系统集成与性能优化——把十课的零件组装成引擎">第十一课：系统集成与性能优化——把十课的零件组装成引擎</a><time datetime="2026-05-18T15:46:07.000Z" title="发表于 2026-05-18 23:46:07">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/" title="第十课：渲染与可视化——OpenGL 实战，把分析结果画出来">第十课：渲染与可视化——OpenGL 实战，把分析结果画出来</a><time datetime="2026-05-18T15:45:02.000Z" title="发表于 2026-05-18 23:45:02">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B9%9D%E8%AF%BE%EF%BC%9A%E6%8A%A5%E5%91%8A%E7%94%9F%E6%88%90%E2%80%94%E2%80%94%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%88%B0%E5%86%B3%E7%AD%96%EF%BC%8C%E6%8A%8A%E7%AE%97%E6%B3%95%E7%BB%93%E6%9E%9C%E7%BF%BB%E8%AF%91%E6%88%90%E4%BA%BA%E7%B1%BB%E8%A1%8C%E5%8A%A8/" title="第九课：报告生成——从数据到决策，把算法结果翻译成人类行动">第九课：报告生成——从数据到决策，把算法结果翻译成人类行动</a><time datetime="2026-05-18T15:43:54.000Z" title="发表于 2026-05-18 23:43:54">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%85%AB%E8%AF%BE%EF%BC%9ASTL-%E8%A7%A3%E6%9E%90%E4%B8%8E-JSON-%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E6%B5%81%E5%BC%8F%E8%A7%A3%E6%9E%90%EF%BC%8C%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E7%9A%84%E5%AE%9E%E6%88%98/" title="第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战">第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战</a><time datetime="2026-05-18T15:42:37.000Z" title="发表于 2026-05-18 23:42:37">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/" title="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</a><time datetime="2026-05-18T15:40:43.000Z" title="发表于 2026-05-18 23:40:43">2026-05-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I hope that we have the feeling of "Scooping the water,the moon is in my hand, Playing with flowers, my dress is full of scent" in life and study.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

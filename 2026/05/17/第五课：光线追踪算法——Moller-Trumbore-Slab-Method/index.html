@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>第五课：光线追踪算法——Möller-Trumbore + Slab Method | AIminminAI的技术博客</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🎯 第五课：光线追踪算法——Möller-Trumbore + Slab Method为什么排第五？第四课学了 BVH 这棵”加速树”，但树只是跳过了不需要测试的三角形。真正判断”射线有没有打中三角形”的算法，在这一课。 BVH &#x3D; 快速排除 → Möller-Trumbore &#x3D; 精确判定 → Slab Method &#x3D; 快速排除 AABB 三者协作，才完成了光线">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第五课：光线追踪算法——Möller-Trumbore + Slab Method">
+<meta property="og:url" content="https://ywmhhbaiminminai.github.io/2026/05/17/%E7%AC%AC%E4%BA%94%E8%AF%BE%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94Moller-Trumbore-Slab-Method/index.html">
+<meta property="og:site_name" content="AIminminAI的技术博客">
+<meta property="og:description" content="🎯 第五课：光线追踪算法——Möller-Trumbore + Slab Method为什么排第五？第四课学了 BVH 这棵”加速树”，但树只是跳过了不需要测试的三角形。真正判断”射线有没有打中三角形”的算法，在这一课。 BVH &#x3D; 快速排除 → Möller-Trumbore &#x3D; 精确判定 → Slab Method &#x3D; 快速排除 AABB 三者协作，才完成了光线">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-17T15:27:12.000Z">
+<meta property="article:modified_time" content="2026-05-18T15:38:35.625Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="光线追踪算法">
+<meta property="article:tag" content="Möller-Trumbore">
+<meta property="article:tag" content="Slab Method">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.github.io/2026/05/17/%E7%AC%AC%E4%BA%94%E8%AF%BE%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94Moller-Trumbore-Slab-Method/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Hu hb","link":"链接: ","source":"来源: AIminminAI的技术博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第五课：光线追踪算法——Möller-Trumbore + Slab Method',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: false,
+  postUpdate: '2026-05-18 23:38:35'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="AIminminAI的技术博客"><span class="site-name">AIminminAI的技术博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">第五课：光线追踪算法——Möller-Trumbore + Slab Method</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-17T15:27:12.000Z" title="发表于 2026-05-17 23:27:12">2026-05-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-18T15:38:35.625Z" title="更新于 2026-05-18 23:38:35">2026-05-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/">AI时代应该培养的能力</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/">AI最容易写错的区域</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94Moller-Trumbore-Slab-Method/">光线追踪算法——Möller-Trumbore + Slab Method</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第五课：光线追踪算法——Möller-Trumbore + Slab Method"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>🎯 第五课：光线追踪算法——Möller-Trumbore + Slab Method<br>为什么排第五？<br>第四课学了 BVH 这棵”加速树”，但树只是跳过了不需要测试的三角形。真正判断”射线有没有打中三角形”的算法，在这一课。</p>
+<p>BVH &#x3D; 快速排除 → Möller-Trumbore &#x3D; 精确判定 → Slab Method &#x3D; 快速排除 AABB</p>
+<p>三者协作，才完成了光线追踪。用你的话说：”看AI给的光追代码对不对——底层原理的应用”（理念 1.5）。</p>
+<p>费曼学习法 Step 1：用大白话解释它是什么<br>想象你站在一个房间里，拿手电筒照墙壁：</p>
+<p>手电筒的光线 &#x3D; Ray（起点 + 方向）<br>墙上的一个三角形窗户 &#x3D; Triangle<br>光线穿没穿过窗户？穿过的话在哪穿过去的？ &#x3D; Möller-Trumbore 要回答的问题<br>但先别急——房间里可能有几十万个窗户，你不可能逐个检查。所以你先看”这面墙”（AABB）有没有被照到 → Slab Method，只检查被照到的墙上的窗户 → Möller-Trumbore。</p>
+<p>两个算法，两种精度：</p>
+<p>Slab Method：粗筛，O(1)，判断”可能命中”<br>Möller-Trumbore：精查，O(1)，判断”确实命中 + 命中在哪”<br>费曼学习法 Step 2：逐个拆解核心知识点<br>📦 A. Möller-Trumbore 算法——射线与三角形求交<br>A1. 数学问题是什么？</p>
+<p>已知：</p>
+<p>射线：P(t) &#x3D; O + tD（起点O，方向D，参数t）<br>三角形：顶点 V0, V1, V2<br>求：是否存在 t &gt; 0，使得 P(t) 在三角形内部？</p>
+<p>A2. 关键洞察：重心坐标</p>
+<p>三角形内部任意一点可以表示为：</p>
+<p>P &#x3D; V0 + u·(V1 - V0) + v·(V2 - V0)<br>其中 u ≥ 0, v ≥ 0, u + v ≤ 1</p>
+<p>u&#x3D;0, v&#x3D;0 → 就是 V0<br>u&#x3D;1, v&#x3D;0 → 就是 V1<br>u&#x3D;0, v&#x3D;1 → 就是 V2<br>u&#x3D;0.3, v&#x3D;0.5 → 内部某点<br>条件 u ≥ 0, v ≥ 0, u+v ≤ 1 就是”点在三角形内”的充要条件。</p>
+<p>A3. 联立方程——核心推导</p>
+<p>射线方程 &#x3D; 重心坐标方程：</p>
+<p>O + tD &#x3D; V0 + u·E1 + v·E2</p>
+<p>其中 E1 &#x3D; V1 - V0, E2 &#x3D; V2 - V0</p>
+<p>移项：<br>-tD + u·E1 + v·E2 &#x3D; O - V0<br>这是 3 个方程（x&#x2F;y&#x2F;z），3 个未知数（t&#x2F;u&#x2F;v），写成矩阵形式：</p>
+<p>[-D, E1, E2] · [t, u, v]ᵀ &#x3D; S</p>
+<p>其中 S &#x3D; O - V0<br>用克莱默法则解：</p>
+<p>det &#x3D; E1 · (D × E2)    ← 行列式<br>     &#x3D; D · (E1 × E2)   ← 交换叉积和点积（更高效）</p>
+<p>t &#x3D; (S · (E1 × E2)) &#x2F; det<br>u &#x3D; (D · (S × E2)) &#x2F; det<br>v &#x3D; (D · (E1 × S)) &#x2F; det<br>A4. 完整算法流程</p>
+<p>bool intersect_ray_triangle(Ray ray, Triangle tri, float&amp; t_out) {<br>    Vec3 E1 &#x3D; tri.v1 - tri.v0;          &#x2F;&#x2F; 边1<br>    Vec3 E2 &#x3D; tri.v2 - tri.v0;          &#x2F;&#x2F; 边2<br>    Vec3 S  &#x3D; ray.origin - tri.v0;      &#x2F;&#x2F; 起点偏移</p>
+<pre><code>Vec3 E1xE2 = cross(E1, E2);         // P向量（只算一次）
+float det = dot(ray.direction, E1xE2);  // 行列式
+
+// ① 行列式为0 → 射线平行于三角形平面，无交点
+if (fabs(det) &lt; 1e-8) return false;
+
+float inv_det = 1.0f / det;         // 除法只做一次
+
+float u = inv_det * dot(S, cross(ray.direction, E2));
+float v = inv_det * dot(ray.direction, cross(S, E1));
+float t = inv_det * dot(S, E1xE2);
+
+// ② u, v 范围检查
+if (u &lt; 0.0f || v &lt; 0.0f || u + v &gt; 1.0f) return false;
+
+// ③ t &gt; 0（交点在射线正方向）
+if (t &lt; 0.0f) return false;
+
+t_out = t;
+return true;
+</code></pre>
+<p>}<br>A5. 每一步的物理意义</p>
+<p>检查	物理意义	不通过说明<br>det ≈ 0	射线几乎平行于三角形平面	光线贴着面飞过去，不可能穿透<br>u &lt; 0	交点在 V0-V2 边的”外侧”	超出了三角形的一条边<br>v &lt; 0	交点在 V0-V1 边的”外侧”	超出了另一条边<br>u+v &gt; 1	交点在 V1-V2 边的”外侧”	超出了第三条边<br>t &lt; 0	交点在射线反方向	光线往后打，不可能<br>A6. 为什么这个算法快？</p>
+<p>传统方法	Möller-Trumbore<br>步骤	1. 算平面方程 2. 算射线-平面交点 3. 判断点是否在三角形内	一步到位，同时算出 t, u, v<br>除法	2-3 次	1 次<br>分支	需要3次”边测试”	同样3次，但更早拒绝<br>额外数据	需要预存平面法线	只需要3个顶点<br>核心优化：用 inv_det 把除法从 3 次减到 1 次，浮点除法是乘法耗时的 4-10 倍。</p>
+<p>AI坑点： AI 写射线-三角形求交时经常用”先求平面交点，再判断点在不在三角形内”的两步法。代码更长、除法更多、还容易在退化三角形上出bug。Möller-Trumbore 一步到位，AI 不一定会用。</p>
+<p>📦 B. Slab Method——射线与 AABB 求交<br>B1. 直觉理解</p>
+<p>AABB 的 6 个面把空间切成了 3 对”平板”（slab）：</p>
+<p>X-slab: min.x ≤ x ≤ max.x  （两面垂直于X轴的墙）<br>Y-slab: min.y ≤ y ≤ max.y  （两面垂直于Y轴的墙）<br>Z-slab: min.z ≤ z ≤ max.z  （两面垂直于Z轴的墙）</p>
+<p>AABB &#x3D; 三个 slab 的交集<br>射线穿过 AABB &#x3D; 射线同时穿过三个 slab。</p>
+<p>B2. 核心算法</p>
+<p>对每个轴 i (x, y, z):<br>    t_min_i &#x3D; (bbox.min[i] - ray.origin[i]) &#x2F; ray.direction[i]  ← 进入这个slab的时间<br>    t_max_i &#x3D; (bbox.max[i] - ray.origin[i]) &#x2F; ray.direction[i]  ← 离开这个slab的时间</p>
+<pre><code>if (t_min_i &gt; t_max_i) swap(t_min_i, t_max_i)  ← 方向为负时要交换
+</code></pre>
+<p>t_enter &#x3D; max(t_min_x, t_min_y, t_min_z)  ← 射线进入所有slab的时间 &#x3D; 进入AABB的时间<br>t_exit  &#x3D; min(t_max_x, t_max_y, t_max_z)  ← 射线离开任一slab的时间 &#x3D; 离开AABB的时间</p>
+<p>命中条件: t_enter &lt; t_exit &amp;&amp; t_exit &gt; 0<br>B3. 逐步图解（2D 简化版）</p>
+<pre><code>     min.x           max.x
+       │               │
+───────┼───────────────┼─────── min.y
+       │  ┌─────────┐  │
+       │  │  AABB   │  │
+ 射线 →→→→→→→→→→→→→→→→→→→→
+       │  │         │  │
+       │  └─────────┘  │
+───────┼───────────────┼─────── max.y
+       │               │
+
+X-slab: t_min_x = 2, t_max_x = 8
+Y-slab: t_min_y = 3, t_max_y = 7
+
+t_enter = max(2, 3) = 3    ← 同时在两个slab内
+t_exit  = min(8, 7) = 7    ← 任一slab退出
+3 &lt; 7 ✓ 命中！
+</code></pre>
+<p>B4. t_enter &gt; t_exit 是什么意思？</p>
+<pre><code>     min.x     max.x
+       │         │
+───────┼─────────┼─── min.y
+       │  AABB   │
+       │         │     射线从右边飞过
+ ─ ─ ─ ─ ─ ─ ─ ─ ─ →→→   没进X-slab就出了Y-slab
+       │         │
+───────┼─────────┼─── max.y
+
+X-slab: t_min_x = 8, t_max_x = 12
+Y-slab: t_min_y = 3, t_max_y = 7
+
+t_enter = max(8, 3) = 8    ← 要到t=8才进入X-slab
+t_exit  = min(12, 7) = 7   ← 但t=7就已经出了Y-slab
+8 &gt; 7 ✗ 未命中！
+</code></pre>
+<p>进入一个 slab 之前就已经离开了另一个 slab → 永远不可能同时在三个 slab 里 → 不命中。</p>
+<p>B5. 为什么要 swap？</p>
+<p>如果 ray.direction.x &lt; 0（射线朝X负方向）：<br>    t_min_x &#x3D; (max.x - origin.x) &#x2F; dir.x  ← 注意：这时候min和max反了<br>    t_max_x &#x3D; (min.x - origin.x) &#x2F; dir.x<br>因为方向为负时，”先碰到”的是 max 那一面，”后碰到”的是 min 那一面。swap 保证 t_min 始终是”进入时间”，t_max 始终是”离开时间”。</p>
+<p>B6. 除以零怎么办？</p>
+<p>dir.x &#x3D; 0 时，射线平行于 X 轴的 slab：</p>
+<p>如果 origin.x 在 [min.x, max.x] 内 → 永远在这个 slab 里 → t_min &#x3D; -∞, t_max &#x3D; +∞<br>如果不在 → 永远不在 → t_min &#x3D; +∞, t_max &#x3D; -∞<br>代码中用浮点数的特殊值处理：1.0f &#x2F; 0.0f &#x3D; +inf, 1.0f &#x2F; -0.0f &#x3D; -inf，IEEE 754 标准保证这一切自动正确，不需要特殊处理。</p>
+<p>AI坑点： AI 经常加一个 if (fabs(dir.x) &lt; epsilon) 的特殊分支来处理平行情况。这不但不必要（IEEE 754 已经处理了），还会引入分支预测失败的惩罚。项目代码直接算，零分支。</p>
+<p>📦 C. 两个算法在 BVH 遍历中的协作<br>&#x2F;&#x2F; 伪代码：完整的BVH光线追踪<br>Intersection trace_ray(Ray ray, BVH&amp; bvh) {<br>    Intersection closest;  &#x2F;&#x2F; 最近的命中<br>    closest.distance &#x3D; FLT_MAX;</p>
+<pre><code>uint32_t stack[64];
+int sp = 0;
+stack[0] = 0;  // 根节点
+
+while (sp &gt;= 0) &#123;
+    uint32_t idx = stack[sp--];
+    BVHNode&amp; node = bvh.nodes[idx];
+    
+    // ──── 第一步：Slab Method 粗筛 ────
+    if (!intersect_ray_aabb(ray, node.bounds))
+        continue;  // 射线没碰到AABB → 整棵子树跳过
+    
+    if (node.is_leaf) &#123;
+        // ──── 第二步：Möller-Trumbore 精查 ────
+        for (int i = 0; i &lt; node.tri_count; i++) &#123;
+            float t;
+            if (intersect_ray_triangle(ray, *bvh.leaf_tris[node.tri_start + i], t)) &#123;
+                if (t &lt; closest.distance) &#123;  // 更近？
+                    closest.distance = t;
+                    closest.tri = bvh.leaf_tris[node.tri_start + i];
+                    closest.point = ray.origin + t * ray.direction;
+                &#125;
+            &#125;
+        &#125;
+    &#125; else &#123;
+        stack[++sp] = node.right;
+        stack[++sp] = node.left;
+    &#125;
+&#125;
+
+return closest;
+</code></pre>
+<p>}<br>C1. 为什么 Slab Method 必须在 Möller-Trumbore 之前？</p>
+<p>只用 Möller-Trumbore	Slab + Möller<br>每个节点	测试叶子中所有三角形	先测AABB，不过就跳<br>AABB测试代价	—	6次除法 + 6次比较 ≈ 20ns<br>三角形测试代价	每个三角形 ≈ 50ns	同<br>百万三角形场景	测试 ~1000 个三角形 ≈ 50μs	测试 ~10 个AABB + ~5 个三角形 ≈ 0.5μs<br>AABB 测试比三角形测试便宜，而且一次通过就能跳过整棵子树。粗筛的成本远低于精查，所以先粗后精。</p>
+<p>📦 D. 自交问题与 Epsilon 偏移——光线追踪的”幽灵bug”<br>D1. 问题是什么？</p>
+<p>从三角形表面发射射线，射线起点就在这个三角形上。由于浮点误差，t 可能算出一个极小的正数（比如 1e-8），射线”命中”了自己所在的三角形。</p>
+<p>从三角形A表面发射线 → t &#x3D; 1e-8 → “命中A自己” → 错误！<br>D2. 解决方案：epsilon 偏移</p>
+<p>float self_intersection_eps &#x3D; 1e-4f;</p>
+<p>&#x2F;&#x2F; 方案1：偏移射线起点<br>ray.origin &#x3D; ray.origin + ray.direction * self_intersection_eps;</p>
+<p>&#x2F;&#x2F; 方案2：忽略过近的命中<br>if (t &lt; self_intersection_eps) continue;  &#x2F;&#x2F; 太近了，视为自交<br>项目使用方案2——忽略过近的命中。这样更简单，而且不需要修改射线数据。</p>
+<p>D3. epsilon 选多大？</p>
+<p>值	风险<br>1e-8	太小，浮点误差可能比这个大，自交仍然出现<br>1e-4	合适，对于 mm 级别的模型足以排除自交<br>1e-2	太大，可能错过真正很近的对面壁（薄壁模型）<br>1e-4 在 3D 打印场景下是安全的——0.0001mm 的壁厚在现实中不存在。</p>
+<p>AI坑点： AI 通常不知道要加 epsilon 偏移，或者随便写个 1e-6——在某些模型上就会出”幽灵命中”，而且这种 bug 极难调试（只在特定角度、特定模型上出现）。</p>
+<p>费曼学习法 Step 3：两个算法的对比与协作全景<br>射线射出<br>    │<br>    ▼<br>┌─────────────────────────────────────────────┐<br>│  Slab Method (粗筛)                          │<br>│                                              │<br>│  输入: Ray + AABB                            │<br>│  计算: 3对t_min&#x2F;t_max → t_enter&#x2F;t_exit       │<br>│  判断: t_enter &lt; t_exit &amp;&amp; t_exit &gt; 0 ?      │<br>│  输出: Yes&#x2F;No (O(1), ~20ns)                  │<br>│  特点: 零分支处理平行情况(IEEE 754)            │<br>└──────────────┬──────────────────────────────┘<br>               │ No → 跳过整棵子树<br>               │ Yes<br>               ▼<br>┌─────────────────────────────────────────────┐<br>│  Möller-Trumbore (精查)                      │<br>│                                              │<br>│  输入: Ray + Triangle                        │<br>│  计算: 1次叉积 + 3次点积 + 1次除法 → t, u, v  │<br>│  判断: u≥0 &amp;&amp; v≥0 &amp;&amp; u+v≤1 &amp;&amp; t&gt;ε ?         │<br>│  输出: t值 + 命中点 (O(1), ~50ns)             │<br>│  特点: 重心坐标一步到位, 1次除法               │<br>└──────────────┬──────────────────────────────┘<br>               │<br>               ▼<br>        Intersection(point, tri*, distance)<br>               │<br>               ▼<br>        曲率计算(第6课) → 聚类(第7课)<br>费曼学习法 Step 4：识别你的知识缺口<br>#	自检问题	如果你答不出<br>1	Möller-Trumbore 中 u+v&gt;1 的几何意义是什么？画个图试试	重新理解重心坐标<br>2	为什么 det ≈ 0 时射线平行于三角形？行列式的几何意义是什么？	重新理解叉积+点积的几何含义<br>3	Slab Method 中 1.0f &#x2F; 0.0f 在 C++ 中结果是什么？为什么不需要特殊处理？	去查 IEEE 754 浮点标准<br>4	为什么要 swap t_min 和 t_max？不 swap 会怎样？	重新理解方向为负时的情况<br>5	epsilon &#x3D; 1e-4，如果模型单位是米而不是毫米，这个值还合适吗？	重新理解 epsilon 与模型尺度的关系<br>6	为什么 Slab Method 只需 6 次比较就能判断3D空间中射线是否穿过一个盒子？	重新理解 slab 分解的数学本质<br>7	Möller-Trumbore 用 inv_det 只做1次除法，传统方法做几次？除法比乘法慢多少？	重新理解除法优化的价值<br>费曼学习法 Step 5：用你的话复述<br>试着这样解释：</p>
+<p>“光线追踪分两步：先粗筛再精查。粗筛用 Slab Method——把 AABB 想象成3对平行墙，射线穿过所有墙的时间取最晚的（t_enter），离开任意一面墙的时间取最早的（t_exit），如果进去比出来早，就命中了。方向为负时 swap 一下就行，除以零靠 IEEE 754 自动处理，零分支。精查用 Möller-Trumbore——把射线方程和三角形的重心坐标方程联立，一步解出 t、u、v 三个参数。t 告诉你在哪命中，u 和 v 告诉你命中在三角形内的什么位置。只做1次除法，比传统的两步法快。还要加个 epsilon 偏移防止自交——从表面发射的射线不能命中自己，浮点误差会让这个幽灵bug时隐时现，极难调试。”</p>
+<p>📌 本课与你的 AI 时代理念的映射<br>你的理念	本课体现<br>1.5 AI代码有坑	AI 不会用 Möller-Trumbore（用两步法更慢）、不知道 epsilon 偏移（幽灵bug）、加不必要的分支处理平行情况<br>1.4 架构能力	Slab + Möller 的”先粗后精”不是算法细节，是系统架构——每一层该用多高精度的查询，是架构师的决策<br>1.2 技术是切入点	重心坐标、行列式、IEEE 754 是技术，但”为什么需要光线追踪”是业务——3D 打印需要检测壁厚<br>1.1 出题人	epsilon 取 1e-4 而不是 1e-8——这是你定义”什么是自交”，出题人定义边界条件<br>1.6 软实力	自交 bug 时隐时现极难复现——如果你能用清晰的语言向团队描述这个问题的本质，调试效率翻倍</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io/2026/05/17/%E7%AC%AC%E4%BA%94%E8%AF%BE%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94Moller-Trumbore-Slab-Method/">https://ywmhhbaiminminai.github.io/2026/05/17/%E7%AC%AC%E4%BA%94%E8%AF%BE%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94Moller-Trumbore-Slab-Method/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ywmhhbaiminminai.github.io" target="_blank">AIminminAI的技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E7%AE%97%E6%B3%95/">光线追踪算法</a><a class="post-meta__tags" href="/tags/Moller-Trumbore/">Möller-Trumbore</a><a class="post-meta__tags" href="/tags/Slab-Method/">Slab Method</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/18/%E7%AC%AC%E5%85%AD%E8%AF%BE%EF%BC%9A%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97%EF%BC%88%E7%A6%BB%E6%95%A3%E9%AB%98%E6%96%AF%E6%9B%B2%E7%8E%87-%E7%A6%BB%E6%95%A3%E5%B9%B3%E5%9D%87%E6%9B%B2%E7%8E%87%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E5%91%BD%E4%B8%AD%E7%82%B9%E5%88%B0%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%BD%A2%E7%8A%B6/" title="第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/17/%E7%AC%AC%E5%9B%9B%E8%AF%BE%EF%BC%9ABVH-%E7%A9%BA%E9%97%B4%E7%B4%A2%E5%BC%95%E2%80%94%E2%80%94%E4%BB%8E-O-N-%E5%88%B0-O-log-N-%E7%9A%84%E9%A3%9E%E8%B7%83/" title="第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E4%B8%80%E8%AF%BE%EF%BC%9A%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E6%8A%8A%E5%8D%81%E8%AF%BE%E7%9A%84%E9%9B%B6%E4%BB%B6%E7%BB%84%E8%A3%85%E6%88%90%E5%BC%95%E6%93%8E/" title="第十一课：系统集成与性能优化——把十课的零件组装成引擎">第十一课：系统集成与性能优化——把十课的零件组装成引擎</a><time datetime="2026-05-18T15:46:07.000Z" title="发表于 2026-05-18 23:46:07">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/" title="第十课：渲染与可视化——OpenGL 实战，把分析结果画出来">第十课：渲染与可视化——OpenGL 实战，把分析结果画出来</a><time datetime="2026-05-18T15:45:02.000Z" title="发表于 2026-05-18 23:45:02">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B9%9D%E8%AF%BE%EF%BC%9A%E6%8A%A5%E5%91%8A%E7%94%9F%E6%88%90%E2%80%94%E2%80%94%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%88%B0%E5%86%B3%E7%AD%96%EF%BC%8C%E6%8A%8A%E7%AE%97%E6%B3%95%E7%BB%93%E6%9E%9C%E7%BF%BB%E8%AF%91%E6%88%90%E4%BA%BA%E7%B1%BB%E8%A1%8C%E5%8A%A8/" title="第九课：报告生成——从数据到决策，把算法结果翻译成人类行动">第九课：报告生成——从数据到决策，把算法结果翻译成人类行动</a><time datetime="2026-05-18T15:43:54.000Z" title="发表于 2026-05-18 23:43:54">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%85%AB%E8%AF%BE%EF%BC%9ASTL-%E8%A7%A3%E6%9E%90%E4%B8%8E-JSON-%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E6%B5%81%E5%BC%8F%E8%A7%A3%E6%9E%90%EF%BC%8C%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E7%9A%84%E5%AE%9E%E6%88%98/" title="第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战">第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战</a><time datetime="2026-05-18T15:42:37.000Z" title="发表于 2026-05-18 23:42:37">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/" title="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</a><time datetime="2026-05-18T15:40:43.000Z" title="发表于 2026-05-18 23:40:43">2026-05-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I hope that we have the feeling of "Scooping the water,the moon is in my hand, Playing with flowers, my dress is full of scent" in life and study.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

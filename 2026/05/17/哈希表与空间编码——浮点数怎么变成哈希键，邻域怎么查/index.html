@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查 | AIminminAI的技术博客</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🎯 第三课：哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查为什么排第三？第二课我们知道了 Triangle 的顶点是 float——但 float 不能直接比相等（0.1 ≠ 0.10000001）。那项目怎么知道”这两个三角形共享一个顶点”？怎么知道”这条边属于哪几个三角形”？ 答案就是：空间哈希编码 + 边哈希表。 这是几何→索引的桥梁。没有它，BVH 的邻域查询就做不了，曲率就算不出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查">
+<meta property="og:url" content="https://ywmhhbaiminminai.github.io/2026/05/17/%E5%93%88%E5%B8%8C%E8%A1%A8%E4%B8%8E%E7%A9%BA%E9%97%B4%E7%BC%96%E7%A0%81%E2%80%94%E2%80%94%E6%B5%AE%E7%82%B9%E6%95%B0%E6%80%8E%E4%B9%88%E5%8F%98%E6%88%90%E5%93%88%E5%B8%8C%E9%94%AE%EF%BC%8C%E9%82%BB%E5%9F%9F%E6%80%8E%E4%B9%88%E6%9F%A5/index.html">
+<meta property="og:site_name" content="AIminminAI的技术博客">
+<meta property="og:description" content="🎯 第三课：哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查为什么排第三？第二课我们知道了 Triangle 的顶点是 float——但 float 不能直接比相等（0.1 ≠ 0.10000001）。那项目怎么知道”这两个三角形共享一个顶点”？怎么知道”这条边属于哪几个三角形”？ 答案就是：空间哈希编码 + 边哈希表。 这是几何→索引的桥梁。没有它，BVH 的邻域查询就做不了，曲率就算不出">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-17T15:21:50.000Z">
+<meta property="article:modified_time" content="2026-05-17T15:24:56.123Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="空间编码">
+<meta property="article:tag" content="哈希表">
+<meta property="article:tag" content="邻域">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.github.io/2026/05/17/%E5%93%88%E5%B8%8C%E8%A1%A8%E4%B8%8E%E7%A9%BA%E9%97%B4%E7%BC%96%E7%A0%81%E2%80%94%E2%80%94%E6%B5%AE%E7%82%B9%E6%95%B0%E6%80%8E%E4%B9%88%E5%8F%98%E6%88%90%E5%93%88%E5%B8%8C%E9%94%AE%EF%BC%8C%E9%82%BB%E5%9F%9F%E6%80%8E%E4%B9%88%E6%9F%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Hu hb","link":"链接: ","source":"来源: AIminminAI的技术博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: false,
+  postUpdate: '2026-05-17 23:24:56'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="AIminminAI的技术博客"><span class="site-name">AIminminAI的技术博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-17T15:21:50.000Z" title="发表于 2026-05-17 23:21:50">2026-05-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-17T15:24:56.123Z" title="更新于 2026-05-17 23:24:56">2026-05-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/">AI时代应该培养的能力</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/">AI最容易写错的区域</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/%E7%AC%AC%E4%B8%89%E8%AF%BE%EF%BC%9A%E5%93%88%E5%B8%8C%E8%A1%A8%E4%B8%8E%E7%A9%BA%E9%97%B4%E7%BC%96%E7%A0%81%E2%80%94%E2%80%94%E6%B5%AE%E7%82%B9%E6%95%B0%E6%80%8E%E4%B9%88%E5%8F%98%E6%88%90%E5%93%88%E5%B8%8C%E9%94%AE%EF%BC%8C%E9%82%BB%E5%9F%9F%E6%80%8E%E4%B9%88%E6%9F%A5/">第三课：哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>🎯 第三课：哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查<br>为什么排第三？<br>第二课我们知道了 Triangle 的顶点是 float——但 float 不能直接比相等（0.1 ≠ 0.10000001）。那项目怎么知道”这两个三角形共享一个顶点”？怎么知道”这条边属于哪几个三角形”？</p>
+<p>答案就是：空间哈希编码 + 边哈希表。</p>
+<p>这是几何→索引的桥梁。没有它，BVH 的邻域查询就做不了，曲率就算不出来，聚类就跑不动——整条链断掉。</p>
+<p>用你自己的话说：”自定义哈希&#x2F;空间编码是架构设计的经典案例”（学习路径规划时说的），而理解”为什么这么设计”比”怎么写”重要一百倍。</p>
+<p>费曼学习法 Step 1：用大白话解释它是什么<br>想象一个巨大的衣帽间：</p>
+<p>几十万个三角形，每个三角形 3 条边、3 个顶点<br>你要回答两个问题：<br>“这个坐标点上，有哪些三角形？” → 顶点哈希表<br>“这条边，被哪几个三角形共享？” → 边哈希表<br>顶点哈希表 &#x3D; 你把衣帽间按”格子”划分，每个格子有编号，同一格子里的东西一定在附近</p>
+<p>边哈希表 &#x3D; 你给每条边一个”身份证号”，同一身份证号的人查出来就是共享这条边的三角形</p>
+<p>费曼学习法 Step 2：逐个拆解核心知识点<br>📦 A. 空间哈希编码 vertexKey()——把 float 变成 int64_t<br>int64_t vertexKey(float x, float y, float z) {<br>    int ix &#x3D; (int)(x * 10000);  &#x2F;&#x2F; 量化：精度0.0001<br>    int iy &#x3D; (int)(y * 10000);<br>    int iz &#x3D; (int)(z * 10000);<br>    return ((int64_t)(ix &amp; 0xFFFFF) &lt;&lt; 40) |<br>           ((int64_t)(iy &amp; 0xFFFFF) &lt;&lt; 20) |<br>           ((int64_t)(iz &amp; 0xFFFFF));<br>}<br>A1. 为什么要量化？——浮点精度问题的终极解决方案</p>
+<p>第二课留下的坑现在填：</p>
+<p>float a &#x3D; 0.1f + 0.2f;      &#x2F;&#x2F; ≈ 0.30000001192<br>float b &#x3D; 0.3f;              &#x2F;&#x2F; ≈ 0.30000001192<br>&#x2F;&#x2F; 运气好的话 a &#x3D;&#x3D; b，但换一组数就不一定了<br>在哈希表里，键必须能精确比较。0.30000001 和 0.30000002 如果直接当键，就是两个不同的键——但它们在物理上代表同一个位置。</p>
+<p>量化 &#x3D; 把连续的浮点数离散化到网格上：×10000 再取整，精度 0.0001mm，两个点在这个精度内就被视为”同一个位置”。</p>
+<p>原始坐标: (1.23456, 2.34567, 3.45678)<br>×10000:   (12345, 23456, 34567)<br>取整后:    (12345, 23456, 34567)   ← 精确的整数，可以当哈希键<br>A2. 位拼接——把三个整数压成一个 int64_t</p>
+<p>ix &#x3D; 12345, iy &#x3D; 23456, iz &#x3D; 34567</p>
+<p>(ix &amp; 0xFFFFF) &#x3D; 12345        ← 取低20位<br>(iy &amp; 0xFFFFF) &#x3D; 23456<br>(iz &amp; 0xFFFFF) &#x3D; 34567</p>
+<p>最终 key:<br>|    ix (20位)    |    iy (20位)    |    iz (20位)    |<br>|  0000000011000000111001 | 0000000101101110000000 | 0000001000011100000111 |<br>←────────── 64位 ──────────────────────────────────→<br>为什么 20 位&#x2F;轴？</p>
+<p>20 位 &#x3D; 2²⁰ &#x3D; 1,048,576 个格<br>精度 0.0001mm × 1,048,576 ≈ 104mm 的坐标范围<br>3D 打印零件一般不超过 100mm，刚好覆盖<br>3 × 20 &#x3D; 60 位，加上符号位，64 位 int64_t 刚好装下<br>如果零件更大呢？ 精度就得降——比如 ×1000（0.001mm 精度）就能覆盖 1040mm。这就是精度与范围的 trade-off，不是代码问题，是业务问题。</p>
+<p>AI坑点： AI 通常直接用 to_string(x) + “,” + to_string(y) + “,” + to_string(z) 当键。能用吗？能。但字符串哈希比整数哈希慢 10 倍以上，而且内存占用大得多（一个键从 8 字节变成 30+ 字节）。百万顶点级别下，这就是”能用”和”好用”的差距。</p>
+<p>📦 B. VertexInfo——顶点上的”档案袋”<br>struct VertexInfo {<br>    float normal[3];     &#x2F;&#x2F; 该顶点处累积法线<br>    float area;          &#x2F;&#x2F; 关联三角形面积之和<br>    int    degree;       &#x2F;&#x2F; 关联三角形数量（度）<br>};<br>大白话： 顶点哈希表的值，不是简单的”有&#x2F;没有”，而是一份档案——这个顶点周围长什么样、有多大、连着几个三角形。</p>
+<p>B1. 为什么需要累积法线？</p>
+<p>一个顶点通常被多个三角形共享。每个三角形有自己的法线，但顶点处的”真实法线”应该是周围法线的加权平均。degree 记录了共享顶点的三角形数量，最后做平均用。</p>
+<p>这就是”曲率”的起点——顶点法线跟周围三角形法线的偏差程度，就是曲率的直观度量。</p>
+<p>B2. area 有什么用？</p>
+<p>后续聚类算法需要按面积加权——大面积的三角形比小面积的更有代表性。VertexInfo 提前把面积攒好，后面用的时候 O(1) 查询，不用重新算。</p>
+<p>📦 C. EdgeKey 与半边结构简化版——“谁跟我共享这条边？”<br>struct EdgeKey {<br>    int v0, v1;  &#x2F;&#x2F; 顶点索引</p>
+<pre><code>// 构造时保证 v0 &lt; v1（无向边）
+EdgeKey(int a, int b) &#123;
+    v0 = min(a, b);
+    v1 = max(a, b);
+&#125;
+</code></pre>
+<p>};<br>C1. 为什么 v0 &lt; v1？——无向边的标准化</p>
+<p>三角形 A 的边是顶点 (3, 7)，三角形 B 的边是顶点 (7, 3)——它们是同一条边，但如果直接存，哈希表里就是两个不同的键。</p>
+<p>min&#x2F;max 标准化：强制把小的索引放前面，这样不管从哪个三角形看，同一条边都是 (3, 7)，哈希键一致。</p>
+<p>三角形A的边: (7, 3) → 标准化为 (3, 7) ✓<br>三角形B的边: (3, 7) → 标准化为 (3, 7) ✓<br>同一把钥匙，开同一扇门<br>C2. 边哈希表的值——共享该边的三角形列表</p>
+<p>unordered_map&lt;EdgeKey, vector<int>, EdgeKeyHash&gt; edge_to_triangles;<br>查一下边 (3, 7)，得到 [5, 12]——意思是第 5 号和第 12 号三角形共享这条边。</int></p>
+<p>这为什么叫”半边结构的简化版”？</p>
+<p>完整半边结构	本项目的简化版<br>存储内容	每个半边有：起始顶点、对偶半边、下一个半边、所属面	每条边有：两个顶点 + 共享三角形列表<br>能回答的问题	遍历一个顶点的所有邻接面、邻接边	哪些三角形共享这条边<br>内存	6条指针&#x2F;边	2个int + 1个vector&#x2F;边<br>适用场景	通用网格编辑	只需邻域查询的分析场景<br>项目只做分析（不编辑网格），不需要完整的半边结构，简化版够用且更省内存。这就是”架构能力”——知道什么时候够用就行（理念 1.3：技术够用就可以）。</p>
+<p>📦 D. EdgeKeyHash——自定义哈希函数<br>struct EdgeKeyHash {<br>    size_t operator()(const EdgeKey&amp; k) const {<br>        return hash<int64_t>()(k.v0) ^ (hash<int64_t>()(k.v1) &lt;&lt; 1);<br>    }<br>};<br>D1. 为什么不能直接用默认哈希？</int64_t></int64_t></p>
+<p>unordered_map 的默认哈希只支持基本类型。EdgeKey 是自定义结构体，编译器不知道怎么哈希它，必须你告诉它。</p>
+<p>D2. 这个哈希函数做了什么？</p>
+<p>hash(v0) ^ (hash(v1) &lt;&lt; 1)<br>把 v0 哈希成一个数<br>把 v1 哈希成一个数，左移1位<br>两者异或<br>为什么左移1位？ 如果两个数一样，hash(x) ^ hash(x) &#x3D; 0——所有 v0&#x3D;&#x3D;v1 的边都会冲突到同一个桶。左移1位打破这种对称性。</p>
+<p>AI坑点： AI 写自定义哈希时经常直接 return v0 + v1 或 return v0 ^ v1。前者冲突率极高（1+4&#x3D;5, 2+3&#x3D;5），后者在 v0&#x3D;&#x3D;v1 时全为0。项目用的 hash ^ (hash &lt;&lt; 1) 是标准做法，AI 不一定知道。</p>
+<p>📦 E. 项目中的其他哈希表一览<br>哈希表	键	值	用途<br>顶点哈希表	int64_t（空间编码）	VertexInfo	顶点邻域信息<br>边哈希表	EdgeKey	vector<int>	边→三角形映射<br>三角形索引表	Triangle*	int	指针→索引反查<br>工具注册表	string	ToolDefinition	AI Agent 的工具查找<br>技能注册表	string	unique_ptr<ISkill>	技能名→技能实例<br>聚类成员集	int	—	DFS 时判断”是否已访问”<br>注意一个细节：工具注册表用的是 map（红黑树）而不是 unordered_map（哈希表）。为什么？因为工具列表需要按名称排序展示给用户，map 天然有序。这是”选择数据结构要看业务需求”的又一个例子。</ISkill></int></p>
+<p>费曼学习法 Step 3：三个哈希表的协作全景<br>STL 文件读入 N 个 Triangle<br>        │<br>        ▼<br>┌─────────────────────────────────────────────┐<br>│           第一步：建顶点哈希表                 │<br>│                                              │<br>│  for each triangle:                          │<br>│    key &#x3D; vertexKey(v1.x, v1.y, v1.z)         │<br>│    vertex_map[key].normal +&#x3D; tri.normal       │<br>│    vertex_map[key].area   +&#x3D; tri.area         │<br>│    vertex_map[key].degree +&#x3D; 1                │<br>│    (v2, v3 同理)                              │<br>└─────────────────────────────────────────────┘<br>        │<br>        ▼<br>┌─────────────────────────────────────────────┐<br>│           第二步：建边哈希表                    │<br>│                                              │<br>│  for each triangle i:                        │<br>│    edge_map[EdgeKey(v1,v2)].push_back(i)      │<br>│    edge_map[EdgeKey(v2,v3)].push_back(i)      │<br>│    edge_map[EdgeKey(v3,v1)].push_back(i)      │<br>└─────────────────────────────────────────────┘<br>        │<br>        ▼<br>┌─────────────────────────────────────────────┐<br>│     第三步：用两个表回答邻域查询                 │<br>│                                              │<br>│  Q: 顶点P的邻居三角形有哪些？                  │<br>│  A: vertex_map[vertexKey(P)].degree          │<br>│                                              │<br>│  Q: 哪些三角形跟三角形i共享边？                 │<br>│  A: edge_map[EdgeKey(i的每条边)]              │<br>│                                              │<br>│  → 这就是曲率计算和聚类所需的邻域信息！          │<br>└─────────────────────────────────────────────┘<br>费曼学习法 Step 4：识别你的知识缺口<br>#	自检问题	如果你答不出<br>1	vertexKey 中 &amp; 0xFFFFF 的作用是什么？如果 ix 超过 2²⁰ 会怎样？	重新理解位拼接与溢出<br>2	量化精度 0.0001mm，如果两个顶点距离 0.00009mm，它们会被视为同一个吗？这是问题吗？	重新理解量化的 trade-off<br>3	为什么 EdgeKey 要 min&#x2F;max 标准化？不标准化会怎样？	重新理解无向边<br>4	hash(v0) ^ (hash(v1) &lt;&lt; 1) 中，如果不左移1位直接 hash(v0) ^ hash(v1)，什么时候会出问题？	重新理解哈希冲突<br>5	项目为什么用简化版半边结构而不是完整的？什么场景下必须用完整的？	重新理解”够用就行”的设计决策<br>6	工具注册表为什么用 map 而不是 unordered_map？性能差多少？在什么情况下这个差距可以忽略？	重新理解数据结构选择与业务需求<br>费曼学习法 Step 5：用你的话复述<br>试着这样解释：</p>
+<p>“3D 模型有几十万个顶点，都是 float 坐标，float 不能直接比相等。项目把每个坐标乘以 10000 再取整，变成精确的整数，然后把 x&#x2F;y&#x2F;z 三个整数各取 20 位拼成一个 64 位整数——这就是空间哈希编码。同一位置的顶点算出同一个 key，查哈希表就能得到这个顶点的法线、面积、度数等邻域信息。</p>
+<p>边也是同样的思路：一条边用两个顶点索引表示，强制小的在前大的在后（无向边标准化），再通过自定义哈希函数映射。查边哈希表就能知道’哪些三角形共享这条边’。</p>
+<p>这两个表就是整个项目的邻域查询引擎——曲率计算需要顶点邻域，聚类需要边邻域，没有这两个表，后面所有算法都跑不动。而它们的设计哲学是：不追求理论最优（完整半边结构），够用就行。”</p>
+<p>📌 本课与你的 AI 时代理念的映射<br>你的理念	本课体现<br>1.5 AI代码有坑	AI 不会写空间哈希编码，只会用字符串拼 key——10倍性能差距；AI 写自定义哈希容易冲突<br>1.3 技术够用就可以	简化版半边结构 vs 完整版——项目只做分析不需要编辑，简化版够用且省内存<br>1.4 架构能力	精度 0.0001mm vs 坐标范围 104mm 的 trade-off——这不是代码问题，是业务架构决策<br>1.2 技术是切入点	哈希函数的数学细节是技术，但”为什么需要这个哈希表”是业务理解——邻域查询驱动了整个分析链<br>1.1 出题人	空间编码方案是你定义的——定义编码精度就是定义”什么算同一个点”，这是出题人的权力</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io/2026/05/17/%E5%93%88%E5%B8%8C%E8%A1%A8%E4%B8%8E%E7%A9%BA%E9%97%B4%E7%BC%96%E7%A0%81%E2%80%94%E2%80%94%E6%B5%AE%E7%82%B9%E6%95%B0%E6%80%8E%E4%B9%88%E5%8F%98%E6%88%90%E5%93%88%E5%B8%8C%E9%94%AE%EF%BC%8C%E9%82%BB%E5%9F%9F%E6%80%8E%E4%B9%88%E6%9F%A5/">https://ywmhhbaiminminai.github.io/2026/05/17/%E5%93%88%E5%B8%8C%E8%A1%A8%E4%B8%8E%E7%A9%BA%E9%97%B4%E7%BC%96%E7%A0%81%E2%80%94%E2%80%94%E6%B5%AE%E7%82%B9%E6%95%B0%E6%80%8E%E4%B9%88%E5%8F%98%E6%88%90%E5%93%88%E5%B8%8C%E9%94%AE%EF%BC%8C%E9%82%BB%E5%9F%9F%E6%80%8E%E4%B9%88%E6%9F%A5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ywmhhbaiminminai.github.io" target="_blank">AIminminAI的技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%A9%BA%E9%97%B4%E7%BC%96%E7%A0%81/">空间编码</a><a class="post-meta__tags" href="/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/">哈希表</a><a class="post-meta__tags" href="/tags/%E9%82%BB%E5%9F%9F/">邻域</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/17/%E7%AC%AC%E5%9B%9B%E8%AF%BE%EF%BC%9ABVH-%E7%A9%BA%E9%97%B4%E7%B4%A2%E5%BC%95%E2%80%94%E2%80%94%E4%BB%8E-O-N-%E5%88%B0-O-log-N-%E7%9A%84%E9%A3%9E%E8%B7%83/" title="第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/17/%E5%87%A0%E4%BD%95%E6%95%B0%E6%8D%AE%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94Triangle-Point-Ray-Intersection-AABB/" title="几何数据基础——Triangle / Point / Ray / Intersection / AABB"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">几何数据基础——Triangle / Point / Ray / Intersection / AABB</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E4%B8%80%E8%AF%BE%EF%BC%9A%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E6%8A%8A%E5%8D%81%E8%AF%BE%E7%9A%84%E9%9B%B6%E4%BB%B6%E7%BB%84%E8%A3%85%E6%88%90%E5%BC%95%E6%93%8E/" title="第十一课：系统集成与性能优化——把十课的零件组装成引擎">第十一课：系统集成与性能优化——把十课的零件组装成引擎</a><time datetime="2026-05-18T15:46:07.000Z" title="发表于 2026-05-18 23:46:07">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/" title="第十课：渲染与可视化——OpenGL 实战，把分析结果画出来">第十课：渲染与可视化——OpenGL 实战，把分析结果画出来</a><time datetime="2026-05-18T15:45:02.000Z" title="发表于 2026-05-18 23:45:02">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B9%9D%E8%AF%BE%EF%BC%9A%E6%8A%A5%E5%91%8A%E7%94%9F%E6%88%90%E2%80%94%E2%80%94%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%88%B0%E5%86%B3%E7%AD%96%EF%BC%8C%E6%8A%8A%E7%AE%97%E6%B3%95%E7%BB%93%E6%9E%9C%E7%BF%BB%E8%AF%91%E6%88%90%E4%BA%BA%E7%B1%BB%E8%A1%8C%E5%8A%A8/" title="第九课：报告生成——从数据到决策，把算法结果翻译成人类行动">第九课：报告生成——从数据到决策，把算法结果翻译成人类行动</a><time datetime="2026-05-18T15:43:54.000Z" title="发表于 2026-05-18 23:43:54">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%85%AB%E8%AF%BE%EF%BC%9ASTL-%E8%A7%A3%E6%9E%90%E4%B8%8E-JSON-%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E6%B5%81%E5%BC%8F%E8%A7%A3%E6%9E%90%EF%BC%8C%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E7%9A%84%E5%AE%9E%E6%88%98/" title="第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战">第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战</a><time datetime="2026-05-18T15:42:37.000Z" title="发表于 2026-05-18 23:42:37">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/" title="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</a><time datetime="2026-05-18T15:40:43.000Z" title="发表于 2026-05-18 23:40:43">2026-05-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I hope that we have the feeling of "Scooping the water,the moon is in my hand, Playing with flowers, my dress is full of scent" in life and study.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

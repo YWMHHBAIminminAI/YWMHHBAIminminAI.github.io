@@ -1,0 +1,288 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃 | AIminminAI的技术博客</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🎯 第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃为什么排第四？前三课铺完了地基： 第1课：ObjectPool——内存从哪来第2课：Triangle&#x2F;Point&#x2F;Ray&#x2F;AABB——操作对象是什么第3课：哈希表&#x2F;空间编码——怎么查邻域现在到了整个项目最核心的数据结构：BVH。它是光线追踪、曲率计算的引擎——没有 BVH，百万三角形">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃">
+<meta property="og:url" content="https://ywmhhbaiminminai.github.io/2026/05/17/%E7%AC%AC%E5%9B%9B%E8%AF%BE%EF%BC%9ABVH-%E7%A9%BA%E9%97%B4%E7%B4%A2%E5%BC%95%E2%80%94%E2%80%94%E4%BB%8E-O-N-%E5%88%B0-O-log-N-%E7%9A%84%E9%A3%9E%E8%B7%83/index.html">
+<meta property="og:site_name" content="AIminminAI的技术博客">
+<meta property="og:description" content="🎯 第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃为什么排第四？前三课铺完了地基： 第1课：ObjectPool——内存从哪来第2课：Triangle&#x2F;Point&#x2F;Ray&#x2F;AABB——操作对象是什么第3课：哈希表&#x2F;空间编码——怎么查邻域现在到了整个项目最核心的数据结构：BVH。它是光线追踪、曲率计算的引擎——没有 BVH，百万三角形">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-17T15:25:18.000Z">
+<meta property="article:modified_time" content="2026-05-17T15:26:06.414Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="空间索引">
+<meta property="article:tag" content="O(log N)">
+<meta property="article:tag" content="O(N)">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.github.io/2026/05/17/%E7%AC%AC%E5%9B%9B%E8%AF%BE%EF%BC%9ABVH-%E7%A9%BA%E9%97%B4%E7%B4%A2%E5%BC%95%E2%80%94%E2%80%94%E4%BB%8E-O-N-%E5%88%B0-O-log-N-%E7%9A%84%E9%A3%9E%E8%B7%83/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Hu hb","link":"链接: ","source":"来源: AIminminAI的技术博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: false,
+  postUpdate: '2026-05-17 23:26:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="AIminminAI的技术博客"><span class="site-name">AIminminAI的技术博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-17T15:25:18.000Z" title="发表于 2026-05-17 23:25:18">2026-05-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-17T15:26:06.414Z" title="更新于 2026-05-17 23:26:06">2026-05-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/">AI时代应该培养的能力</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/">AI最容易写错的区域</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/%E7%AC%AC%E5%9B%9B%E8%AF%BE%EF%BC%9ABVH-%E7%A9%BA%E9%97%B4%E7%B4%A2%E5%BC%95%E2%80%94%E2%80%94%E4%BB%8E-O-N-%E5%88%B0-O-log-N-%E7%9A%84%E9%A3%9E%E8%B7%83/">第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>🎯 第四课：BVH 空间索引——从 O(N) 到 O(log N) 的飞跃<br>为什么排第四？<br>前三课铺完了地基：</p>
+<p>第1课：ObjectPool——内存从哪来<br>第2课：Triangle&#x2F;Point&#x2F;Ray&#x2F;AABB——操作对象是什么<br>第3课：哈希表&#x2F;空间编码——怎么查邻域<br>现在到了整个项目最核心的数据结构：BVH。它是光线追踪、曲率计算的引擎——没有 BVH，百万三角形的光线追踪就是暴力 O(N)，有了 BVH 就是 O(log N)。从 N&#x3D;1,000,000 到 logN≈20，快了5万倍。</p>
+<p>用你的话说：”SAH-BVH是贪心+分治的工程实践，架构思维的训练场”。</p>
+<p>费曼学习法 Step 1：用大白话解释它是什么<br>想象一个快递分拣中心：</p>
+<p>你有 100 万个包裹（三角形），要找一个特定地址的包裹（光线命中）。</p>
+<p>笨办法： 从第1个翻到第100万个 → O(N)</p>
+<p>聪明办法： 先按省分 → 再按市分 → 再按区分 → 再按街道分 → 最后只剩几个包裹，逐个看 → O(log N)</p>
+<p>BVH 就是这个分拣体系：</p>
+<p>根节点 &#x3D; 全国<br>左子树 &#x3D; 北方省份，右子树 &#x3D; 南方省份<br>每个节点有一个 AABB（包裹范围）<br>光线先问”你北方有没有？”→ 没有？整棵北方子树直接跳过<br>SAH 就是”怎么切最合理”： 不是简单从中间一刀切，而是算”在哪切，查询总代价最小”——这就是贪心。</p>
+<p>费曼学习法 Step 2：逐个拆解核心知识点<br>📦 A. BVHNode——64字节的精心设计<br>struct alignas(64) BVHNode {<br>    Bounds bounds;         &#x2F;&#x2F; 24字节：float min[3] + float max[3]<br>    uint32_t left;         &#x2F;&#x2F; 4字节：左子节点索引<br>    uint32_t right;        &#x2F;&#x2F; 4字节：右子节点索引<br>    uint32_t split_axis;   &#x2F;&#x2F; 4字节：分割轴 (0&#x3D;X, 1&#x3D;Y, 2&#x3D;Z)<br>    uint32_t is_leaf;      &#x2F;&#x2F; 4字节：是否叶子节点<br>    &#x2F;&#x2F; padding 填充到 64 字节<br>};<br>A1. 内存布局精读</p>
+<p>偏移   字段          大小<br>─────────────────────────────<br>0     min[3]        12B<br>12    max[3]        12B     } Bounds &#x3D; 24B<br>24    left          4B<br>28    right         4B<br>32    split_axis    4B<br>36    is_leaf       4B<br>40    padding       24B<br>─────────────────────────────<br>总计   64B &#x3D; 1个缓存行<br>又是 alignas(64)！跟 Triangle 一样的逻辑：遍历时 CPU 一次读取一个完整节点，没有跨行浪费。</p>
+<p>A2. 为什么用 uint32_t 索引而不用指针？</p>
+<p>指针 (64位)	索引 (32位)<br>大小	8字节	4字节<br>left + right	16字节	8字节<br>节点总大小	&gt;64字节（塞不下）	64字节刚好<br>缓存行	需要2行	1行搞定<br>指针 8 字节 × 2 &#x3D; 16 字节，加上 Bounds 24 字节和其他字段，一个节点塞不进 64 字节。用 32 位索引，left+right 只要 8 字节，整个节点刚好一个缓存行。</p>
+<p>而且索引比指针更安全——vector 扩容时地址会变，索引不变。</p>
+<p>AI坑点： AI 默认写 BVHNode* left, right，导致节点超 64 字节，遍历性能降 30-40%。它不会从缓存行角度去思考数据布局。</p>
+<p>A3. split_axis 有什么用？</p>
+<p>BVH 构建时按哪个轴排序，split_axis 就记哪个。遍历时可以利用这个信息——如果射线方向在 X 轴分量为正，那左子树（X 较小的一侧）大概率被遮挡，可以先查右子树。这是一种简单但有效的剪枝优化。</p>
+<p>A4. is_leaf + 叶子三角形怎么存？</p>
+<p>if (is_leaf) {<br>    &#x2F;&#x2F; left 存的是三角形起始索引<br>    &#x2F;&#x2F; right 存的是三角形数量<br>    &#x2F;&#x2F; 实际三角形在 vector&lt;Triangle*&gt; 的连续区间 [left, left+right)<br>}<br>叶子节点不存 bounds 里的三角形列表，而是用 left&#x2F;right 复用为”起始索引+数量”，指向一个全局的 vector&lt;Triangle*&gt;。零额外内存。</p>
+<p>📦 B. BVH 类——线性化存储<br>class BVH {<br>    vector<BVHNode> nodes;           &#x2F;&#x2F; 所有节点，连续内存<br>    vector&lt;Triangle*&gt; leaf_tris;     &#x2F;&#x2F; 叶子三角形的连续存储<br>};<br>B1. 二叉树线性化——最重要的架构决策</BVHNode></p>
+<p>传统二叉树：</p>
+<pre><code>   [root]          ← 堆上随机分配
+  /      \
+</code></pre>
+<p>   [A]        [B]      ← 每个节点地址不连续<br>   &#x2F; \        &#x2F; <br> [C]  [D]   [E]  [F]   → 6次缓存miss<br>线性化存储：</p>
+<p>索引:  0     1     2     3     4     5<br>     [root] [A]   [B]  [C]   [D]   [E]<br>      ↓ 连续内存，CPU预取器自动拉取<br>      → 一次缓存miss，后续命中<br>原理： 节点按构建顺序（DFS序）push 到 vector 中，内存连续。CPU 的硬件预取器检测到”你在顺序读内存”，会自动把后面的节点拉进缓存。</p>
+<p>B2. 子节点索引的规则</p>
+<p>假设当前节点在 index &#x3D; i<br>左子节点 &#x3D; nodes[i + 1]            ← 紧挨着（DFS先访问左子树）<br>右子节点 &#x3D; nodes[i.left]           ← left字段存的就是右子节点的索引<br>等等，不对——让我纠正。实际代码中：</p>
+<p>构建时递归构建左子树，左子树的节点紧跟着当前节点<br>构建完左子树后，记录此时 nodes.size() 作为右子节点的起始索引<br>所以 left 字段存的是右子节点索引，left+1 开始是左子树（因为它先被构建）<br>具体的索引关系取决于构建代码，但核心思想不变：连续存储 + 索引引用 &#x3D; 缓存友好。</p>
+<p>📦 C. SAH-BVH 构建——贪心+分治的工程杰作<br>这是整个项目算法含量最高的部分，分三步走：</p>
+<p>Step C1：排序——按质心坐标排序</p>
+<p>&#x2F;&#x2F; 按 split_axis 轴排序所有三角形<br>sort(triangles.begin(), triangles.end(),<br>     [axis](Triangle* a, Triangle* b) {<br>         return a-&gt;center()[axis] &lt; b-&gt;center()[axis];<br>     });<br>为什么要排序？因为 BVH 要保证左子树的所有三角形在分割轴上都在右子树的左边。排序后，任何切割点都自然满足这个条件。</p>
+<p>用 std::sort（IntroSort）：最坏 O(N log N)，实测接近 O(N)。</p>
+<p>Step C2：SAH（Surface Area Heuristic）——选最优切割点</p>
+<p>核心公式：</p>
+<p>代价(Cost) &#x3D; 遍历代价 + 左子树代价 + 右子树代价</p>
+<pre><code>     = C_trav 
+     + P(left)  × N(left)  × C_intersect
+     + P(right) × N(right) × C_intersect
+</code></pre>
+<p>其中 P(left) &#x3D; SA(left_bbox) &#x2F; SA(parent_bbox)  ← 左子盒子的表面积占比<br>     P(right) &#x3D; SA(right_bbox) &#x2F; SA(parent_bbox)<br>大白话： 一个盒子的表面积越大，射线越容易碰到它。所以 SAH 用表面积占比来估算”射线进入左&#x2F;右子树的概率”，然后选一个让总期望代价最小的切割点。</p>
+<p>朴素 SAH 的问题： 对每个可能的切割点都要重算左右包围盒 → O(N²)</p>
+<p>Step C3：桶式加速——把 O(N²) 降到 O(N×B)</p>
+<p>const int B &#x3D; 16;  &#x2F;&#x2F; 16个桶<br>Bucket buckets[B];</p>
+<p>&#x2F;&#x2F; 第1遍：把三角形分到桶里，统计每个桶的计数和包围盒<br>for (auto&amp; tri : triangles) {<br>    int b &#x3D; which_bucket(tri-&gt;center()[axis]);<br>    buckets[b].count++;<br>    buckets[b].bounds.expand(tri);<br>}</p>
+<p>&#x2F;&#x2F; 第2遍：从左往右扫，累加得到”前i个桶”的计数和包围盒<br>&#x2F;&#x2F; 从右往左扫，累加得到”后j个桶”的计数和包围盒<br>&#x2F;&#x2F; 每个分界点 i 的代价 &#x3D; SAH(前i个桶, 后B-i个桶)</p>
+<p>&#x2F;&#x2F; 取代价最小的分界点作为切割点<br>朴素 SAH	桶式 SAH<br>时间	O(N²)	O(N×B)，B&#x3D;16 → O(N)<br>精确度	逐点精确	桶内近似，但 16 桶足够<br>实际效果	100万三角形 → 不可用	100万三角形 → 秒级完成<br>这就是”动态规划思想”——从左到右扫一次、从右到左扫一次，用前缀和避免重复计算。跟”最大子数组和”是一个套路。</p>
+<p>AI坑点： AI 写 BVH 构建时通常用”从中间切”（中位切分），因为代码简单。但中位切分不考虑三角形分布，如果三角形聚集在一侧，树会极度不平衡。SAH 在真实场景下比中位切分快 2-5 倍。</p>
+<p>📦 D. 递归构建流程全景<br>buildBVH(triangles, depth):<br>    1. 计算所有三角形的总 AABB<br>    2. if 三角形数 &lt;&#x3D; 叶子阈值 or depth &gt;&#x3D; 最大深度:<br>           创建叶子节点，返回<br>    3. 选择 split_axis（AABB 最长轴）<br>    4. 按 split_axis 排序三角形<br>    5. 用 SAH + 桶式加速找最优切割点<br>    6. 切成 left_tris 和 right_tris<br>    7. 创建内部节点:<br>           node.bounds &#x3D; 总AABB<br>           node.left  &#x3D; buildBVH(left_tris, depth+1)   ← 递归<br>           node.right &#x3D; buildBVH(right_tris, depth+1)   ← 递归<br>    8. 返回当前节点索引<br>关键： 这是分治（Divide &amp; Conquer）——大问题拆成两个子问题，递归解决，最后合并。跟归并排序的思想一模一样。</p>
+<p>📦 E. 迭代遍历——用栈替代递归<br>&#x2F;&#x2F; 项目使用 stack[64] 手动栈进行 BVH 遍历<br>uint32_t stack[64];<br>int stack_ptr &#x3D; 0;<br>stack[0] &#x3D; 0;  &#x2F;&#x2F; 根节点索引</p>
+<p>while (stack_ptr &gt;&#x3D; 0) {<br>    uint32_t idx &#x3D; stack[stack_ptr–];<br>    BVHNode&amp; node &#x3D; nodes[idx];</p>
+<pre><code>if (!intersect_ray_aabb(ray, node.bounds))
+    continue;  // 射线没碰到这个盒子 → 剪枝
+
+if (node.is_leaf) &#123;
+    // 逐个检查叶子里的三角形
+    for (int i = 0; i &lt; node.right; i++) &#123;
+        test_triangle(ray, leaf_tris[node.left + i]);
+    &#125;
+&#125; else &#123;
+    // 压栈：先压右子树，再压左子树
+    // 这样左子树先被弹出（先访问）
+    stack[++stack_ptr] = node.right;  // 右
+    stack[++stack_ptr] = node.left;   // 左（后压先出）
+&#125;
+</code></pre>
+<p>}<br>E1. 为什么用显式栈而不是递归？</p>
+<p>递归	显式栈<br>栈空间	调用栈（1-8MB），可能溢出	堆上数组 stack[64]，256字节<br>函数调用开销	每次push&#x2F;pop寄存器、保存返回地址	无开销<br>缓存	调用栈跟其他函数共享	专用小数组，全在L1缓存<br>E2. 为什么栈大小 64 就够？</p>
+<p>BVH 是二叉树，深度 d 的满二叉树有 2^d 个节点。64 层 → 2^64 个节点——远超任何实际场景。一般百万三角形的 BVH 深度约 20-30 层，64 层绝对够。</p>
+<p>E3. 遍历的剪枝效果</p>
+<p>假设 N &#x3D; 1,000,000 个三角形，BVH 深度 ≈ 20</p>
+<p>不做BVH：测试 1,000,000 个三角形<br>做了BVH：测试约 20 个节点 × O(1) + 约 10 个叶子三角形<br>         ≈ 30 次测试</p>
+<p>加速比：1,000,000 &#x2F; 30 ≈ 33,000 倍<br>当然实际中不是每次都这么理想，但 1000-50000 倍的加速是常态。</p>
+<p>费曼学习法 Step 3：BVH 的完整生命周期<br>┌─────────────────────────────────────────────────────────────┐<br>│                    STL 文件加载                               │<br>│                    100万个 Triangle*                          │<br>│                         │                                    │<br>│                         ▼                                    │<br>│              ┌──────────────────────┐                        │<br>│              │   SAH-BVH 构建        │                        │<br>│              │                       │                        │<br>│              │  1. 选最长轴排序       │                        │<br>│              │  2. 16桶扫描找最优点   │                        │<br>│              │  3. 递归分治           │                        │<br>│              │  4. 线性化存入vector   │                        │<br>│              └──────────┬───────────┘                        │<br>│                         │                                    │<br>│                         ▼                                    │<br>│              ┌──────────────────────┐                        │<br>│              │   BVH 遍历查询        │                        │<br>│              │                       │                        │<br>│              │  Ray → Slab AABB测试  │                        │<br>│              │  命中 → 进入子树      │                        │<br>│              │  未命中 → 剪枝跳过    │                        │<br>│              │  叶子 → Möller求交    │                        │<br>│              └──────────┬───────────┘                        │<br>│                         │                                    │<br>│                         ▼                                    │<br>│              Intersection (point, tri*, distance)             │<br>│              → 曲率计算 → 聚类 → 分类 → AI Agent              │<br>└─────────────────────────────────────────────────────────────┘<br>费曼学习法 Step 4：识别你的知识缺口<br>#	自检问题	如果你答不出<br>1	BVHNode 为什么用 uint32_t 索引而不用指针？如果用指针，节点大小会变成多少？	重新理解线性化存储的动机<br>2	SAH 公式中，为什么用表面积而不是体积来估算命中概率？	去查”表面积启发式的几何直觉”<br>3	桶式加速中，16 个桶够吗？为什么不是 32 或 8？桶数越多越好吗？	重新理解精度 vs 速度的 trade-off<br>4	叶子节点的 left 和 right 字段复用为”起始索引+数量”，这种设计有什么风险？	重新理解字段复用的安全性<br>5	遍历时先压右子树再压左子树，为什么？如果反过来会怎样？	重新理解栈的 LIFO 特性<br>6	stack[64] 在栈上分配还是在堆上？如果 BVH 极端不平衡（退化成链表），64够吗？	重新理解最坏情况分析<br>7	SAH 选出的切割点一定是全局最优吗？为什么？	重新理解贪心的局限性<br>费曼学习法 Step 5：用你的话复述<br>试着这样解释：</p>
+<p>“100万个三角形，光线不可能逐个测试。BVH 就是空间二叉树——每个节点有一个 AABB 包围盒，射线碰到盒子才进去，碰不到就整棵子树跳过。构建时用 SAH 决定在哪切——表面积越大越容易被光线碰到，所以让表面积大的子树包含更少的三角形，这样总查询代价最小。用 16 桶加速把 O(N²) 降到 O(N)。所有节点存在一个 vector 里，用 32 位索引代替指针，每个节点 64 字节刚好一个缓存行。遍历时用显式栈替代递归，栈大小 64 就够了，因为二叉树深度不会超过 64。最终效果：从测试 100 万个三角形变成测试约 30 个，快了几万倍。”</p>
+<p>📌 本课与你的 AI 时代理念的映射<br>你的理念	本课体现<br>1.4 架构能力	BVH 的数据布局（64字节节点、线性化存储、索引替代指针）是技术架构的典型——不是写代码，是设计系统<br>1.5 AI代码有坑	AI 默认写中位切分 + 指针节点 + 递归遍历——每个都是”能跑但差几倍”的坑<br>1.3 技术够用就可以	桶式 SAH 是近似算法，不是精确最优，但 16 桶在实际场景下已经足够好——够用就行<br>1.1 出题人	SAH 的代价函数是你定义的——“什么叫好树”由你决定，AI 只负责执行构建<br>1.2 技术是切入点	分治、贪心、前缀和是算法技术，但”为什么需要 BVH”是业务理解——3D 打印需要快速查壁厚</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io/2026/05/17/%E7%AC%AC%E5%9B%9B%E8%AF%BE%EF%BC%9ABVH-%E7%A9%BA%E9%97%B4%E7%B4%A2%E5%BC%95%E2%80%94%E2%80%94%E4%BB%8E-O-N-%E5%88%B0-O-log-N-%E7%9A%84%E9%A3%9E%E8%B7%83/">https://ywmhhbaiminminai.github.io/2026/05/17/%E7%AC%AC%E5%9B%9B%E8%AF%BE%EF%BC%9ABVH-%E7%A9%BA%E9%97%B4%E7%B4%A2%E5%BC%95%E2%80%94%E2%80%94%E4%BB%8E-O-N-%E5%88%B0-O-log-N-%E7%9A%84%E9%A3%9E%E8%B7%83/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ywmhhbaiminminai.github.io" target="_blank">AIminminAI的技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%A9%BA%E9%97%B4%E7%B4%A2%E5%BC%95/">空间索引</a><a class="post-meta__tags" href="/tags/O-log-N/">O(log N)</a><a class="post-meta__tags" href="/tags/O-N/">O(N)</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/17/%E7%AC%AC%E4%BA%94%E8%AF%BE%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94Moller-Trumbore-Slab-Method/" title="第五课：光线追踪算法——Möller-Trumbore + Slab Method"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第五课：光线追踪算法——Möller-Trumbore + Slab Method</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/17/%E5%93%88%E5%B8%8C%E8%A1%A8%E4%B8%8E%E7%A9%BA%E9%97%B4%E7%BC%96%E7%A0%81%E2%80%94%E2%80%94%E6%B5%AE%E7%82%B9%E6%95%B0%E6%80%8E%E4%B9%88%E5%8F%98%E6%88%90%E5%93%88%E5%B8%8C%E9%94%AE%EF%BC%8C%E9%82%BB%E5%9F%9F%E6%80%8E%E4%B9%88%E6%9F%A5/" title="哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">哈希表与空间编码——浮点数怎么变成哈希键，邻域怎么查</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E4%B8%80%E8%AF%BE%EF%BC%9A%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E6%8A%8A%E5%8D%81%E8%AF%BE%E7%9A%84%E9%9B%B6%E4%BB%B6%E7%BB%84%E8%A3%85%E6%88%90%E5%BC%95%E6%93%8E/" title="第十一课：系统集成与性能优化——把十课的零件组装成引擎">第十一课：系统集成与性能优化——把十课的零件组装成引擎</a><time datetime="2026-05-18T15:46:07.000Z" title="发表于 2026-05-18 23:46:07">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/" title="第十课：渲染与可视化——OpenGL 实战，把分析结果画出来">第十课：渲染与可视化——OpenGL 实战，把分析结果画出来</a><time datetime="2026-05-18T15:45:02.000Z" title="发表于 2026-05-18 23:45:02">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B9%9D%E8%AF%BE%EF%BC%9A%E6%8A%A5%E5%91%8A%E7%94%9F%E6%88%90%E2%80%94%E2%80%94%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%88%B0%E5%86%B3%E7%AD%96%EF%BC%8C%E6%8A%8A%E7%AE%97%E6%B3%95%E7%BB%93%E6%9E%9C%E7%BF%BB%E8%AF%91%E6%88%90%E4%BA%BA%E7%B1%BB%E8%A1%8C%E5%8A%A8/" title="第九课：报告生成——从数据到决策，把算法结果翻译成人类行动">第九课：报告生成——从数据到决策，把算法结果翻译成人类行动</a><time datetime="2026-05-18T15:43:54.000Z" title="发表于 2026-05-18 23:43:54">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%85%AB%E8%AF%BE%EF%BC%9ASTL-%E8%A7%A3%E6%9E%90%E4%B8%8E-JSON-%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E6%B5%81%E5%BC%8F%E8%A7%A3%E6%9E%90%EF%BC%8C%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E7%9A%84%E5%AE%9E%E6%88%98/" title="第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战">第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战</a><time datetime="2026-05-18T15:42:37.000Z" title="发表于 2026-05-18 23:42:37">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/" title="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</a><time datetime="2026-05-18T15:40:43.000Z" title="发表于 2026-05-18 23:40:43">2026-05-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I hope that we have the feeling of "Scooping the water,the moon is in my hand, Playing with flowers, my dress is full of scent" in life and study.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

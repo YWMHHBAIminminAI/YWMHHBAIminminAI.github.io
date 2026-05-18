@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta name="referrer" content="no-referrer"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状 | AIminminAI的技术博客</title><meta name="author" content="Hu hb"><meta name="copyright" content="Hu hb"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🎯 第六课：曲率计算——从”命中点”到”理解几何形状”为什么排第六？前五课我们解决了”射线打在哪里”（Intersection），但 打在哪 只是几何信息，那个地方长什么样 才是业务关心的——3D 打印零件的表面是凸的？凹的？还是平的？有没有尖角？壁厚够不够？ 曲率就是回答这些问题的数学工具。它是从”计算”到”理解几何”的桥梁——技术切入，通向业务。 用你的话说：”从’计算’到’理解几何’——技">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状">
+<meta property="og:url" content="https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E5%85%AD%E8%AF%BE%EF%BC%9A%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97%EF%BC%88%E7%A6%BB%E6%95%A3%E9%AB%98%E6%96%AF%E6%9B%B2%E7%8E%87-%E7%A6%BB%E6%95%A3%E5%B9%B3%E5%9D%87%E6%9B%B2%E7%8E%87%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E5%91%BD%E4%B8%AD%E7%82%B9%E5%88%B0%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%BD%A2%E7%8A%B6/index.html">
+<meta property="og:site_name" content="AIminminAI的技术博客">
+<meta property="og:description" content="🎯 第六课：曲率计算——从”命中点”到”理解几何形状”为什么排第六？前五课我们解决了”射线打在哪里”（Intersection），但 打在哪 只是几何信息，那个地方长什么样 才是业务关心的——3D 打印零件的表面是凸的？凹的？还是平的？有没有尖角？壁厚够不够？ 曲率就是回答这些问题的数学工具。它是从”计算”到”理解几何”的桥梁——技术切入，通向业务。 用你的话说：”从’计算’到’理解几何’——技">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-18T15:39:34.000Z">
+<meta property="article:modified_time" content="2026-05-18T15:40:21.786Z">
+<meta property="article:author" content="Hu hb">
+<meta property="article:tag" content="曲率计算">
+<meta property="article:tag" content="高斯曲率">
+<meta property="article:tag" content="离散平均曲率">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ywmhhbaiminminai.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E5%85%AD%E8%AF%BE%EF%BC%9A%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97%EF%BC%88%E7%A6%BB%E6%95%A3%E9%AB%98%E6%96%AF%E6%9B%B2%E7%8E%87-%E7%A6%BB%E6%95%A3%E5%B9%B3%E5%9D%87%E6%9B%B2%E7%8E%87%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E5%91%BD%E4%B8%AD%E7%82%B9%E5%88%B0%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%BD%A2%E7%8A%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Hu hb","link":"链接: ","source":"来源: AIminminAI的技术博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: false,
+  postUpdate: '2026-05-18 23:40:21'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/JingSeOne.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="AIminminAI的技术博客"><span class="site-name">AIminminAI的技术博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home(主页)</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives(那些年的知识归档)</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags(那些年的知识标签)</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories(那些年的工作经验)</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link(那些年的八股与AI)</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About(关于我)</span></a></div><div class="menus_item"><a class="site-page" href="/game/"><i class="fa-fw fas fa-heart"></i><span> Game(游戏专区，学&amp;玩)</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-18T15:39:34.000Z" title="发表于 2026-05-18 23:39:34">2026-05-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-18T15:40:21.786Z" title="更新于 2026-05-18 23:40:21">2026-05-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/">AI时代应该培养的能力</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/">AI最容易写错的区域</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E6%97%B6%E4%BB%A3%E5%BA%94%E8%AF%A5%E5%9F%B9%E5%85%BB%E7%9A%84%E8%83%BD%E5%8A%9B/AI%E6%9C%80%E5%AE%B9%E6%98%93%E5%86%99%E9%94%99%E7%9A%84%E5%8C%BA%E5%9F%9F/%E7%AC%AC%E5%85%AD%E8%AF%BE%EF%BC%9A%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97%EF%BC%88%E7%A6%BB%E6%95%A3%E9%AB%98%E6%96%AF%E6%9B%B2%E7%8E%87-%E7%A6%BB%E6%95%A3%E5%B9%B3%E5%9D%87%E6%9B%B2%E7%8E%87%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E5%91%BD%E4%B8%AD%E7%82%B9%E5%88%B0%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%BD%A2%E7%8A%B6/">第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第六课：曲率计算（离散高斯曲率 + 离散平均曲率）——从命中点到理解几何形状"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>🎯 第六课：曲率计算——从”命中点”到”理解几何形状”<br>为什么排第六？<br>前五课我们解决了”射线打在哪里”（Intersection），但 打在哪 只是几何信息，那个地方长什么样 才是业务关心的——3D 打印零件的表面是凸的？凹的？还是平的？有没有尖角？壁厚够不够？</p>
+<p>曲率就是回答这些问题的数学工具。它是从”计算”到”理解几何”的桥梁——技术切入，通向业务。</p>
+<p>用你的话说：”从’计算’到’理解几何’——技术到业务的桥”（学习路径规划时说的）。</p>
+<p>费曼学习法 Step 1：用大白话解释它是什么<br>想象你用手摸一个零件的表面：</p>
+<p>平坦的地方（平面）：手指感觉不到弯曲 → 曲率 ≈ 0<br>圆柱面：一个方向弯，另一个方向平 → 一个曲率大、一个曲率小<br>球面：两个方向都弯 → 两个曲率都大<br>鞍面（马鞍形）：一个方向往上弯，另一个往下弯 → 两个曲率一正一负<br>高斯曲率 &#x3D; 两个方向曲率的乘积 → 告诉你”这个地方是凸的、凹的、还是平的”<br>平均曲率 &#x3D; 两个方向曲率的平均值 → 告诉你”这里弯得有多厉害”</p>
+<p>高斯曲率	平均曲率	形状	3D打印含义</p>
+<blockquote>
+<p>0	&gt; 0	球面（凸）	材料堆积，容易过热<br>0	&lt; 0	球面（凹）	可能需要支撑<br>&lt; 0	任意	鞍面	应力集中，容易变形<br>&#x3D; 0	&gt; 0	圆柱面	可打印，注意方向<br>&#x3D; 0	&#x3D; 0	平面	最容易打印<br>费曼学习法 Step 2：逐个拆解核心知识点<br>📦 A. 离散高斯曲率——角亏法（Angle Deficit）<br>A1. 连续世界的高斯曲率</p>
+</blockquote>
+<p>光滑曲面上一点的主曲率 κ₁、κ₂，高斯曲率 K &#x3D; κ₁ × κ₂。</p>
+<p>但我们有的是三角形网格，不是光滑曲面——三角形内部是完全平的（曲率为0），曲率全部”藏”在顶点处。</p>
+<p>A2. 角亏法——把曲率”收集”到顶点上</p>
+<p>直觉： 想象你是一个顶点，周围围了一圈三角形。如果把周围的三角形”摊平”，看它们能不能刚好凑成360°：</p>
+<p>刚好360° → 你在平面上 → K &#x3D; 0<br>凑不够360°（有缺口）→ 你在球面上 → K &gt; 0<br>超过360°（重叠了）→ 你在鞍面上 → K &lt; 0<br>平面顶点 (K&#x3D;0):           球面顶点 (K&gt;0):          鞍面顶点 (K&lt;0):</p>
+<pre><code>╲  90°  ╱               ╲  60°  ╱               ╲  100° ╱
+ ╲     ╱                  ╲     ╱                  ╲     ╱
+</code></pre>
+<p>  90° ● 90°               60° ●  60°              100° ● 100°<br>     ╱     ╲                  ╱     ╲                  ╱     ╲<br>    ╱  90°  ╲               ╱  60°  ╲               ╱  100° ╲</p>
+<p>  角度和 &#x3D; 360°            角度和 &#x3D; 240°            角度和 &#x3D; 400°<br>  角亏 &#x3D; 360-360 &#x3D; 0       角亏 &#x3D; 360-240 &#x3D; 120     角亏 &#x3D; 360-400 &#x3D; -40<br>  K &#x3D; 0 (平面)             K &gt; 0 (凸)               K &lt; 0 (鞍面)<br>A3. 公式</p>
+<p>K(v) &#x3D; (2π - Σθᵢ) &#x2F; A(v)</p>
+<p>其中：<br>  θᵢ   &#x3D; 顶点v在第i个邻居三角形中的内角<br>  Σθᵢ  &#x3D; 所有邻居三角形中v的内角之和<br>  A(v) &#x3D; 顶点v的”混合面积”（周围三角形面积的1&#x2F;3之和）<br>  2π   &#x3D; 360°的弧度值<br>为什么除以面积？ 角亏是”总量”，除以面积得到”密度”——同样120°的角亏，分布在小面积上（尖锐的凸起）比大面积上（平缓的隆起）曲率更大。</p>
+<p>A4. 项目中的实现流程</p>
+<p>&#x2F;&#x2F; 对每个顶点 v:<br>float angle_sum &#x3D; 0;<br>float area_sum &#x3D; 0;</p>
+<p>&#x2F;&#x2F; 遍历共享顶点v的所有三角形（用第3课的顶点哈希表！）<br>for (each triangle tri sharing vertex v) {<br>    &#x2F;&#x2F; ① 计算v在tri中的内角<br>    Vec3 e1 &#x3D; tri-&gt;other_vertex1 - v;<br>    Vec3 e2 &#x3D; tri-&gt;other_vertex2 - v;<br>    float cos_angle &#x3D; dot(normalize(e1), normalize(e2));<br>    float angle &#x3D; acos(clamp(cos_angle, -1.0f, 1.0f));  &#x2F;&#x2F; 钳位防NaN<br>    angle_sum +&#x3D; angle;</p>
+<pre><code>// ② 累加面积
+area_sum += triangle_area(tri) / 3.0f;  // 每个三角形贡献1/3面积
+</code></pre>
+<p>}</p>
+<p>float K &#x3D; (2.0f * M_PI - angle_sum) &#x2F; area_sum;<br>A5. 关键细节：clamp(cos_angle, -1, 1)</p>
+<p>acos 的输入必须在 [-1, 1]，但浮点误差可能让 dot 算出 1.0000001 或 -1.0000001 → acos 返回 NaN → 整个曲率值炸掉。clamp 是一道保险，看似多余，缺了必崩。</p>
+<p>AI坑点： AI 经常忘记 clamp，在正常模型上没问题，但遇到退化三角形（极小的角）就出 NaN，而且 NaN 会”传染”——后续聚类、分类全变成 NaN，极难溯源。</p>
+<p>📦 B. 离散平均曲率——法线差分法<br>B1. 直觉</p>
+<p>高斯曲率告诉你”凸还是凹”，平均曲率告诉你”弯得厉不厉害”。</p>
+<p>一个平面可以是倾斜的（法线方向变了），但曲率为0。平均曲率捕捉的是法线方向的变化率——法线变得越快，曲面弯得越厉害。</p>
+<p>B2. 公式——Laplacian 法线法</p>
+<p>H(v) &#x3D; ||Δv|| &#x2F; 2</p>
+<p>其中 Δv &#x3D; Laplacian(v) &#x3D; (1&#x2F;n) Σ neighbor_i - v<br>     &#x3D; 邻居质心 - v本身<br>大白话： 把一个顶点的所有邻居的坐标取平均（邻居质心），看这个质心跟顶点本身差多少。差得越多，曲面在这里弯得越厉害。</p>
+<p>B3. 项目中的实现——法线差分法（等价变体）</p>
+<p>&#x2F;&#x2F; 对每个顶点 v:<br>Vec3 normal_sum(0, 0, 0);<br>int count &#x3D; 0;</p>
+<p>&#x2F;&#x2F; 遍历共享顶点v的所有三角形<br>for (each triangle tri sharing vertex v) {<br>    normal_sum +&#x3D; tri-&gt;normal;  &#x2F;&#x2F; 累加邻居三角形法线<br>    count++;<br>}</p>
+<p>Vec3 avg_normal &#x3D; normalize(normal_sum &#x2F; count);</p>
+<p>&#x2F;&#x2F; v 的顶点法线（从顶点哈希表获取）<br>Vec3 vertex_normal &#x3D; vertex_map[vertexKey(v)].normal;</p>
+<p>&#x2F;&#x2F; 法线差分 &#x3D; 两个法线的偏差程度<br>float H &#x3D; 1.0f - dot(avg_normal, vertex_normal);<br>&#x2F;&#x2F; H ≈ 0 → 平坦<br>&#x2F;&#x2F; H ≈ 1 → 急弯（法线几乎垂直）<br>为什么 1 - dot(n1, n2) 是合理的？</p>
+<p>两个法线相同 → dot &#x3D; 1 → H &#x3D; 0 → 平坦 ✓<br>两个法线垂直 → dot &#x3D; 0 → H &#x3D; 1 → 急弯 ✓<br>两个法线相反 → dot &#x3D; -1 → H &#x3D; 2 → 极端弯折（锐边）✓<br>这就是余弦距离的变体——用点积衡量两个方向的差异。</p>
+<p>📦 C. 法线夹角——邻域的”转弯程度”<br>float normal_angle(Vec3 n1, Vec3 n2) {<br>    float cos_a &#x3D; clamp(dot(n1, n2), -1.0f, 1.0f);<br>    return acos(cos_a);  &#x2F;&#x2F; 返回弧度 [0, π]<br>}<br>C1. 这个函数在项目中的三处用途</p>
+<p>用途	含义	判断标准<br>曲率计算	顶点法线与邻居法线的夹角	角度大 → 曲率高<br>边界检测	共享边的两个三角形法线夹角	角度 &gt; 阈值 → 这是一条”硬边”<br>聚类边界	同一聚类内相邻三角形法线夹角	角度突变 → 聚类边界<br>一个函数，三种用途——这就是”定义问题”的价值（理念 1.1）。你定义了”法线夹角”这个度量，后面曲率、聚类、分类都用它。</p>
+<p>📦 D. 厚度计算——光线追踪的业务终点<br>float compute_thickness(Triangle* tri1, Triangle* tri2) {<br>    float min_dist &#x3D; FLT_MAX;<br>    &#x2F;&#x2F; 两个三角形各3个顶点，共9对<br>    for (int i &#x3D; 0; i &lt; 3; i++) {<br>        for (int j &#x3D; 0; j &lt; 3; j++) {<br>            float d &#x3D; distance(tri1-&gt;vertex[i], tri2-&gt;vertex[j]);<br>            min_dist &#x3D; min(min_dist, d);<br>        }<br>    }<br>    return min_dist;<br>}<br>D1. 为什么不是”点到面距离”而是”9对顶点最小距离”？</p>
+<p>精确的”三角形到三角形距离”需要考虑点-边距离、边-边距离等6种情况，代码复杂且容易有浮点问题。9对顶点距离是一个保守近似——对于 3D 打印来说，壁厚的保守估计（偏小）比乐观估计（偏大）更安全。</p>
+<p>D2. 这就是光线追踪 distance 的业务含义</p>
+<p>第2课学过 Intersection 的 distance 字段。射线从表面射出，命中对面壁，distance 就是局部壁厚。9对顶点距离是对这个值的验证&#x2F;补充——两者取最小值作为最终壁厚报告。</p>
+<p>📦 E. 曲率计算依赖的完整数据流<br>┌─────────────────────────────────────────────────────┐<br>│                 第3课的成果                           │<br>│                                                     │<br>│  顶点哈希表: vertexKey → VertexInfo{normal, area, degree}<br>│  边哈希表:   EdgeKey → vector<int> (共享三角形)      │<br>└──────────────────────┬──────────────────────────────┘<br>                       │<br>                       ▼<br>┌─────────────────────────────────────────────────────┐<br>│           曲率计算 (本课)                             │<br>│                                                     │<br>│  for each vertex v:                                  │<br>│    邻居三角形 &#x3D; vertex_map[vertexKey(v)] 的 degree    │<br>│                                                     │<br>│    ┌─ 高斯曲率 ────────────────────────────┐         │<br>│    │  angle_sum &#x3D; Σ 内角(v在每个邻居三角形中) │        │<br>│    │  area_sum  &#x3D; Σ 面积&#x2F;3                   │        │<br>│    │  K &#x3D; (2π - angle_sum) &#x2F; area_sum        │        │<br>│    └────────────────────────────────────────┘         │<br>│                                                     │<br>│    ┌─ 平均曲率 ────────────────────────────┐         │<br>│    │  avg_normal &#x3D; Σ tri.normal &#x2F; degree    │         │<br>│    │  H &#x3D; 1 - dot(avg_normal, v.normal)     │         │<br>│    └────────────────────────────────────────┘         │<br>│                                                     │<br>│    ┌─ 壁厚 ──────────────────────────────┐           │<br>│    │  从v沿法线射线 → BVH → distance      │           │<br>│    │  或9对顶点最小距离                    │           │<br>│    │  thickness &#x3D; min(ray_dist, vertex_dist)│          │<br>│    └──────────────────────────────────────┘           │<br>└──────────────────────┬──────────────────────────────┘<br>                       │<br>                       ▼<br>            每个顶点: {K, H, thickness}<br>                       │<br>                       ▼<br>              聚类 + 分类 (第7课)<br>费曼学习法 Step 3：三种曲率度量的对比<br>高斯曲率 K	平均曲率 H	壁厚 thickness<br>数学本质	内蕴（只跟曲面本身有关，跟怎么嵌入空间无关）	非内蕴（跟曲面在空间中的弯曲方式有关）	纯几何距离<br>计算方式	角亏 &#x2F; 面积	法线差分	射线距离 &#x2F; 顶点距离<br>依赖	顶点哈希表（邻居三角形内角）	顶点哈希表（邻居法线）	BVH（光线追踪）<br>能区分	凸&#x2F;凹&#x2F;鞍&#x2F;平	弯得厉害&#x2F;平缓	厚&#x2F;薄<br>3D打印含义	凸面过热、鞍面变形	急弯需减速	壁太薄不可打印<br>独立信息	✅ 高斯曲率是内蕴量	⚠️ 跟高斯曲率有关但不等价	✅ 完全独立<br>关键认知： 高斯曲率和平均曲率是两个独立维度——同一个高斯曲率值，可能有不同的平均曲率（圆柱 vs 球面的一部分）。两个一起用，才能完整描述局部几何。</int></p>
+<p>费曼学习法 Step 4：识别你的知识缺口<br>#	自检问题	如果你答不出<br>1	角亏法中，2π 是哪来的？为什么不是 π 或 4π？	重新理解”平面上的完整圆周角”<br>2	为什么面积要除以3（area_sum +&#x3D; tri_area &#x2F; 3）？每个三角形3个顶点，各分1&#x2F;3？	重新理解混合面积<br>3	clamp(cos, -1, 1) 去掉会怎样？什么场景下 dot 会超出 [-1,1]？	重新理解浮点精度 + NaN传染<br>4	平均曲率的 1 - dot(n1, n2)，如果 n1 和 n2 都不归一化，结果对吗？	重新理解法线归一化的前提<br>5	高斯曲率 &gt; 0 但平均曲率 ≈ 0，这种形状存在吗？	重新理解两种曲率的独立性<br>6	厚度用9对顶点距离是保守估计，什么情况下会严重偏离真实壁厚？	想象两个三角形平行但不正对的情况<br>7	曲率计算的时间复杂度是多少？跟顶点数 N 有什么关系？	O(N) — 每个顶点只访问自己的邻居<br>费曼学习法 Step 5：用你的话复述<br>试着这样解释：</p>
+<p>“3D 模型是三角形网格，三角形内部是平的，曲率全部集中在顶点上。高斯曲率用角亏法算——把一个顶点周围所有三角形的内角加起来，跟 360° 比：不够就是凸的（球面），超了就是鞍面，刚好就是平面。平均曲率用法线差分——看顶点自己的法线跟邻居法线差多少，差得多就是急弯。两个曲率是独立维度，一起才能完整描述局部形状。壁厚靠光线追踪算——沿法线射出，命中对面的距离就是壁厚。所有这些都依赖第3课的哈希表来查邻域，这就是为什么我说数据结构是地基。”</p>
+<p>📌 本课与你的 AI 时代理念的映射<br>你的理念	本课体现<br>1.2 技术是切入点	角亏法、法线差分是技术，但”为什么需要曲率”是业务——3D打印需要知道哪里凸哪里凹哪里薄<br>1.1 出题人	你定义了”曲率”这个度量——用什么公式、什么阈值、什么精度，都是出题人的决策<br>1.5 AI代码有坑	忘 clamp → NaN 传染整个流水线；法线不归一化 → 曲率值全错；AI 不会注意到这些边界<br>1.4 架构能力	曲率 &#x3D; 数据流的枢纽，连接了底层（哈希表+BVH）和上层（聚类+分类），理解这层才算理解系统<br>1.6 软实力	向产品经理解释”为什么这个面打印会出问题”，你不需要讲角亏公式，而是说”这里弯得太急”——翻译能力就是软实力</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io">Hu hb</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E5%85%AD%E8%AF%BE%EF%BC%9A%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97%EF%BC%88%E7%A6%BB%E6%95%A3%E9%AB%98%E6%96%AF%E6%9B%B2%E7%8E%87-%E7%A6%BB%E6%95%A3%E5%B9%B3%E5%9D%87%E6%9B%B2%E7%8E%87%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E5%91%BD%E4%B8%AD%E7%82%B9%E5%88%B0%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%BD%A2%E7%8A%B6/">https://ywmhhbaiminminai.github.io/2026/05/18/%E7%AC%AC%E5%85%AD%E8%AF%BE%EF%BC%9A%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97%EF%BC%88%E7%A6%BB%E6%95%A3%E9%AB%98%E6%96%AF%E6%9B%B2%E7%8E%87-%E7%A6%BB%E6%95%A3%E5%B9%B3%E5%9D%87%E6%9B%B2%E7%8E%87%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E5%91%BD%E4%B8%AD%E7%82%B9%E5%88%B0%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%BD%A2%E7%8A%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ywmhhbaiminminai.github.io" target="_blank">AIminminAI的技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97/">曲率计算</a><a class="post-meta__tags" href="/tags/%E9%AB%98%E6%96%AF%E6%9B%B2%E7%8E%87/">高斯曲率</a><a class="post-meta__tags" href="/tags/%E7%A6%BB%E6%95%A3%E5%B9%B3%E5%9D%87%E6%9B%B2%E7%8E%87/">离散平均曲率</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WeChat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/WeChat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/Alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/Alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/" title="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/17/%E7%AC%AC%E4%BA%94%E8%AF%BE%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94Moller-Trumbore-Slab-Method/" title="第五课：光线追踪算法——Möller-Trumbore + Slab Method"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">第五课：光线追踪算法——Möller-Trumbore + Slab Method</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hu hb</div><div class="author-info__description">寻寻觅觅，原来未来的你，在这里呀</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">129</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">100</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/aiminminai"><i class="Gitee"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:min221forever@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://github.com/YWMHHBAIminminAI" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/m0_52436398?type=blog" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://gitee.com/aiminminai" target="_blank" title="Gitee"><i class="fa fa-g"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><b><font color="#e66b6d">掬</font> <font color="#e66d98">水</font> <font color="#e66cc6">月</font> <font color="#cc6de6">在</font> <font        color="#9770e6">手</font> <font color="#6d93e6">，</font> <font color="#6fcde6">弄</font> <font color="#72e6b6">花</font> <font color="#72e689">香</font> <font color="#99e670">满</font> <font color="#cde670">衣</font> <p align="center"><img src="https://haiyong.site/img/img-blog.csdnimg.cn/f7384c88956d4378b72e47548e19c9f8.gif" width="50" alt="mao"></p> <p align="center">微信号：phone_15902953075</p> <p align="center">QQ号：1317957931</p></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E4%B8%80%E8%AF%BE%EF%BC%9A%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E6%8A%8A%E5%8D%81%E8%AF%BE%E7%9A%84%E9%9B%B6%E4%BB%B6%E7%BB%84%E8%A3%85%E6%88%90%E5%BC%95%E6%93%8E/" title="第十一课：系统集成与性能优化——把十课的零件组装成引擎">第十一课：系统集成与性能优化——把十课的零件组装成引擎</a><time datetime="2026-05-18T15:46:07.000Z" title="发表于 2026-05-18 23:46:07">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%8D%81%E8%AF%BE%EF%BC%9A%E6%B8%B2%E6%9F%93%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E2%80%94%E2%80%94OpenGL-%E5%AE%9E%E6%88%98%EF%BC%8C%E6%8A%8A%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E7%94%BB%E5%87%BA%E6%9D%A5/" title="第十课：渲染与可视化——OpenGL 实战，把分析结果画出来">第十课：渲染与可视化——OpenGL 实战，把分析结果画出来</a><time datetime="2026-05-18T15:45:02.000Z" title="发表于 2026-05-18 23:45:02">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B9%9D%E8%AF%BE%EF%BC%9A%E6%8A%A5%E5%91%8A%E7%94%9F%E6%88%90%E2%80%94%E2%80%94%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%88%B0%E5%86%B3%E7%AD%96%EF%BC%8C%E6%8A%8A%E7%AE%97%E6%B3%95%E7%BB%93%E6%9E%9C%E7%BF%BB%E8%AF%91%E6%88%90%E4%BA%BA%E7%B1%BB%E8%A1%8C%E5%8A%A8/" title="第九课：报告生成——从数据到决策，把算法结果翻译成人类行动">第九课：报告生成——从数据到决策，把算法结果翻译成人类行动</a><time datetime="2026-05-18T15:43:54.000Z" title="发表于 2026-05-18 23:43:54">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E5%85%AB%E8%AF%BE%EF%BC%9ASTL-%E8%A7%A3%E6%9E%90%E4%B8%8E-JSON-%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E6%B5%81%E5%BC%8F%E8%A7%A3%E6%9E%90%EF%BC%8C%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E7%9A%84%E5%AE%9E%E6%88%98/" title="第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战">第八课：STL 解析与 JSON 解析——有限状态机与流式解析，编译原理的实战</a><time datetime="2026-05-18T15:42:37.000Z" title="发表于 2026-05-18 23:42:37">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/%E7%AC%AC%E4%B8%83%E8%AF%BE%EF%BC%9A%E8%81%9A%E7%B1%BB%E4%B8%8E%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95%EF%BC%88DFS-%E8%BF%9E%E9%80%9A%E5%9F%9F%E8%81%9A%E7%B1%BB-%E6%B3%95%E7%BA%BF%E5%88%86%E7%B1%BB-%E5%87%A0%E4%BD%95%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%EF%BC%89%E2%80%94%E2%80%94%E4%BB%8E%E7%90%86%E8%A7%A3%E5%87%A0%E4%BD%95%E5%88%B0%E5%81%9A%E5%87%BA%E5%86%B3%E7%AD%96/" title="第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策">第七课：聚类与分类算法（DFS 连通域聚类 + 法线分类 + 几何特征分类）——从理解几何到做出决策</a><time datetime="2026-05-18T15:40:43.000Z" title="发表于 2026-05-18 23:40:43">2026-05-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Hu hb</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I hope that we have the feeling of "Scooping the water,the moon is in my hand, Playing with flowers, my dress is full of scent" in life and study.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script>(() => {
+  const isChatBtn = true
+  const isChatHideShow = true
+
+  if (isChatBtn) {
+    const close = () => {
+      Chatra('minimizeWidget')
+      Chatra('hide')
+    }
+
+    const open = () => {
+      Chatra('openChat', true)
+      Chatra('show')
+    }
+
+    window.ChatraSetup = {
+      startHidden: true
+    }
+  
+    window.chatBtnFn = () => {
+      const isShow = document.getElementById('chatra').classList.contains('chatra--expanded')
+      isShow ? close() : open()
+    }
+  } else if (isChatHideShow) {
+    window.chatBtn = {
+      hide: () => {
+        Chatra('hide')
+      },
+      show: () => {
+        Chatra('show')
+      }
+    }
+  }
+
+  (function(d, w, c) {
+    w.ChatraID = 't3Zijv5iKg5Z5HT6v'
+    var s = d.createElement('script')
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments)
+    }
+    s.async = true
+    s.src = 'https://call.chatra.io/chatra.js'
+    if (d.head) d.head.appendChild(s)
+  })(document, window, 'Chatra')
+
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
