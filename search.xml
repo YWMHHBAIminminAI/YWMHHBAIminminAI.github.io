@@ -9461,4 +9461,43 @@ if (node.is_leaf) &#123;
         <tag>O(N)</tag>
       </tags>
   </entry>
+  <entry>
+    <title>AI时代中，知道什么 VS 能解决什么,怎么解决（一：分布式系统设计：收敛 、不丢意图、低延迟）</title>
+    <url>/2026/09/22/AI%E6%97%B6%E4%BB%A3%E4%B8%AD%EF%BC%8C%E7%9F%A5%E9%81%93%E4%BB%80%E4%B9%88-VS-%E8%83%BD%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88-%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%EF%BC%88%E4%B8%80%EF%BC%9A%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%EF%BC%9A%E6%94%B6%E6%95%9B-%E3%80%81%E4%B8%8D%E4%B8%A2%E6%84%8F%E5%9B%BE%E3%80%81%E4%BD%8E%E5%BB%B6%E8%BF%9F%EF%BC%89/</url>
+    <content><![CDATA[<p>“A、B 同时改同一条线的颜色，不是“谁后保存谁覆盖”的 UI 问题，而是分布式复制状态下的并发写冲突。要同时做到收敛、不丢意图、低延迟，核心是：操作化 + 因果排序 + 冲突合并&#x2F;变换 + 本地乐观更新 + 异步广播”。</p>
+<h1 id="它是什么"><a href="#它是什么" class="headerlink" title="它是什么"></a>它是什么</h1><p>想象一个工厂：</p>
+<blockquote>
+<p>你开了一个生产零件的工厂（程序运行）。每次需要零件，你就去仓库拿一个（new）。用完了扔掉（delete）。但问题来了：</p>
+<ul>
+<li>每次去仓库拿零件都要填申请表、走审批（malloc&#x2F;new 很慢）</li>
+<li>零件到处乱扔，仓库碎片化了（内存碎片）</li>
+<li>多个车间同时去拿零件，可能撞车（并发竞争）</li>
+</ul>
+<p>ObjectPool 就是你的”零件自助货架”：预先把一整排货架拉进来（VirtualAlloc大块内存），每个零件摆在固定位置，拿的时候不需要审批（无锁CAS），放回来直接扔进回收箱（FreeNode链表）。</p>
+</blockquote>
+<p>三个核心角色：</p>
+<p>角色	大白话	代码本质<br>BlockHeader	一排货架，带一个计数器显示”已用几个”	alignas(64) 的内存块头 + atomic<size_t> 已用计数 + 柔性数组 char data[]<br>FreeNode	回收箱里的一张纸条，写着”这个位置空了”	atomic&lt;FreeNode*&gt; 链表，无锁回收<br>ObjectPool	管理所有货架和回收箱的厂长	分块链表 + 原子操作的无锁分配</size_t></p>
+<p>费曼学习法 Step 2：逐个拆解核心知识点<br>知识点 A：柔性数组（Flexible Array Member）<br>struct BlockHeader {<br>    alignas(64) atomic&lt;BlockHeader*&gt; next;<br>    atomic<size_t> used;<br>    char data[];  &#x2F;&#x2F; ← 这就是柔性数组<br>};<br>大白话： char data[] 就像货架头上的标签——标签本身不占空间，它只是告诉你”货架头后面就是货物区”。C语言标准规定，大小为0的数组放在结构体最后，不占 sizeof，但可以合法访问后面的内存。</size_t></p>
+<p>为什么不用指针？ 指针要额外8字节存地址，还要额外一次内存跳转（缓存miss）。柔性数组直接”贴”在结构体后面，零开销。</p>
+<p>AI坑点： AI经常写成 char* data 然后单独 malloc，多一次分配+一次缓存miss，在高频路径上性能直接差2-3倍。</p>
+<p>知识点 B：缓存行对齐 alignas(64)<br>大白话： CPU不从内存一个字节一个字节拿数据，而是一次拿64字节（一个缓存行）。如果你把两个原子变量放在同一个缓存行里，两个线程各自改自己的变量，CPU必须来回同步这行缓存——这就是 False Sharing（伪共享），性能杀手。</p>
+<p>alignas(64) 强制这个结构体从64字节边界开始，保证它独占一个缓存行，别的变量不会跟它挤在一起。</p>
+<p>AI坑点： AI写并发代码时几乎从不考虑 alignas，在低竞争场景下看起来没问题，高并发时性能直接腰斩。</p>
+<p>知识点 C：Placement New<br>T* obj &#x3D; new (ptr) T();  &#x2F;&#x2F; 在ptr指定的地址构造T对象<br>大白话： 普通的 new &#x3D; 申请内存 + 构造对象。Placement new &#x3D; 只构造，内存你自己给。ObjectPool 已经用 VirtualAlloc 拿好了大块内存，所以分配时只需要在指定位置”放置”对象。</p>
+<p>AI坑点： AI经常把 placement new 和普通 new 搞混，忘记手动调用析构函数（obj-&gt;~T()），导致资源泄漏。</p>
+<p>知识点 D：虚拟内存管理（VirtualAlloc &#x2F; mmap）<br>大白话： 普通申请内存像”去超市买米”——量少但每次都要跑一趟。VirtualAlloc&#x2F;mmap 像”直接找粮仓批发”——一次拉一大车回来，按需分配。</p>
+<p>关键区别：</p>
+<p>malloc&#x2F;new → C运行库管理，有碎片、有锁<br>VirtualAlloc(Windows) &#x2F; mmap(Linux) → 直接向OS申请内存页，整页（4KB）为单位<br>ObjectPool 用 VirtualAlloc 一次申请一大块，然后自己管理分配，绕过 malloc 的锁和碎片问题。</p>
+<p>知识点 E：CAS 无锁分配（preview，第9课详讲）<br>size_t idx &#x3D; used.fetch_add(1, memory_order_relaxed);<br>大白话： 货架计数器不需要锁——每个人只需要”拿一个号”，原子操作保证不会两个人拿到同一个号。这就是 CAS（Compare-And-Swap）的思想：不用锁，用硬件级的原子指令保证安全。</p>
+<p>费曼学习法 Step 3：识别你的知识缺口<br>学完第一课后，问自己这些问题，答不上来就是缺口：</p>
+<h1 id="自检问题如果你答不出"><a href="#自检问题如果你答不出" class="headerlink" title="自检问题	如果你答不出"></a>自检问题	如果你答不出</h1><p>1	sizeof(BlockHeader) 是多少？data[] 占了几个字节？	重新理解柔性数组<br>2	如果不用 alignas(64)，两个线程同时 fetch_add 不同变量会怎样？	重新理解 False Sharing<br>3	new (ptr) T() 之后，谁负责调用 ~T()？如果忘了会怎样？	重新理解 Placement New 生命周期<br>4	VirtualAlloc 申请的内存，不用的部分会立即占物理内存吗？	去查”延迟提交 &#x2F; lazy commit”<br>5	fetch_add 和 mutex 相比，在低竞争和高竞争下性能分别怎样？	留到第9课深入<br>费曼学习法 Step 4：用你的话复述<br>试着向一个非技术朋友解释：</p>
+<p>“Huhb3D 是一个3D打印分析软件，它要处理几十万个三角形。如果每次创建三角形都用系统的 new，那就像每次买米都去超市——慢而且仓库乱。所以项目自己建了一个’零件工厂’（ObjectPool），一次性从粮仓拉一大车回来（VirtualAlloc），摆在自己设计的货架上（BlockHeader），拿零件不需要排队（无锁），放回来扔进回收箱（FreeNode链表）。货架头贴着标签（柔性数组），每个货架独占一排（缓存行对齐），这样多个工人（线程）同时拿零件也不会互相挡路。”</p>
+<p>📌 本课与你的 AI 时代理念的映射<br>你的理念	本课体现<br>1.5 掌握底层知识，AI代码有坑	alignas、柔性数组、placement new——AI几乎必写错<br>1.4 架构能力	ObjectPool是”内存架构”的核心决策：为什么不用 malloc？为什么分块？为什么无锁？——这是架构思维<br>1.3 技术够用就可以，但要知道什么时候需要什么	你不需要手写ObjectPool，但你要知道”当百万级高频分配出现时，该用对象池”<br>1.2 技术是切入点	内存管理是切入点，但真正的价值是你理解了”为什么这个项目需要这样设计”</p>
+]]></content>
+      <categories>
+        <category>AI时代应该培养的能力</category>
+        <category>知道什么 VS 能解决什么并且怎么解决</category>
+        <category>一：分布式系统设计：收敛 、不丢意图、低延迟）”</category>
+      </categories>
+  </entry>
 </search>
